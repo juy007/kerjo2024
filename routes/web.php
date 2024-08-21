@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Akun;
+use App\Http\Controllers\Home;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,7 +14,20 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
+/*
 Route::get('/', function () {
     return view('welcome');
 });
+*/
+
+
+// Login & Register
+Route::get('/login', [Akun::class, 'index'])->name('login');
+Route::get('/signup', [Akun::class, 'signup'])->name('signup');
+
+//Home Page
+Route::get('/', [Home::class, 'index'])->name('home1');
+Route::get('/home', [Home::class, 'index'])->name('home');
+Route::get('/posting-lowongan', [Home::class, 'posting_lowongan'])->name('posting_lowongan');
+Route::get('/detail-lowongan', [Home::class, 'detail_lowongan'])->name('detail_lowongan');
+Route::get('/detail-pelamar', [Home::class, 'detail_pelamar'])->name('detail_pelamar');

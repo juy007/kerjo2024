@@ -18,6 +18,7 @@ class Home extends Controller
 
     public function detail_lowongan()
     {
+        //return view('user.detail_lowongan');
         return view('user.detail_lowongan');
     }
 

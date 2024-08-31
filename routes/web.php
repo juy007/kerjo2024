@@ -24,6 +24,8 @@ Route::get('/', function () {
 // Login & Register
 Route::get('/login', [Akun::class, 'index'])->name('login');
 Route::get('/signup', [Akun::class, 'signup'])->name('signup');
+Route::post('/part-1', [Akun::class, 'profile_perusahaan_part1'])->name('profile_perusahaan_part1');
+Route::get('/part-2', [Akun::class, 'profile_perusahaan_part2'])->name('profile_perusahaan_part2');
 
 //Home Page
 Route::get('/', [Home::class, 'index'])->name('home1');

@@ -1,10 +1,9 @@
 @include('user/header')
 <style>
-        .dataTables_wrapper .dataTables_filter {
-            float: left;
-            margin-bottom: 10px;
-        }
-    </style>
+    th{
+        font-weight: bold !important;
+    }
+</style>
 <!-- ============================================================== -->
 <!-- Start right Content here -->
 <!-- ============================================================== -->
@@ -85,11 +84,32 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-body">
+                        <div class="card-header">
+                            <div class="row">
+                            
+                                <div id="filter" class="col-md-3 mb-3">
 
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <select id="statusFilter" class="form-select">
+                                        <option value="">Status</option>
+                                        <option value="">Semua</option>
+                                        <option value="Menunggu Konfirmasi">Menunggu Konfirmasi</option>
+                                        <option value="diterima">diterima</option>
+                                        <option value="diproses">diproses</option>
+                                        <option value="ditolak">ditolak</option>
+                                    </select>
+                                </div>
+                                <div id="show_data" class="col-md-6 mb-3">
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="card-body">
                             <table id="datatable" class="table table-bordered dt-responsive  nowrap w-100">
                                 <thead>
-                                    <tr style="font-weight: bold;">
+                                    <tr>
                                         <th>No</th>
                                         <th>Pelamar</th>
                                         <th>Handphone</th>
@@ -106,9 +126,17 @@
                                     <?php
                                     for ($i = 0; $i < 40; $i++) {
                                     ?>
-                                        <tr>
+                                        <tr valign="middle">
                                             <td><?php echo $i + 1; ?></td>
-                                            <td><a href="{{ route('detail_pelamar') }}">Nikola Hendra</a></td>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <img src="{{ asset('assets/images/users/avatar-1.jpg') }}" class="avatar-md rounded-circle" alt="img" />
+                                                    <div class="flex-1 ms-4">
+                                                        <h5 class="mb-2 font-size-15 text-primary"><a href="{{ route('detail_pelamar') }}">Nikola Hendra</a></h5>
+                                                        <p class="text-muted">niko@gmail.com</p>
+                                                    </div>
+                                                </div>
+                                            </td>
                                             <td>081385417712</td>
                                             <td>Data Analyst</td>
                                             <td>4 Tahun</td>
@@ -117,6 +145,25 @@
                                             <td><a href="" class="btn btn-outline-danger">Tolak</a> <a href="" class="btn btn-primary">Proses</a></td>
                                         </tr>
                                     <?php } ?>
+                                    <tr>
+                                            <td><?php echo $i + 1; ?></td>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <img src="{{ asset('assets/images/users/avatar-1.jpg') }}" class="avatar-md rounded-circle" alt="img" />
+                                                    <div class="flex-1 ms-4">
+                                                        <h5 class="mb-2 font-size-15 text-primary"><a href="{{ route('detail_pelamar') }}">Arfa</a></h5>
+                                                        
+                                                        <p class="text-muted">arfa@gmail.com</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>081385417712</td>
+                                            <td>Data Analyst</td>
+                                            <td>4 Tahun</td>
+                                            <td>diterima</td>
+                                            <td><a href="">Download</a></td>
+                                            <td><a href="" class="btn btn-outline-danger">Tolak</a> <a href="" class="btn btn-primary">Proses</a></td>
+                                        </tr>
                                 </tbody>
                             </table>
 
@@ -127,14 +174,8 @@
         </div> <!-- container-fluid -->
     </div>
     <!-- End Page-content -->
-
+    
 
     @include('user/footer')
 
-    <script>
-    $(document).ready(function() {
-            $('#datatable').DataTable({
-                dom: '<"top"f>rt<"bottom"lpi><"clear">'
-            });
-        });
-    </script>
+    

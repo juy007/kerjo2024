@@ -41,7 +41,7 @@
                                             <h3 class="mb-0">Register</h3>
                                             <p class="text-muted mt-2"></p>
                                         </div>
-                                        <form class="mt-4 pt-2" action="index.html">
+                                        <form class="mt-4 pt-2" method="POST" action="{{ route('profile_perusahaan_part1') }}">@csrf
                                             <div class="mb-1">
                                                 <label for="nama"></label>
                                                 <input type="text" class="form-control" id="nama" placeholder="Masukkan Nama Lengkap Anda">
@@ -50,12 +50,12 @@
                                                 <label for="email"></label>
                                                 <input type="text" class="form-control" id="email" placeholder="Masukkan Email Perusahaan Anda">
                                             </div>
-                                            <div class="mb-1">
+                                            <div class="mb-3">
                                                 <label for="nomor_hp"></label>
                                                 <input type="text" class="form-control" id="nomor_hp" placeholder="Masukkan Nomor HP Anda">
                                             </div>
 
-                                            <div class="form-floating mb-4 auth-pass-inputgroup">
+                                            <div class="form-floating mb-4 auth-pass-inputgroup mb-1">
                                                 <input type="password" class="form-control" id="password-input" placeholder="Masukan Password">
                                                 
                                                 <button type="button" class="btn btn-link position-absolute h-100 end-0 top-0" id="password-addon">
@@ -64,30 +64,24 @@
                                                 <label for="input-password"></label>
                                             </div>
 
+                                            <div class="form-floating mb-4 auth-pass-inputgroup mb-1">
+                                                <input type="password" class="form-control" id="password-input2" placeholder="Masukan Password">
+                                                
+                                                <button type="button" class="btn btn-link position-absolute h-100 end-0 top-0" id="password-addon">
+                                                    <i class="mdi mdi-eye-outline font-size-18 text-muted"></i>
+                                                </button>
+                                                <label for="input-passwor2d"></label>
+                                            </div>
+                                            <div class="col mb-3">
+                                                    <p class="text-muted mb-0">Dengan mengklik daftar, Anda menyetujui <a href="#" class="text-primary fw-semibold">syarat 
+                                                    dan ketentuan</a> yang berlaku di KERJO</p>
+                                                </div>
                                             <div class="mb-3">
                                                 <button class="btn btn-primary w-100 waves-effect waves-light" type="submit">Daftar Sekarang</button>
                                             </div>
-
-                                            <div class="row mb-4">
-                                                <div class="col left-bar">
-                                                    <div class="form-check font-size-15">
-                                                        <input class="form-check-input" type="checkbox" id="remember-check">
-                                                        <label class="form-check-label font-size-13" for="remember-check">
-                                                            Keep me login
-                                                        </label>
-                                                    </div>  
-                                                </div>
-
-                                                <div class="col">
-                                                    <div class="form-check font-size-15 text-right">
-                                                    <p class="text-muted mb-0 font-size-13"><a href="auth-register.html"
-                                                    class="text-primary fw-semibold"> Forget Password</a> </p>
-                                                    </div>  
-                                                </div>
-                                            </div>
                                         </form>
 
-                                        <div class="mt-5 text-center">
+                                        <div class="mt-4 text-center">
                                             <p class="text-muted mb-0">Already have account ? <a href="{{ route('login') }}"
                                                     class="text-primary fw-semibold"> Login </a> </p>
                                         </div>

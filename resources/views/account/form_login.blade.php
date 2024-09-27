@@ -35,15 +35,15 @@
                                 <div class="d-flex flex-column h-100">
                                     <div class="mb-4 mb-md-5 auth-content my-auto">
                                         <div class="text-center">
-                                            <a href="index.html" class="d-block auth-logo mt-5">
+                                            <a href="{{ url('/') }}" class="d-block auth-logo mt-5">
                                                 <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="60"> <span class="logo-txt"></span>
                                             </a>
                                             <h3 class="mb-0">Welcome Back</h3>
                                             <p class="text-muted mt-2"></p>
                                         </div>
-                                        <form class="mt-4 pt-2" action="index.html">
+                                        <form class="mt-4 pt-2" method="POST" action="{{ route('userValidation') }}" enctype="multipart/form-data"> @csrf
                                             <div class="form-floating form-floating-custom mb-4">
-                                                <input type="text" class="form-control" id="input-username" placeholder="Enter User Name">
+                                                <input type="email" class="form-control" name="email" id="input-username" placeholder="Enter User Name">
                                                 <label for="input-username"></label>
                                                 <div class="form-floating-icon">
                                                    <i data-feather="users"></i>
@@ -51,7 +51,7 @@
                                             </div>
 
                                             <div class="form-floating form-floating-custom mb-4 auth-pass-inputgroup">
-                                                <input type="password" class="form-control pe-5" id="password-input" placeholder="Enter Password">
+                                                <input type="password" class="form-control pe-5" name="password" id="password-input" placeholder="Enter Password">
                                                 
                                                 <button type="button" class="btn btn-link position-absolute h-100 end-0 top-0" id="password-addon">
                                                     <i class="mdi mdi-eye-outline font-size-18 text-muted"></i>
@@ -61,7 +61,11 @@
                                                     <i data-feather="lock"></i>
                                                 </div>
                                             </div>
-
+                                            @if (session('notifLogin'))
+                                            <div class="alert alert-danger">
+                                                {{ session('notifLogin') }}
+                                            </div>
+                                             @endif
                                             <div class="mb-3">
                                                 <button class="btn btn-primary w-100 waves-effect waves-light" type="submit">Login</button>
                                             </div>
@@ -69,7 +73,7 @@
                                             <div class="row mb-4">
                                                 <div class="col left-bar">
                                                     <div class="form-check font-size-15">
-                                                        <input class="form-check-input" type="checkbox" id="remember-check">
+                                                        <input class="form-check-input" type="checkbox" id="remember-check" name="remember">
                                                         <label class="form-check-label font-size-13" for="remember-check">
                                                             Keep me login
                                                         </label>
@@ -78,7 +82,7 @@
 
                                                 <div class="col">
                                                     <div class="form-check font-size-15 text-right">
-                                                    <p class="text-muted mb-0 font-size-13"><a href="auth-register.html"
+                                                    <p class="text-muted mb-0 font-size-13"><a href="{{ route('password.request') }}"
                                                     class="text-primary fw-semibold"> Forget Password</a> </p>
                                                     </div>  
                                                 </div>

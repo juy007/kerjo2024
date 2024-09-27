@@ -3,12 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Session;
 
-class Home extends Controller
+class User extends Controller
 {
     public function index()
     {
         return view('user.home');
+    }
+
+    public function form_lowongan()
+    {
+        return view('user.form_lowongan');
     }
 
     public function posting_lowongan()
@@ -26,5 +33,4 @@ class Home extends Controller
     {
         return view('user.detail_pelamar');
     }
-
 }

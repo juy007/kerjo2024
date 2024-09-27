@@ -1,9 +1,4 @@
 @include('user/header')
-<!-- ============================================================== -->
-<!-- Start right Content here -->
-<!-- ============================================================== -->
-<div class="main-content">
-
     <div class="page-content" style="background-color:#F4F7FE !important;">
         <div class="container-fluid">
 
@@ -32,7 +27,7 @@
                                 </div>
                                 <div class="col-sm-8">
                                     <div class="text-sm-end">
-                                        <button type="button" class="btn btn-primary waves-effect waves-light me-2">Buat Postingan Pekerjaan</button>
+                                        <a href="{{ route('form_lowongan') }}" class="btn btn-primary waves-effect waves-light me-2">Buat Postingan Pekerjaan</a>
                                     </div>
                                 </div><!-- end col-->
                             </div>

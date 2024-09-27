@@ -33,6 +33,18 @@
             body {
                 font-family: 'Nunito-Regular', sans-serif !important;
             }
+
+            .page-content{
+                background: #FFF !important;
+            }
+
+            .page-content {
+                margin-top: 0px !important;
+            }
+
+            .progress-t {
+                margin-top: 75px;
+            }
         </style>
     </head>
 
@@ -46,7 +58,7 @@
                     <div class="col-12">
                         <!-- LOGO -->
                         <div class="" style="text-align:center;">
-                            <a href="{{ route('home1') }}" class="">
+                            <a href="{{ route('dashboard_user') }}" class="">
                                 <span class="">
                                     <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="40"> <span class="logo-txt"></span>
                                 </span>
@@ -55,4 +67,5 @@
                     </div>
                 </div>
             </header>
+            <div class="main-content">
             

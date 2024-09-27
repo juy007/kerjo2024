@@ -1,14 +1,9 @@
 @include('user/header')
-<!-- ============================================================== -->
-<!-- Start right Content here -->
-<!-- ============================================================== -->
 <style>
     .profile-user {
         height: 50px !important;
     }
 </style>
-<div class="main-content">
-
     <div class="page-content" style="background-color:#F4F7FE !important;">
         <div class="container-fluid">
 

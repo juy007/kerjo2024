@@ -1,9 +1,4 @@
 @include('user/header')
-            <!-- ============================================================== -->
-            <!-- Start right Content here -->
-            <!-- ============================================================== -->
-            <div class="main-content">
-
                 <div class="page-content" style="background-color:#F4F7FE !important;">
                     <div class="container-fluid">
 

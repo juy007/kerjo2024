@@ -208,7 +208,25 @@
                 <script src="{{ asset('assets/js/app.js') }}"></script>
 
                 <!-- aaaaaaaaaaaaaaaaaaa -->
+                <!-- Select ============================================================================ -->
+                  <!-- choices js -->
+                <script src="{{ asset('assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
+                
+                <!-- choices js -->
+                <script src="{{ asset('assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
 
+                <!-- color picker js -->
+                <script src="{{ asset('assets/libs/@simonwep/pickr/pickr.min.js') }}"></script>
+                <script src="{{ asset('assets/libs/@simonwep/pickr/pickr.es5.min.js') }}"></script>
+
+                <!-- datepicker js -->
+                <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
+
+                <!-- init js -->
+                <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
+
+
+                <!-- Datatable=========================================================================== -->
                 <!-- Required datatable js -->
                 <script src="{{ asset('assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
                 <script src="{{ asset('assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>

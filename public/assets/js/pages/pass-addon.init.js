@@ -1,1 +1,4 @@
 document.getElementById("password-addon").addEventListener("click",function(){var e=document.getElementById("password-input");"password"===e.type?e.type="text":e.type="password"});
+document.getElementById("password-addon1").addEventListener("click",function(){var e=document.getElementById("password-input1");"password"===e.type?e.type="text":e.type="password"});
+document.getElementById("password-addon2").addEventListener("click",function(){var e=document.getElementById("password-input2");"password"===e.type?e.type="text":e.type="password"});
+document.getElementById("password-addon3").addEventListener("click",function(){var e=document.getElementById("password-input3");"password"===e.type?e.type="text":e.type="password"});

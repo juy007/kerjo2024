@@ -1,8 +1,12 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Akun;
-use App\Http\Controllers\Home;
+use App\Http\Middleware\EnsureTokenIsValid;
+use App\Http\Controllers\Admin;
+use App\Http\Controllers\Account;
+use App\Http\Controllers\User;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -20,16 +24,36 @@ Route::get('/', function () {
 });
 */
 
+Route::get('/-admin-', [Admin::class, 'index'])->name('admin_login');
+Route::post('/login-validation', [Admin::class, 'login_validation'])->name('login_validation');
+Route::get('/dashboarddddd', [Admin::class, 'dashboard'])->name('admin_dashboard');
+Route::post('/adminlogout', [Admin::class, 'logout'])->name('admin_logout');
 
-// Login & Register
-Route::get('/login', [Akun::class, 'index'])->name('login');
-Route::get('/signup', [Akun::class, 'signup'])->name('signup');
-Route::post('/part-1', [Akun::class, 'profile_perusahaan_part1'])->name('profile_perusahaan_part1');
-Route::get('/part-2', [Akun::class, 'profile_perusahaan_part2'])->name('profile_perusahaan_part2');
+// Login & Register User
+Route::get('/', [Account::class, 'index'])->name('login');
+Route::post('/user-validation', [Account::class, 'loginValidation'])->name('userValidation');
+Route::get('/signup', [Account::class, 'signup'])->name('signup');
+Route::post('/signup-save', [Account::class, 'signup_save'])->name('signup_save');
 
-//Home Page
-Route::get('/', [Home::class, 'index'])->name('home1');
-Route::get('/home', [Home::class, 'index'])->name('home');
-Route::get('/posting-lowongan', [Home::class, 'posting_lowongan'])->name('posting_lowongan');
-Route::get('/detail-lowongan', [Home::class, 'detail_lowongan'])->name('detail_lowongan');
-Route::get('/detail-pelamar', [Home::class, 'detail_pelamar'])->name('detail_pelamar');
+//OTP User
+Route::get('/otp', [Account::class, 'otp'])->name('otp');
+Route::post('/verify_otp', [Account::class, 'verify_otp'])->name('verify_otp');
+
+Route::middleware('auth.token')->group(function () {
+    Route::middleware(['check.company.industries'])->group(function () {
+        Route::get('/dashboard', [User::class, 'index'])->name('dashboard_user');
+        Route::get('/tambah-lowongan', [User::class, 'form_lowongan'])->name('form_lowongan');
+        Route::get('/posting-lowongan', [User::class, 'posting_lowongan'])->name('posting_lowongan');
+        Route::get('/detail-lowongan', [User::class, 'detail_lowongan'])->name('detail_lowongan');
+        Route::get('/detail-pelamar', [User::class, 'detail_pelamar'])->name('detail_pelamar');
+    });
+    Route::get('/part-1', [Account::class, 'company_profile_part1'])->name('company_profile_part1');
+    Route::post('/part-2', [Account::class, 'company_profile_part2'])->name('company_profile_part2');
+    Route::post('/logout', [Account::class, 'logout'])->name('user_logout');
+});
+
+//Forgot Password User
+Route::get('password/forgot', [Account::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('password/email', [Account::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('passwordReset/{token}', [Account::class, 'showResetForm'])->name('password.reset');
+Route::post('password/reset', [Account::class, 'reset'])->name('password.update');

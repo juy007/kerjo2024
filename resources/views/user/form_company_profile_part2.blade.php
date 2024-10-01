@@ -1,5 +1,14 @@
-@include('user/header')
+@include('account/header_start')
+<!-- Select ====================================================================================== -->
+<!-- choices css -->
+<link href="{{ asset('assets/libs/choices.js/public/assets/styles/choices.min.css') }}" rel="stylesheet" type="text/css" />
 
+<!-- color picker css -->
+<link rel="stylesheet" href="{{ asset('assets/libs/@simonwep/pickr/themes/classic.min.css') }}" /> <!-- 'classic' theme -->
+<link rel="stylesheet" href="{{ asset('assets/libs/@simonwep/pickr/themes/monolith.min.css') }}" /> <!-- 'monolith' theme -->
+<link rel="stylesheet" href="{{ asset('assets/libs/@simonwep/pickr/themes/nano.min.css') }}" /> <!-- 'nano' theme -->
+
+@include('account/header_end')
 <div class="progress progress-sm progress-t">
     <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
@@ -13,8 +22,6 @@
                     <h4 class="font-size-18">Tentang Perusahaan Anda</h4>
                     <p class="text-mute">Masukkan identitas perusahaan Anda dengan lengkap dan akurat, agar<br>
                         Kerjo dapat memverifikasi akun Anda! Pasang logo agar kandidat tertarik melamar ke lowongan.</p>
-
-
                 </div>
             </div>
         </div><br><br>
@@ -26,18 +33,18 @@
                     <div class="row justify-content-center mb-5">
                         <div class="col-lg-8">
                             <div>
-                                <form method="POST" action="#" enctype="multipart/form-data">
+                                <form method="POST" action="{{ route('submit_company_profile_part2') }}" enctype="multipart/form-data">@csrf
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label" for="nama_perusahaan">Nama Perusahaan</label>
-                                                <input type="text" class="form-control" id="nama_perusahaan" placeholder="Nama Perusahaan">
+                                                <input type="text" class="form-control" id="nama_perusahaan" name="nama_perusahaan" placeholder="Nama Perusahaan" required>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label" for="nama_brand">Nama Brand</label>
-                                                <input type="text" class="form-control" id="nama_brand" placeholder="Nama Brand">
+                                                <input type="text" class="form-control" id="nama_brand" name="nama_brand" placeholder="Nama Brand" required>
                                             </div>
                                         </div>
                                     </div>
@@ -45,13 +52,18 @@
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label" for="tanggal_berdiri_perusahaan">Tanggal Berdiri Perusahaan</label>
-                                                <input type="date" class="form-control" id="tanggal_berdiri_perusahaan" placeholder="01/01/2000">
+                                                <input type="date" class="form-control" id="tanggal_berdiri_perusahaan" name="tanggal_berdiri_perusahaan" placeholder="01/01/2000" required>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label" for="lokasi_perusahaan">Lokasi Perusahaan</label>
-                                                <input type="text" class="form-control" id="lokasi_perusahaan" placeholder="Lokasi Perusahaan">
+                                                <select class="form-control" data-trigger name="lokasi_perusahaan" id="lokasi_perusahaan" required>
+                                                    <option value="">Lokasi Perusahaan</option>
+                                                    @foreach($provinces as $province)
+                                                    <option value="{{ $province['_id'] }}">{{ $province['name'] }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -59,7 +71,7 @@
                                         <div class="col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label" for="tentang_perusahaan">Tentang Perusahaan</label>
-                                                <textarea class="form-control" name="tentang_perusahaan" id="tentang_perusahaan" rows="5" placeholder="Deskripsi tentang perusahaan"></textarea>
+                                                <textarea class="form-control" id="tentang_perusahaan" name="tentang_perusahaan" rows="5" placeholder="Deskripsi tentang perusahaan" required></textarea>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -91,7 +103,7 @@
 
                                                     <label class="custom-file-upload">
                                                         Upload
-                                                        <input id="logo-perusahaan" type="file" />
+                                                        <input id="logo-perusahaan" type="file" name="logo_perusahaan" accept=".jpeg, .jpg, .png" required />
                                                     </label>
                                                 </div>
                                             </div>
@@ -147,7 +159,7 @@
                                                 <div class="pt-2">
                                                     <label class="btn btn-outline-primary font-size-20">
                                                         <i class="bx bx-plus-medical"></i>
-                                                        <input type="file" id="fileInput" accept="image/*" multiple>
+                                                        <input type="file" id="fileInput" name="gallery[]" accept=".jpeg, .jpg, .png" multiple required>
                                                     </label>
                                                 </div>
                                             </div>
@@ -249,27 +261,47 @@
                                                 // Hentikan kamera ketika halaman ditutup atau dimuat ulang
                                                 window.addEventListener('beforeunload', stopCamera);
                                             </script>
-
-
                                         </div>
                                     </div>
-
+                                    @if ($errors->any())
+                                    <div class="alert alert-danger">
+                                        <ul>
+                                            @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                    @endif
                                     <div class="mt-4 text-center">
                                         <a href="#" class="btn btn-outline-primary w-md">Kembali</a>
                                         <button type="submit" class="btn btn-primary w-md">Submit</button>
                                     </div>
-
                                 </form>
-
                             </div>
                         </div>
                     </div>
+                    <!-- end col -->
                 </div>
             </div>
-            <!-- end col -->
         </div>
-
     </div> <!-- container-fluid -->
 </div>
 <!-- End Page-content -->
-@include('user/footer')
+
+@include('account/footer_start')
+<!-- Select ============================================================================ -->
+<!-- choices js -->
+<script src="{{ asset('assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
+
+<!-- choices js -->
+<script src="{{ asset('assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
+<!-- color picker js -->
+<script src="{{ asset('assets/libs/@simonwep/pickr/pickr.min.js') }}"></script>
+<script src="{{ asset('assets/libs/@simonwep/pickr/pickr.es5.min.js') }}"></script>
+
+<!-- datepicker js -->
+<script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
+
+<!-- init js -->
+<script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
+@include('account/footer_end')

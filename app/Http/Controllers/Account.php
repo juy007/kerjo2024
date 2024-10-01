@@ -54,9 +54,17 @@ class Account extends Controller
             Session::put('user_id', $profileData['data']['_id']);
             Session::put('company_id', $profileData['data']['company']['_id']);
             Session::put('company_name', $profileData['data']['company']['name']);
-            Session::put('phone', $profileData['data']['company']['phoneNumber']);
-            Session::put('email', $profileData['data']['company']['email']);
+            Session::put('company_brand', $profileData['data']['company']['brand']);
+            Session::put('company_logo', $profileData['data']['company']['logo']);
+            Session::put('company_email', $profileData['data']['company']['email']);
+            Session::put('company_phone', $profileData['data']['company']['phoneNumber']);
+            Session::put('company_overview', $profileData['data']['company']['overview']);
             Session::put('company_industries', $profileData['data']['company']['industries']);
+            Session::put('company_galleries', $profileData['data']['company']['galleries']);
+            Session::put('company_active', $profileData['data']['company']['active']);
+            Session::put('company_established', $profileData['data']['company']['established']);
+            Session::put('company_location', $profileData['data']['company']['location']);
+
 
             if ($request->remember) {
                 // Simpan token ke cookie
@@ -123,11 +131,19 @@ class Account extends Controller
         $dataProfile = Http::withToken($token)->get('https://api.carikerjo.id/auth/my-company-profile');
         $profileData = $dataProfile->json();
 
-        Session::put('user_id', $responseData['data']['_id']);
-        Session::put('company_id', $dataProfile['data']['company']['_id']);
-        Session::put('name', $validatedData['name']);
-        Session::put('phone', $validatedData['phone']);
-        Session::put('email', $validatedData['email']);
+        Session::put('user_id', $profileData['data']['_id']);
+        Session::put('company_id', $profileData['data']['company']['_id']);
+        Session::put('company_name', $profileData['data']['company']['name']);
+        Session::put('company_brand', $profileData['data']['company']['brand']);
+        Session::put('company_logo', $profileData['data']['company']['logo']);
+        Session::put('company_email', $profileData['data']['company']['email']);
+        Session::put('company_phone', $profileData['data']['company']['phoneNumber']);
+        Session::put('company_overview', $profileData['data']['company']['overview']);
+        Session::put('company_industries', $profileData['data']['company']['industries']);
+        Session::put('company_galleries', $profileData['data']['company']['galleries']);
+        Session::put('company_active', $profileData['data']['company']['active']);
+        Session::put('company_established', $profileData['data']['company']['established']);
+        Session::put('company_location', $profileData['data']['company']['location']);
 
         // Generate OTP dan kirim ke API
         /*
@@ -145,40 +161,126 @@ class Account extends Controller
 
     public function company_profile_part1()
     {
-        return view('user.form_company_profile_part1');
+        if (!empty(Session::get('company_industries'))) {
+            $nameIndustries = Session::get('company_name');
+            if (!empty($nameIndustries)) {
+                return redirect()->route('dashboard_user');
+            } else {
+                return redirect()->route('company_profile_part2');
+            }
+        }
+        $token = Session::get('api_token');
+        $response = Http::withToken($token)->get('https://api.carikerjo.id/industries');
+        $industries = $response->json('data');
+        return view('user.form_company_profile_part1', compact('industries'));
     }
 
-    public function company_profile_part2(Request $request)
+    public function submitCompany_profile_part1(Request $request)
     {
-        // Validasi data
-        $validated = $request->validate([
-            'industries' => 'required|array|min:1', // Pastikan setidaknya satu industri dipilih
-            'industries.*' => 'string', // Setiap industri harus berupa string
+        // Validasi data industri
+        $request->validate([
+            'industries' => 'required|array',
+            //'industries.*' => 'string',
+        ]);
+        //$industries = implode(',', $request->industries);
+        session(['selected_industries' => $request->industries]);
+
+        // Redirect ke halaman form perusahaan
+        return redirect()->route('company_profile_part2');
+    }
+
+    public function company_profile_part2()
+    {
+        if (!empty(Session::get('company_industries'))) {
+            $nameIndustries = Session::get('company_name');
+            if (!empty($nameIndustries)) {
+                return redirect()->route('dashboard_user');
+            } else {
+                return redirect()->route('company_profile_part2');
+            }
+        }
+
+        $token = Session::get('api_token');
+        $responseProvinces = Http::withToken($token)->get('https://api.carikerjo.id/provinces');
+        $provinces = $responseProvinces->json('data');
+
+        return view('user.form_company_profile_part2', compact('provinces'));
+    }
+
+    public function submitCompany_profile_part2(Request $request)
+    {
+        $validatedData = $request->validate([
+            'nama_perusahaan' => 'required|string|max:255',
+            'nama_brand' => 'required|string|max:255',
+            'tanggal_berdiri_perusahaan' => 'required|date',
+            'lokasi_perusahaan' => 'required|string|max:255',
+            'tentang_perusahaan' => 'required|string',
+            'logo_perusahaan' => 'required|image|mimes:jpeg,png,jpg',
+            'gallery.*' => 'image|mimes:jpeg,png,jpg',
         ]);
 
-        // Ambil data industri yang dipilih
-        $industries = $validated['industries'];
+        $token = session('api_token');
 
-        // Siapkan payload untuk API eksternal
-        $payload = [
-            'name' => $industries,
-        ];
+        if ($request->hasFile('logo_perusahaan')) {
+            $logo = $request->file('logo_perusahaan');
 
-       
-        // Kirim request ke API eksternal
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . Session::get('api_token'), // Menggunakan token dari session
-            'Content-Type' => 'application/json',
-        ])->put("https://api.carikerjo.id/industries/".Session::get('company_id'), $payload);
+            // Upload logo
+            $logoResponse = Http::withToken($token)
+                ->attach('file', file_get_contents($logo), $logo->getClientOriginalName())
+                ->post('https://api.carikerjo.id/medias/upload-logo');
 
-        // Cek respons dari API
-        if ($response->successful()) {echo 'ok-';echo Session::get('company_id');
-            //return redirect()->back()->with('success', 'Industries updated successfully!');
-        } else {echo 'gagal-'; echo Session::get('company_id');
-            //return redirect()->back()->with('error', 'Failed to update industries. ' . $response->body());
+            // Cek respons upload logo
+            if (!$logoResponse->successful()) {
+                return redirect()->back()->withErrors(['error' => 'Failed to upload logo.']);
+            }
+
+            $logoUrl = $logoResponse->json('data.path');
+            $galleryUrls = [];
+
+            if ($request->hasFile('gallery')) {
+                foreach ($request->file('gallery') as $galleryImage) {
+                    // Upload setiap gambar galeri
+                    $galleryResponse = Http::withToken($token)
+                        ->attach('file', file_get_contents($galleryImage), $galleryImage->getClientOriginalName())
+                        ->post('https://api.carikerjo.id/medias/upload-gallery');
+
+                    // Cek respons upload galeri
+                    if ($galleryResponse->successful()) {
+                        $galleryUrls[] = $galleryResponse->json('data.path'); // Path gambar galeri
+                    } else {
+                        return redirect()->back()->withErrors(['error' => 'Failed to upload gallery images.']);
+                    }
+                }
+            }
+
+            $industries = session('selected_industries');
+
+            // Data yang akan dikirim ke API
+            $data = [
+                'name' => $validatedData['nama_perusahaan'],
+                'brand' => $validatedData['nama_brand'],
+                'overview' => $validatedData['tentang_perusahaan'],
+                'industries' => $industries,
+                'established' => $validatedData['tanggal_berdiri_perusahaan'],
+                'provinceId' => $validatedData['lokasi_perusahaan'],
+                'logo' => $logoUrl,
+                'galleries' => $galleryUrls, // Isi dengan URL galeri yang di-upload
+            ];
+
+            // Kirim data ke API untuk memperbarui profil perusahaan
+            $response = Http::withToken($token)->put('https://api.carikerjo.id/auth/my-company-profile', $data);
+
+            if ($response->successful()) {
+                Session::put('company_industries', $industries);
+                Session::put('name_industries', $validatedData['nama_perusahaan']);
+                return redirect()->route('dashboard_user')->with('success', 'Company profile updated successfully.');
+            } else {
+                echo $response->body();
+                //return redirect()->back()->withErrors(['error' => 'Failed to update company profile.']);
+            }
         }
-        //return view('user.form_company_profile_part2');
     }
+
 
     public function otp()
     {
@@ -319,6 +421,42 @@ class Account extends Controller
         return back()->withErrors(['email' => 'Failed to reset password.']);
     }
 
+    public function input()
+    {
+        $provinces = [
+            'Kalimantan Selatan',
+            'Kalimantan Timur',
+            'Kalimantan Utara',
+            'Sulawesi Utara',
+            'Sulawesi Tengah',
+            'Sulawesi Selatan',
+            'Sulawesi Tenggara',
+            'Gorontalo',
+            'Sulawesi Barat',
+            'Maluku',
+            'Maluku Utara',
+            'Papua',
+            'Papua Barat',
+            'Papua Selatan',
+            'Papua Tengah',
+            'Papua Pegunungan',
+            'Papua Barat Daya'
+        ];
 
-    
+        // Siapkan token API
+        $token = session('api_token'); // Atau hardcode jika token sudah diketahui
+
+        // Looping untuk mengirim tiap provinsi satu per satu
+        foreach ($provinces as $province) {
+            $response = Http::withToken($token)->post('https://api.carikerjo.id/provinces', [
+                'name' => $province,
+            ]);
+
+            if (!$response->successful()) {
+                echo "gagal = " . $province;
+            }
+        }
+
+        echo 'berhasil';
+    }
 }

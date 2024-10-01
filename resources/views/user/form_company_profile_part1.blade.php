@@ -1,4 +1,5 @@
-@include('account/header')
+@include('account/header_start')
+@include('account/header_end')
 
 <div class="progress progress-sm progress-t">
     <div class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
@@ -27,55 +28,20 @@
                 <div class="text-center">
                     <div class="row justify-content-center mb-5">
                         <div class="col-sm-12">
-                            <form method="POST" action="{{ route('company_profile_part2') }}" class="col-sm-7" style="margin-left:auto;margin-right:auto;" id="industryForm" enctype="multipart/form-data">@csrf
+                            <form method="POST" action="{{ route('submit_company_profile_part1') }}" class="col-sm-7" style="margin-left:auto;margin-right:auto;" id="industryForm" enctype="multipart/form-data">@csrf
                                 <div class="flex-wrap gap-3 mb-3">
+                                    @if($industries && count($industries) > 0)
                                     <div class="" role="group" aria-label="Basic checkbox toggle button group">
-                                        <input type="checkbox" class="btn-check" id="btncheck4" name="industries[]" value="Bahan Baku" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="btncheck4">Bahan Baku</label>
-
-                                        <input type="checkbox" class="btn-check" id="btncheck5" name="industries[]" value="Jasa" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="btncheck5">Jasa</label>
-
-                                        <input type="checkbox" class="btn-check" id="btncheck6" name="industries[]" value="Keuangan" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="btncheck6">Keuangan</label>
-
-                                        <input type="checkbox" class="btn-check" id="btncheck7" name="industries[]" value="Investasi" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="btncheck7">Investasi</label>
-
-                                        <input type="checkbox" class="btn-check" id="btncheck8" name="industries[]" value="Pajak" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="btncheck8">Pajak</label>
-
-                                        <input type="checkbox" class="btn-check" id="btncheck9" name="industries[]" value="" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="btncheck9">Kuliner</label>
-
-                                        <input type="checkbox" class="btn-check" id="btncheck10" name="industries[]" value="Retail" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="btncheck10">Retail</label>
+                                        @foreach($industries as $industry)
+                                            <input type="checkbox" class="btn-check" id="btncheck{{ $industry['_id'] }}" name="industries[]" value="{{ $industry['_id'] }}" autocomplete="off">
+                                            <label class="btn btn-outline-primary" for="btncheck{{ $industry['_id'] }}">{{ $industry['name'] }}</label>
+                                        @endforeach
+                                    @else
+                                        <p>No industries found.</p>
+                                    @endif
                                     </div>
                                 </div>
-                                <div class="flex-wrap gap-3 mb-4">
-                                    <div class="" role="group" aria-label="Basic checkbox toggle button group">
-                                        <input type="checkbox" class="btn-check" id="btncheck11" name="industries[]" value="Teknologi" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="btncheck11">Teknologi</label>
-
-                                        <input type="checkbox" class="btn-check" id="btncheck12" name="industries[]" value="Logistik" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="btncheck12">Logistik</label>
-
-                                        <input type="checkbox" class="btn-check" id="btncheck13" name="industries[]" value="Manufaktur" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="btncheck13">Manufaktur</label>
-
-                                        <input type="checkbox" class="btn-check" id="btncheck14" name="industries[]" value="Data Center" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="btncheck14">Data Center</label>
-
-                                        <input type="checkbox" class="btn-check" id="btncheck15" name="industries[]" value="Fashion" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="btncheck15">Fashion</label>
-
-                                        <input type="checkbox" class="btn-check" id="btncheck16" name="industries[]" value="Kontraktor" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="btncheck16">Kontraktor</label>
-
-                                        <input type="checkbox" class="btn-check" id="btncheck17" name="industries[]" value="Lainnya" autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="btncheck17">Lainnya</label>
-                                    </div>
-                                </div>
+                               
                                 <div id="message" class="message hidden"></div>
                                 <button class="btn btn-primary w-25 waves-effect waves-light" type="submit">Lanjut</button>
                             </form>
@@ -126,7 +92,9 @@
                                     font-weight: bold;
                                     animation: fadeIn 0.5s ease-in-out;
                                     width: 50%;
-                                    margin-left: auto;margin-right: auto;margin-bottom: 10px;
+                                    margin-left: auto;
+                                    margin-right: auto;
+                                    margin-bottom: 10px;
                                 }
 
                                 .message.success {
@@ -161,4 +129,5 @@
     </div> <!-- container-fluid -->
 </div>
 <!-- End Page-content -->
-@include('account/footer')
+@include('account/footer_start')
+@include('account/footer_end')

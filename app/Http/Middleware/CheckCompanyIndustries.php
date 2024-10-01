@@ -19,6 +19,11 @@ class CheckCompanyIndustries
     {
         if (Session::get('company_industries') === null || empty(Session::get('company_industries'))) {
             return redirect()->route('company_profile_part1');
+        }else{
+            $nameIndustries = Session::get('company_name');
+            if (is_null($nameIndustries) || empty($nameIndustries) || $nameIndustries === 'string') {
+                return redirect()->route('company_profile_part2');
+            }
         }
         return $next($request);
     }

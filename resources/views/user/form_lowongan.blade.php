@@ -1,4 +1,14 @@
-@include('user/header')
+@include('user/header_start')
+<!-- Select ====================================================================================== -->
+<!-- choices css -->
+<link href="{{ asset('assets/libs/choices.js/public/assets/styles/choices.min.css') }}" rel="stylesheet" type="text/css" />
+
+<!-- color picker css -->
+<link rel="stylesheet" href="{{ asset('assets/libs/@simonwep/pickr/themes/classic.min.css') }}" /> <!-- 'classic' theme -->
+<link rel="stylesheet" href="{{ asset('assets/libs/@simonwep/pickr/themes/monolith.min.css') }}" /> <!-- 'monolith' theme -->
+<link rel="stylesheet" href="{{ asset('assets/libs/@simonwep/pickr/themes/nano.min.css') }}" /> <!-- 'nano' theme -->
+
+@include('user/header_end')
 <div class="page-content" style="background-color:#F4F7FE !important;">
     <div class="container-fluid">
 
@@ -147,16 +157,16 @@
                             </div>
                             <div class="col-xl-8 col-md-8">
                                 <div class="text-center">
-                                <style>
-                                    iframe{
-                                        border-top:15px solid #000;
-                                        border-right:15px solid #000;
-                                        border-left:15px solid #000;
-                                        border-bottom:15px solid #000;
-                                        border-radius:15px;
-                                    }
-                                </style>
-                                <iframe width="340" height="600" style="" src="http://127.0.0.1:8000/" frameborder="0" allowfullscreen></iframe>
+                                    <style>
+                                        iframe {
+                                            border-top: 15px solid #000;
+                                            border-right: 15px solid #000;
+                                            border-left: 15px solid #000;
+                                            border-bottom: 15px solid #000;
+                                            border-radius: 15px;
+                                        }
+                                    </style>
+                                    <iframe width="340" height="600" style="" src="http://127.0.0.1:8000/" frameborder="0" allowfullscreen></iframe>
 
                                 </div>
                             </div>
@@ -234,7 +244,7 @@
         if (selectedProvinsi in cities) {
             console.log("Mengisi kota/kabupaten untuk provinsi:", selectedProvinsi); // Debugging
             const kotaKabupaten = cities[selectedProvinsi];
-             
+
             kotaKabupaten.forEach(function(kota) {
                 const option = document.createElement("option");
                 option.value = kota;
@@ -247,3 +257,12 @@
     }
 </Script>
 @include('user/footer')
+<!-- Select ============================================================================ -->
+<!-- choices js -->
+<script src="{{ asset('assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
+
+<!-- choices js -->
+<script src="{{ asset('assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
+</body>
+
+</html>

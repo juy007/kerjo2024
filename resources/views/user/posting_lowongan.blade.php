@@ -1,4 +1,5 @@
-@include('user/header')
+@include('user/header_start')
+@include('user/header_end')
     <div class="page-content" style="background-color:#F4F7FE !important;">
         <div class="container-fluid">
 
@@ -131,4 +132,7 @@
     <!-- End Page-content -->
 
  @include('user/footer')
+ </body>
+
+                </html>
  

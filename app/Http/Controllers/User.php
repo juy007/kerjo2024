@@ -15,7 +15,10 @@ class User extends Controller
 
     public function form_lowongan()
     {
-        return view('user.form_lowongan');
+        $token = Session::get('api_token');
+        $responseProvinces = Http::withToken($token)->get('https://api.carikerjo.id/provinces');
+        $provinces = $responseProvinces->json('data');
+        return view('user.form_lowongan', compact('provinces'));
     }
 
     public function posting_lowongan()
@@ -25,7 +28,6 @@ class User extends Controller
 
     public function detail_lowongan()
     {
-        //return view('user.detail_lowongan');
         return view('user.detail_lowongan');
     }
 

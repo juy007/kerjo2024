@@ -138,6 +138,7 @@
 <!-- End Page-content -->
 
 @include('user/footer')
+
 </body>
 
 </html>

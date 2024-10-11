@@ -382,12 +382,21 @@ class Account extends Controller
             $linkToken = $response->json()['data'];
 
             // Buat URL reset password
-            $url = $linkToken;
+            $parsed_url = parse_url($linkToken);
+            $query = $parsed_url['query'];
+
+            // Parse query menjadi array
+            parse_str($query, $params);
+
+            // Ambil token dari parameter
+            $token = $params['token'];
+            $url = "http://127.0.0.1:8000/passwordReset/" . $token;
+            //$url = $linkToken;
 
             // Kirim email dengan link reset password
-            // Mail::to($request->email)->send(new ResetPasswordMail($url));
+             Mail::to($request->email)->send(new ResetPasswordMail($url));
 
-            return back()->with('status', 'Reset link sent to your email.');
+            return back()->with('status', 'Reset link sent to your email.   token = ' . $url);
         }
 
         return back()->with(['email' => 'Failed to send reset link.']);
@@ -424,23 +433,28 @@ class Account extends Controller
     public function input()
     {
         $provinces = [
-            'Kalimantan Selatan',
-            'Kalimantan Timur',
-            'Kalimantan Utara',
-            'Sulawesi Utara',
-            'Sulawesi Tengah',
-            'Sulawesi Selatan',
-            'Sulawesi Tenggara',
-            'Gorontalo',
-            'Sulawesi Barat',
-            'Maluku',
-            'Maluku Utara',
-            'Papua',
-            'Papua Barat',
-            'Papua Selatan',
-            'Papua Tengah',
-            'Papua Pegunungan',
-            'Papua Barat Daya'
+            'Bandung',
+            'Bandung Barat',
+            'Banjar',
+            'Bekasi',
+            'Bogor',
+            'Ciamis',
+            'Cianjur',
+            'Cimahi',
+            'Cirebon',
+            'Depok',
+            'Garut',
+            'Indramayu',
+            'Karawang',
+            'Kuningan',
+            'Majalengka',
+            'Pangandaran',
+            'Purwakarta',
+            'Subang',
+            'Sukabumi',
+            'Sumedang',
+            'Tasikmalaya',
+
         ];
 
         // Siapkan token API
@@ -448,8 +462,9 @@ class Account extends Controller
 
         // Looping untuk mengirim tiap provinsi satu per satu
         foreach ($provinces as $province) {
-            $response = Http::withToken($token)->post('https://api.carikerjo.id/provinces', [
+            $response = Http::withToken($token)->post('https://api.carikerjo.id/regencies', [
                 'name' => $province,
+                 'provinceId' => '66f9a35f505d4f332f944ef1'
             ]);
 
             if (!$response->successful()) {

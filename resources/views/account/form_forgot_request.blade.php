@@ -1,4 +1,5 @@
-@include('account/header')
+@include('account/header_start')
+@include('account/header_end')
 
 <div class="page-content" style="padding-bottom: 15%;">
     <div class="container-fluid">
@@ -44,6 +45,7 @@
                                     @endif
 
                                     <button type="submit" class="btn btn-primary w-100 waves-effect waves-light">Kirim Tautan Reset</button>
+                                    <br><br><a href="{{ route('login') }}">Kembali ke halaman login</a>
                                 </form>
 
                             </div>
@@ -57,4 +59,5 @@
     </div> <!-- container-fluid -->
 </div>
 <!-- End Page-content -->
-@include('account/footer')
+@include('account/footer_start')
+@include('account/footer_end')

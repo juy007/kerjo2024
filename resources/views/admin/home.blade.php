@@ -1,4 +1,5 @@
-@include('admin/header')
+@include('admin/header_start')
+@include('admin/header_end')
 <div class="page-content">
     <div class="container-fluid">
 
@@ -966,4 +967,5 @@
     </div>
     <!-- container-fluid -->
 </div>
-@include('admin/footer')
+@include('admin/footer_start')
+@include('admin/footer_end')

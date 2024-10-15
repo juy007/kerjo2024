@@ -13,7 +13,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18">job statuses</h4>
+                    <h4 class="mb-sm-0 font-size-18">industries</h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
@@ -36,19 +36,19 @@
                             </div>
                             <div class="col-sm-8">
                                 <div class="text-sm-end">
-                                    <button class="btn btn-primary waves-effect waves-light me-2" data-bs-toggle="modal" data-bs-target="#formTambah">Tambah Job Statuses</button>
+                                    <button class="btn btn-primary waves-effect waves-light me-2" data-bs-toggle="modal" data-bs-target="#formTambah">Tambah Industries</button>
                                     <div id="formTambah" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">
                                         <div class="modal-dialog">
-                                            <form class="modal-content" method="POST" action="{{ route('admin.job-statuses.store') }}">
+                                            <form class="modal-content" method="POST" action="{{ route('admin.industries.store') }}">
                                                 @csrf
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="myModalLabel">Tambah Job Statuses</h5>
+                                                    <h5 class="modal-title" id="myModalLabel">Tambah Industries</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="mb-4">
-                                                        <label class="form-label" for="job statuses"></label>
-                                                        <input class="form-control" type="text" id="job statuses" name="job statuses" placeholder="Job Statuses">
+                                                        <label class="form-label" for="Industries"></label>
+                                                        <input class="form-control" type="text" id="industries" name="industries" placeholder="Industries">
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -76,29 +76,29 @@
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Nama Job Status</th>
+                                            <th>Nama Industries</th>
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach($jobStatuses['data'] as $jobStatus)
+                                        @foreach($industries['data'] as $industrie)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $jobStatus['name'] }}</td>
+                                            <td>{{ $industrie['name'] }}</td>
                                             <td>
-                                                <a href="#" class="btn btn-soft-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#formUpdate{{ $jobStatus['_id'] }}"><i data-feather="edit"></i> Edit</a>
-                                                <div id="formUpdate{{ $jobStatus['_id'] }}" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">
+                                                <a href="#" class="btn btn-soft-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#formUpdate{{ $industrie['_id'] }}"><i data-feather="edit"></i> Edit</a>
+                                                <div id="formUpdate{{ $industrie['_id'] }}" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">
                                                     <div class="modal-dialog">
-                                                        <form class="modal-content" method="POST" action="{{ route('admin.job-statuses.update', $jobStatus['_id']) }}">
+                                                        <form class="modal-content" method="POST" action="{{ route('admin.industries.update', $industrie['_id']) }}">
                                                             @csrf
                                                             @method('PUT')
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title" id="myModalLabel">Update job statuses</h5>
+                                                                <h5 class="modal-title" id="myModalLabel">Update industries</h5>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
                                                                 <div class="mb-4">
-                                                                    <label class="form-label" for=" job statuses"></label>
-                                                                    <input class="form-control" type="text" id="job statuses" name="job statuses" value="{{ $jobStatus['name'] }}" placeholder="job statuses">
+                                                                    <label class="form-label" for=" industries"></label>
+                                                                    <input class="form-control" type="text" id="industries" name="industries" value="{{ $industrie['name'] }}" placeholder="industries">
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
@@ -108,7 +108,7 @@
                                                         </form><!-- /.modal-content -->
                                                     </div>
                                                 </div><!-- end col-->
-                                                <form action="{{ route('admin.job-statuses.destroy', $jobStatus['_id']) }}" method="POST" style="display:inline-block;">
+                                                <form action="{{ route('admin.industries.destroy', $industrie['_id']) }}" method="POST" style="display:inline-block;">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-soft-danger btn-sm waves-effect waves-light"><i data-feather="trash-2"></i> Delete</button>

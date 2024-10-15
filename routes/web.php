@@ -24,16 +24,37 @@ Route::get('/', function () {
 });
 */
 
-Route::get('/-admin-', [Admin::class, 'index'])->name('admin_login');
+Route::get('/adminkerjo', [Admin::class, 'index'])->name('admin_login');
 Route::post('/login-validation', [Admin::class, 'login_validation'])->name('login_validation');
-Route::get('/admin-dashboard', [Admin::class, 'dashboard'])->name('admin_dashboard');
+
+Route::middleware('admin.token')->group(function () {
+    Route::get('/admin-dashboard', [Admin::class, 'dashboard'])->name('admin_dashboard');
+
+    // Job Statuses
+    Route::get('/admin/job-statuses', [Admin::class, 'jobStatusesIndex'])->name('admin.job-statuses.index');
+    Route::post('/admin/job-statuses', [Admin::class, 'jobStatusesStore'])->name('admin.job-statuses.store');
+    Route::put('/admin/job-statuses/{id}', [Admin::class, 'jobStatusesUpdate'])->name('admin.job-statuses.update');
+    Route::delete('/admin/job-statuses/{id}', [Admin::class, 'jobStatusesDestroy'])->name('admin.job-statuses.destroy');
+
+    //provinces
+    Route::get('/provinces', [Admin::class, 'provinceIndex'])->name('admin.provinces.index');
+    Route::post('/provinces-post', [Admin::class, 'provinceStore'])->name('admin.provinces.store');
+    Route::get('/provinces/{id}', [Admin::class, 'provinceShow'])->name('admin.provinces.show');
+    Route::put('/provinces/{id}', [Admin::class, 'provinceUpdate'])->name('admin.provinces.update');
+    Route::delete('/provinces/{id}', [Admin::class, 'provinceDestroy'])->name('admin.provinces.destroy');
+
+    //industries
+    Route::get('/industries', [Admin::class, 'industryIndex'])->name('admin.industries.index');
+    Route::post('/industries', [Admin::class, 'industryStore'])->name('admin.industries.store');
+    Route::get('/industries/{id}', [Admin::class, 'industryShow'])->name('admin.industries.show');
+    Route::put('/industries/{id}', [Admin::class, 'industryUpdate'])->name('admin.industries.update');
+    Route::delete('/industries/{id}', [Admin::class, 'industryDestroy'])->name('admin.industries.destroy');
+
+    Route::post('/adminlogout', [Admin::class, 'logout'])->name('admin_logout');
+});
 Route::get('/ok', [Admin::class, 'ok'])->name('ok');
 
-// Job Statuses
-Route::get('/admin/job-statuses', [Admin::class, 'jobStatusesIndex'])->name('admin.job-statuses.index');
-Route::post('/admin/job-statuses', [Admin::class, 'jobStatusesStore'])->name('admin.job-statuses.store');
-Route::put('/admin/job-statuses/{id}', [Admin::class, 'jobStatusesUpdate'])->name('admin.job-statuses.update');
-Route::delete('/admin/job-statuses/{id}', [Admin::class, 'jobStatusesDestroy'])->name('admin.job-statuses.destroy');
+
 
 // Job Levels
 Route::get('/admin/job-levels', [Admin::class, 'jobLevelsIndex'])->name('admin.job-levels.index');
@@ -47,11 +68,7 @@ Route::post('/admin/job-types', [Admin::class, 'jobTypesStore'])->name('admin.jo
 Route::put('/admin/job-types/{id}', [Admin::class, 'jobTypesUpdate'])->name('admin.job-types.update');
 Route::delete('/admin/job-types/{id}', [Admin::class, 'jobTypesDestroy'])->name('admin.job-types.destroy');
 
-Route::get('/provinces', [Admin::class, 'provinceIndex'])->name('admin.provinces.index');
-Route::post('/provinces', [Admin::class, 'provinceStore'])->name('admin.provinces.store');
-Route::get('/provinces/{id}', [Admin::class, 'provinceShow'])->name('admin.provinces.show');
-Route::put('/provinces/{id}', [Admin::class, 'provinceUpdate'])->name('admin.provinces.update');
-Route::delete('/provinces/{id}', [Admin::class, 'provinceDestroy'])->name('admin.provinces.destroy');
+
 
 // Regencies
 Route::get('/regencies', [Admin::class, 'regencyIndex'])->name('admin.regencies.index');
@@ -60,14 +77,7 @@ Route::get('/regencies/{id}', [Admin::class, 'regencyShow'])->name('admin.regenc
 Route::put('/regencies/{id}', [Admin::class, 'regencyUpdate'])->name('admin.regencies.update');
 Route::delete('/regencies/{id}', [Admin::class, 'regencyDestroy'])->name('admin.regencies.destroy');
 
-//industries
-Route::get('/industries', [Admin::class, 'industryIndex'])->name('admin.industries.index');
-Route::post('/industries', [Admin::class, 'industryStore'])->name('admin.industries.store');
-Route::get('/industries/{id}', [Admin::class, 'industryShow'])->name('admin.industries.show');
-Route::put('/industries/{id}', [Admin::class, 'industryUpdate'])->name('admin.industries.update');
-Route::delete('/industries/{id}', [Admin::class, 'industryDestroy'])->name('admin.industries.destroy');
 
-Route::post('/adminlogout', [Admin::class, 'logout'])->name('admin_logout');
 
 // Login & Register User
 Route::get('/', [Account::class, 'index'])->name('login');
@@ -101,26 +111,25 @@ Route::middleware('auth.token')->group(function () {
 
     Route::get('/proxy-image/logo/{path}', function ($path) {
         $url = "https://api.carikerjo.id/upload/logo/" . $path;
-        
+
         // Gunakan Guzzle HTTP Client untuk mengambil gambar dari URL asli
         $client = new \GuzzleHttp\Client();
         $response = $client->get($url);
-    
+
         return response($response->getBody(), 200)
             ->header('Content-Type', $response->getHeader('Content-Type')[0]);
     });
-    
+
     Route::get('/proxy-image/gallery/{path}', function ($path) {
         $url = "https://api.carikerjo.id/upload/gallery/" . $path;
-        
+
         // Gunakan Guzzle HTTP Client untuk mengambil gambar dari URL asli
         $client = new \GuzzleHttp\Client();
         $response = $client->get($url);
-    
+
         return response($response->getBody(), 200)
             ->header('Content-Type', $response->getHeader('Content-Type')[0]);
     });
 });
 
 Route::get('/input', [Account::class, 'input'])->name('input');
-

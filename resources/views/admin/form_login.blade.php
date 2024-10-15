@@ -44,7 +44,7 @@
                                     <form class="mt-4 pt-2" method="POST" action="{{ route('login_validation') }}">
                                         @csrf
                                         <div class="form-floating form-floating-custom mb-4">
-                                            <input type="text" class="form-control" id="input-username" name="email" value="admin@admin.com" placeholder="Enter User Name">
+                                            <input type="text" class="form-control" id="input-username" name="email" value="runbil@carikerjo.id" placeholder="Enter User Name">
                                             <label for="input-username">Username</label> <!-- Placeholder ditambahkan -->
                                             <div class="form-floating-icon">
                                                 <i data-feather="users"></i>
@@ -52,7 +52,7 @@
                                         </div>
 
                                         <div class="form-floating form-floating-custom mb-4 auth-pass-inputgroup">
-                                            <input type="password" class="form-control pe-5" id="password-input" name="password" placeholder="Enter Password">
+                                            <input type="password" class="form-control pe-5" id="password-input" name="password" value="AVERus04^^69" placeholder="Enter Password">
 
                                             <button type="button" class="btn btn-link position-absolute h-100 end-0 top-0" id="password-addon">
                                                 <i class="mdi mdi-eye-outline font-size-18 text-muted"></i>

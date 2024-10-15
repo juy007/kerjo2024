@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Session;
 use App\Mail\OtpMail;
 use App\Mail\ResetPasswordMail;
 use Illuminate\Support\Carbon;
-//use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\URL;
 
 class Admin extends Controller
 {
@@ -26,42 +26,29 @@ class Admin extends Controller
 
     public function login_validation(Request $request)
     {
-
-        // Validasi data yang masuk
-        $credentials = $request->validate([
+        $request->validate([
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
-        // Coba autentikasi pengguna berdasarkan kredensial yang diberikan
-        if (Auth::guard('web')->attempt($credentials)) {
-            // Jika login berhasil
-            $request->session()->regenerate();
-            return redirect()->intended('/dashboard')->with('success', 'Login berhasil!'); // Ganti dengan rute yang sesuai
-        }
-
-        // Jika login gagal, kirim pesan error
-        return back()->with('error', 'Email atau password salah');
-
-
-        /*
         $response = Http::post('https://api.carikerjo.id/auth/login', [
-            'email' => $request->input('email'),
-            'password' => $request->input('password'),
+            'email' => $request->email,
+            'password' => $request->password,
         ]);
 
-        // Periksa status kode respons
         if ($response->successful()) {
-            // Jika login berhasil
             $data = $response->json();
-            return response()->json($data);
-        }
 
-        // Jika login gagal, kirim pesan error
-        return response()->json([
-            'error' => 'Unauthorized'
-        ], $response->status()); // Mengembalikan status kode yang sesuai
-        */
+            Session::put('api_token_admin',  $data['data']);
+            $token = Session::get('api_token_admin');
+            
+            if ($request->remember) {
+                // Simpan token ke cookie
+                return redirect()->route('admin_dashboard')->withCookie(cookie('api_token_admin', $token, 60 * 24 * 30)); // 30 hari
+            }
+            return redirect()->route('admin_dashboard');
+        }
+        return redirect()->route('admin_login')->with('notifLogin', 'Please check your email and password and try again.');
     }
 
     public function dashboard()
@@ -79,14 +66,11 @@ class Admin extends Controller
         return redirect()->route('admin_login');
     }
 
-    public function ok()
-    {
-        return view('admin.job-statuses',);
-    }
+ 
     public function jobStatusesIndex()
     {
         // Ambil token dari session (atau sumber lain yang relevan)
-        $token = session('api_token');
+        $token = session('api_token_admin');
 
         // Kirim GET request ke API dengan menyertakan token
         $response = Http::withToken($token)->get('https://api.carikerjo.id/job-statuses');
@@ -107,7 +91,7 @@ class Admin extends Controller
         ]);
 
         // Ambil token dari session
-        $token = session('api_token');
+        $token = session('api_token_admin');
 
         // Ubah nama 'job' menjadi 'name' sesuai dengan yang diminta API
         $data = [
@@ -132,7 +116,7 @@ class Admin extends Controller
         ]);
 
         // Ambil token dari session
-        $token = session('api_token');
+        $token = session('api_token_admin');
 
         // Ubah nama 'job' menjadi 'name' sesuai dengan yang diminta API
         $data = [
@@ -143,7 +127,7 @@ class Admin extends Controller
         $response = Http::withToken($token)->put("https://api.carikerjo.id/job-statuses/{$id}", $data);
 
         if ($response->successful()) {
-            return redirect()->route('admin.job-statuses.index')->with('success', 'Job Status berhasil diperbarui');
+            return redirect()->route('admin.job-statuses.index')->with('success', 'Job Status berhasil diupdate');
         }
 
         return redirect()->back()->with('error', 'Gagal memperbarui Job Status');
@@ -153,7 +137,7 @@ class Admin extends Controller
     public function jobStatusesDestroy($id)
     {
         // Ambil token dari session (atau dari sumber lain yang relevan)
-        $token = session('api_token');
+        $token = session('api_token_admin');
 
         // Kirim DELETE request ke API dengan menyertakan token
         $response = Http::withToken($token)->delete("https://api.carikerjo.id/job-statuses/{$id}");
@@ -169,7 +153,7 @@ class Admin extends Controller
 
     public function jobLevelsIndex()
     {
-        $token = session('api_token'); // Ambil token dari session
+        $token = session('api_token_admin'); // Ambil token dari session
         $response = Http::withToken($token)->get('https://api.carikerjo.id/job-levels');
 
         if ($response->successful()) {
@@ -187,7 +171,7 @@ class Admin extends Controller
             'job' => 'required|string|max:255', // Validasi untuk field 'job'
         ]);
 
-        $token = session('api_token'); // Ambil token dari session
+        $token = session('api_token_admin'); // Ambil token dari session
 
         // Kirim request POST ke API dengan memetakan 'job' ke 'name'
         $response = Http::withToken($token)->post('https://api.carikerjo.id/job-levels', [
@@ -208,7 +192,7 @@ class Admin extends Controller
             'job' => 'required|string|max:255', // Validasi untuk field 'job'
         ]);
 
-        $token = session('api_token'); // Ambil token dari session
+        $token = session('api_token_admin'); // Ambil token dari session
 
         // Kirim request PUT ke API dengan memetakan 'job' ke 'name'
         $response = Http::withToken($token)->put("https://api.carikerjo.id/job-levels/{$id}", [
@@ -216,7 +200,7 @@ class Admin extends Controller
         ]);
 
         if ($response->successful()) {
-            return redirect()->route('admin.job-levels.index')->with('success', 'Job Level berhasil diperbarui');
+            return redirect()->route('admin.job-levels.index')->with('success', 'Job Level berhasil diupdate');
         }
 
         return redirect()->back()->with('error', 'Gagal memperbarui Job Level');
@@ -225,7 +209,7 @@ class Admin extends Controller
 
     public function jobLevelsDestroy($id)
     {
-        $token = session('api_token'); // Ambil token dari session
+        $token = session('api_token_admin'); // Ambil token dari session
         $response = Http::withToken($token)->delete("https://api.carikerjo.id/job-levels/{$id}");
 
         if ($response->successful()) {
@@ -240,7 +224,7 @@ class Admin extends Controller
 
     public function jobTypesIndex()
     {
-        $token = session('api_token'); // Ambil token dari session
+        $token = session('api_token_admin'); // Ambil token dari session
         $response = Http::withToken($token)->get('https://api.carikerjo.id/job-types');
 
         if ($response->successful()) {
@@ -258,7 +242,7 @@ class Admin extends Controller
             'job' => 'required|string|max:255', // Validasi untuk field 'job'
         ]);
 
-        $token = session('api_token'); // Ambil token dari session
+        $token = session('api_token_admin'); // Ambil token dari session
 
         // Kirim request POST ke API dengan memetakan 'job' ke 'name'
         $response = Http::withToken($token)->post('https://api.carikerjo.id/job-types', [
@@ -279,7 +263,7 @@ class Admin extends Controller
             'job' => 'required|string|max:255', // Validasi untuk field 'job'
         ]);
 
-        $token = session('api_token'); // Ambil token dari session
+        $token = session('api_token_admin'); // Ambil token dari session
 
         // Kirim request PUT ke API dengan memetakan 'job' ke 'name'
         $response = Http::withToken($token)->put("https://api.carikerjo.id/job-types/{$id}", [
@@ -287,7 +271,7 @@ class Admin extends Controller
         ]);
 
         if ($response->successful()) {
-            return redirect()->route('admin.job-types.index')->with('success', 'Job Type berhasil diperbarui');
+            return redirect()->route('admin.job-types.index')->with('success', 'Job Type berhasil diupdate');
         }
 
         return redirect()->back()->with('error', 'Gagal memperbarui Job Type');
@@ -296,7 +280,7 @@ class Admin extends Controller
 
     public function jobTypesDestroy($id)
     {
-        $token = session('api_token'); // Ambil token dari session
+        $token = session('api_token_admin'); // Ambil token dari session
         $response = Http::withToken($token)->delete("https://api.carikerjo.id/job-types/{$id}");
 
         if ($response->successful()) {
@@ -309,10 +293,11 @@ class Admin extends Controller
     //==========================================Province
     public function provinceIndex()
     {
-        $response = Http::get('https://api.carikerjo.id/provinces');
+        $token = Session::get('api_token_admin');
+        $response = Http::withToken($token)->get('https://api.carikerjo.id/provinces');
         if ($response->successful()) {
             $provinces = $response->json();
-            return view('admin.provinces.index', compact('provinces'));
+            return view('admin.provinces', compact('provinces'));
         }
 
         return redirect()->back()->with('error', 'Gagal mengambil data Provinces');
@@ -324,7 +309,7 @@ class Admin extends Controller
             'provinces' => 'required|string|max:255',
         ]);
 
-        $token = session('api_token');
+        $token = session('api_token_admin');
         $response = Http::withToken($token)->post('https://api.carikerjo.id/provinces', [
             'name' => $validated['provinces'],
         ]);
@@ -338,10 +323,11 @@ class Admin extends Controller
 
     public function provinceShow($id)
     {
-        $response = Http::get("https://api.carikerjo.id/provinces/{$id}");
+        $token = session('api_token_admin');
+        $response = Http::withToken($token)->delete("https://api.carikerjo.id/provinces/{$id}");
         if ($response->successful()) {
             $province = $response->json();
-            return view('admin.provinces.show', compact('province'));
+            return view('admin.regencies', compact('province'));
         }
 
         return redirect()->back()->with('error', 'Gagal mengambil data Province');
@@ -353,13 +339,13 @@ class Admin extends Controller
             'provinces' => 'required|string|max:255',
         ]);
 
-        $token = session('api_token');
+        $token = session('api_token_admin');
         $response = Http::withToken($token)->put("https://api.carikerjo.id/provinces/{$id}", [
             'name' => $validated['provinces'],
         ]);
 
         if ($response->successful()) {
-            return redirect()->route('admin.provinces.index')->with('success', 'Province berhasil diperbarui');
+            return redirect()->route('admin.provinces.index')->with('success', 'Province berhasil diupdate');
         }
 
         return redirect()->back()->with('error', 'Gagal memperbarui Province');
@@ -367,7 +353,7 @@ class Admin extends Controller
 
     public function provinceDestroy($id)
     {
-        $token = session('api_token');
+        $token = session('api_token_admin');
         $response = Http::withToken($token)->delete("https://api.carikerjo.id/provinces/{$id}");
 
         if ($response->successful()) {
@@ -394,7 +380,7 @@ class Admin extends Controller
             'provinces' => 'required|string|max:255',
         ]);
 
-        $token = session('api_token');
+        $token = session('api_token_admin');
         $response = Http::withToken($token)->post('https://api.carikerjo.id/regencies', [
             'name' => $validated['provinces'],
         ]);
@@ -423,13 +409,13 @@ class Admin extends Controller
             'provinces' => 'required|string|max:255',
         ]);
 
-        $token = session('api_token');
+        $token = session('api_token_admin');
         $response = Http::withToken($token)->put("https://api.carikerjo.id/regencies/{$id}", [
             'name' => $validated['provinces'],
         ]);
 
         if ($response->successful()) {
-            return redirect()->route('admin.regencies.index')->with('success', 'Regency berhasil diperbarui');
+            return redirect()->route('admin.regencies.index')->with('success', 'Regency berhasil diupdate');
         }
 
         return redirect()->back()->with('error', 'Gagal memperbarui Regency');
@@ -437,7 +423,7 @@ class Admin extends Controller
 
     public function regencyDestroy($id)
     {
-        $token = session('api_token');
+        $token = session('api_token_admin');
         $response = Http::withToken($token)->delete("https://api.carikerjo.id/regencies/{$id}");
 
         if ($response->successful()) {
@@ -449,10 +435,11 @@ class Admin extends Controller
 
     public function industryIndex()
     {
-        $response = Http::get('https://api.carikerjo.id/industries');
+        $token = session('api_token_admin');
+        $response = Http::withToken($token)->get('https://api.carikerjo.id/industries');
         if ($response->successful()) {
             $industries = $response->json();
-            return view('admin.industries.index', compact('industries'));
+            return view('admin.industries', compact('industries'));
         }
 
         return redirect()->back()->with('error', 'Gagal mengambil data Industries');
@@ -464,7 +451,7 @@ class Admin extends Controller
             'industries' => 'required|string|max:255',
         ]);
 
-        $token = session('api_token');
+        $token = session('api_token_admin');
         $response = Http::withToken($token)->post('https://api.carikerjo.id/industries', [
             'name' => $validated['industries'],
         ]);
@@ -493,13 +480,13 @@ class Admin extends Controller
             'industries' => 'required|string|max:255',
         ]);
 
-        $token = session('api_token');
+        $token = session('api_token_admin');
         $response = Http::withToken($token)->put("https://api.carikerjo.id/industries/{$id}", [
             'name' => $validated['industries'],
         ]);
 
         if ($response->successful()) {
-            return redirect()->route('admin.industries.index')->with('success', 'Industry berhasil diperbarui');
+            return redirect()->route('admin.industries.index')->with('success', 'Industry berhasil diupdate');
         }
 
         return redirect()->back()->with('error', 'Gagal memperbarui Industry');
@@ -507,7 +494,7 @@ class Admin extends Controller
 
     public function industryDestroy($id)
     {
-        $token = session('api_token');
+        $token = session('api_token_admin');
         $response = Http::withToken($token)->delete("https://api.carikerjo.id/industries/{$id}");
 
         if ($response->successful()) {

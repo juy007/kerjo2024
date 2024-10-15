@@ -433,38 +433,31 @@ class Account extends Controller
     public function input()
     {
         $provinces = [
-            'Bandung',
-            'Bandung Barat',
-            'Banjar',
-            'Bekasi',
-            'Bogor',
-            'Ciamis',
-            'Cianjur',
-            'Cimahi',
-            'Cirebon',
-            'Depok',
-            'Garut',
-            'Indramayu',
-            'Karawang',
-            'Kuningan',
-            'Majalengka',
-            'Pangandaran',
-            'Purwakarta',
-            'Subang',
-            'Sukabumi',
-            'Sumedang',
-            'Tasikmalaya',
-
+            'Nusa Tenggara Barat',
+            'Nusa Tenggara Timur',
+            'Papua',
+            'Papua Barat',
+            'Papua Pegunungan',
+            'Papua Selatan',
+            'Papua Tengah',
+            'Riau',
+            'Sulawesi Barat',
+            'Sulawesi Selatan',
+            'Sulawesi Tengah',
+            'Sulawesi Tenggara',
+            'Sulawesi Utara',
+            'Sumatra Barat',
+            'Sumatra Selatan',
+            'Sumatra Utara',
         ];
 
         // Siapkan token API
-        $token = session('api_token'); // Atau hardcode jika token sudah diketahui
+        $token = session('api_token_admin'); // Atau hardcode jika token sudah diketahui
 
         // Looping untuk mengirim tiap provinsi satu per satu
         foreach ($provinces as $province) {
-            $response = Http::withToken($token)->post('https://api.carikerjo.id/regencies', [
+            $response = Http::withToken($token)->post('https://api.carikerjo.id/provinces', [
                 'name' => $province,
-                 'provinceId' => '66f9a35f505d4f332f944ef1'
             ]);
 
             if (!$response->successful()) {

@@ -47,8 +47,8 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="mb-4">
-                                                        <label class="form-label" for="job statuses"></label>
-                                                        <input class="form-control" type="text" id="job statuses" name="job statuses" placeholder="Job Statuses">
+                                                        <label class="form-label" for="job-statuses"></label>
+                                                        <input class="form-control" type="text" id="job-statuses" name="job-statuses" placeholder="Job Statuses">
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -98,7 +98,7 @@
                                                             <div class="modal-body">
                                                                 <div class="mb-4">
                                                                     <label class="form-label" for=" job statuses"></label>
-                                                                    <input class="form-control" type="text" id="job statuses" name="job statuses" value="{{ $jobStatus['name'] }}" placeholder="job statuses">
+                                                                    <input class="form-control" type="text" id="job-statuses" name="job-statuses" value="{{ $jobStatus['name'] }}" placeholder="job statuses">
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">

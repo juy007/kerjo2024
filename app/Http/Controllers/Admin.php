@@ -87,7 +87,7 @@ class Admin extends Controller
     {
         // Validasi input
         $validated = $request->validate([
-            'job' => 'required|string|max:255',
+            'job-statuses' => 'required|string|max:255',
         ]);
 
         // Ambil token dari session
@@ -95,7 +95,7 @@ class Admin extends Controller
 
         // Ubah nama 'job' menjadi 'name' sesuai dengan yang diminta API
         $data = [
-            'name' => $validated['job'], // Map field job_statuses ke name
+            'name' => $validated['job-statuses'], // Map field job_statuses ke name
         ];
 
         // Kirim request POST ke API dengan token
@@ -112,7 +112,7 @@ class Admin extends Controller
     {
         // Validasi input
         $validated = $request->validate([
-            'job' => 'required|string|max:255',
+            'job-statuses' => 'required|string|max:255',
         ]);
 
         // Ambil token dari session
@@ -120,7 +120,7 @@ class Admin extends Controller
 
         // Ubah nama 'job' menjadi 'name' sesuai dengan yang diminta API
         $data = [
-            'name' => $validated['job'], // Map field job_statuses ke name
+            'name' => $validated['job-statuses'], // Map field job_statuses ke name
         ];
 
         // Kirim request PUT ke API dengan token

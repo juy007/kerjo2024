@@ -97,7 +97,7 @@
                                                             </div>
                                                             <div class="modal-body">
                                                                 <div class="mb-4">
-                                                                    <label class="form-label" for=" industries"></label>
+                                                                    <label class="form-label" for="industries"></label>
                                                                     <input class="form-control" type="text" id="industries" name="industries" value="{{ $industrie['name'] }}" placeholder="industries">
                                                                 </div>
                                                             </div>

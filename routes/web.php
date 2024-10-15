@@ -36,6 +36,12 @@ Route::middleware('admin.token')->group(function () {
     Route::put('/admin/job-statuses/{id}', [Admin::class, 'jobStatusesUpdate'])->name('admin.job-statuses.update');
     Route::delete('/admin/job-statuses/{id}', [Admin::class, 'jobStatusesDestroy'])->name('admin.job-statuses.destroy');
 
+    // Job Levels
+    Route::get('/admin/job-levels', [Admin::class, 'jobLevelsIndex'])->name('admin.job-levels.index');
+    Route::post('/admin/job-levels', [Admin::class, 'jobLevelsStore'])->name('admin.job-levels.store');
+    Route::put('/admin/job-levels/{id}', [Admin::class, 'jobLevelsUpdate'])->name('admin.job-levels.update');
+    Route::delete('/admin/job-levels/{id}', [Admin::class, 'jobLevelsDestroy'])->name('admin.job-levels.destroy');
+
     //provinces
     Route::get('/provinces', [Admin::class, 'provinceIndex'])->name('admin.provinces.index');
     Route::post('/provinces-post', [Admin::class, 'provinceStore'])->name('admin.provinces.store');
@@ -56,11 +62,7 @@ Route::get('/ok', [Admin::class, 'ok'])->name('ok');
 
 
 
-// Job Levels
-Route::get('/admin/job-levels', [Admin::class, 'jobLevelsIndex'])->name('admin.job-levels.index');
-Route::post('/admin/job-levels', [Admin::class, 'jobLevelsStore'])->name('admin.job-levels.store');
-Route::put('/admin/job-levels/{id}', [Admin::class, 'jobLevelsUpdate'])->name('admin.job-levels.update');
-Route::delete('/admin/job-levels/{id}', [Admin::class, 'jobLevelsDestroy'])->name('admin.job-levels.destroy');
+
 
 // Job Types
 Route::get('/admin/job-types', [Admin::class, 'jobTypesIndex'])->name('admin.job-types.index');

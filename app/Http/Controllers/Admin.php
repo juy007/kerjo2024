@@ -168,14 +168,14 @@ class Admin extends Controller
     {
         // Validasi input dengan nama field 'job'
         $validated = $request->validate([
-            'job' => 'required|string|max:255', // Validasi untuk field 'job'
+            'job-levels' => 'required|string|max:255', // Validasi untuk field 'job'
         ]);
 
         $token = session('api_token_admin'); // Ambil token dari session
 
         // Kirim request POST ke API dengan memetakan 'job' ke 'name'
         $response = Http::withToken($token)->post('https://api.carikerjo.id/job-levels', [
-            'name' => $validated['job'], // Memetakan 'job' ke 'name'
+            'name' => $validated['job-levels'], // Memetakan 'job' ke 'name'
         ]);
 
         if ($response->successful()) {
@@ -189,14 +189,14 @@ class Admin extends Controller
     {
         // Validasi input dengan nama field 'job'
         $validated = $request->validate([
-            'job' => 'required|string|max:255', // Validasi untuk field 'job'
+            'job-levels' => 'required|string|max:255', // Validasi untuk field 'job'
         ]);
 
         $token = session('api_token_admin'); // Ambil token dari session
 
         // Kirim request PUT ke API dengan memetakan 'job' ke 'name'
         $response = Http::withToken($token)->put("https://api.carikerjo.id/job-levels/{$id}", [
-            'name' => $validated['job'], // Memetakan 'job' ke 'name'
+            'name' => $validated['job-levels'], // Memetakan 'job' ke 'name'
         ]);
 
         if ($response->successful()) {

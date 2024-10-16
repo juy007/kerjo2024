@@ -41,7 +41,7 @@ class Admin extends Controller
 
             Session::put('api_token_admin',  $data['data']);
             $token = Session::get('api_token_admin');
-            
+
             if ($request->remember) {
                 // Simpan token ke cookie
                 return redirect()->route('admin_dashboard')->withCookie(cookie('api_token_admin', $token, 60 * 24 * 30)); // 30 hari
@@ -66,7 +66,7 @@ class Admin extends Controller
         return redirect()->route('admin_login');
     }
 
- 
+
     public function jobStatusesIndex()
     {
         // Ambil token dari session (atau sumber lain yang relevan)
@@ -362,6 +362,8 @@ class Admin extends Controller
 
         return redirect()->back()->with('error', 'Gagal menghapus Province');
     }
+
+
     //==========================================Regencies
     public function regencyIndex()
     {
@@ -433,6 +435,122 @@ class Admin extends Controller
         return redirect()->back()->with('error', 'Gagal menghapus Regency');
     }
 
+    //==========================================Category
+    public function categoryIndex()
+    {
+        $token = Session::get('api_token_admin');
+        $response = Http::withToken($token)->get('https://api.carikerjo.id/categories');
+        if ($response->successful()) {
+            $categories = $response->json();
+            return view('admin.categories', compact('categories'));
+        }
+
+        return redirect()->back()->with('error', 'Gagal mengambil data Categories');
+    }
+
+    public function categoryStore(Request $request)
+    {
+        $validated = $request->validate([
+            'categories' => 'required|string|max:255',
+        ]);
+
+        $token = session('api_token_admin');
+        $response = Http::withToken($token)->post('https://api.carikerjo.id/categories', [
+            'name' => $validated['categories'],
+        ]);
+
+        if ($response->successful()) {
+            return redirect()->route('admin.categories.index')->with('success', 'Category berhasil ditambahkan');
+        }
+
+        return redirect()->back()->with('error', 'Gagal menambahkan Category');
+    }
+
+    public function categoryUpdate(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'categories' => 'required|string|max:255',
+        ]);
+
+        $token = session('api_token_admin');
+        $response = Http::withToken($token)->put("https://api.carikerjo.id/categories/{$id}", [
+            'name' => $validated['categories'],
+        ]);
+
+        if ($response->successful()) {
+            return redirect()->route('admin.categories.index')->with('success', 'Category berhasil diupdate');
+        }
+
+        return redirect()->back()->with('error', 'Gagal memperbarui Category');
+    }
+
+    public function categoryDestroy($id)
+    {
+        $token = session('api_token_admin');
+        $response = Http::withToken($token)->delete("https://api.carikerjo.id/categories/{$id}");
+
+        if ($response->successful()) {
+            return redirect()->route('admin.categories.index')->with('success', 'Category berhasil dihapus');
+        }
+
+        return redirect()->route('admin.categories.index')->with('error', 'Gagal menghapus Category');
+    }
+
+    //==========================================subCategory
+    public function subCategoryIndex($id)
+    {
+        $token = session('api_token_admin');
+        $response = Http::withToken($token)->get("https://api.carikerjo.id/categories/{$id}");
+        if ($response->successful()) {
+            $categories = $response->json();
+            return view('admin.sub_categories', compact('categories', 'id'));
+        }
+
+        return redirect()->back()->with('error', 'Gagal mengambil data Category');
+    }
+
+    public function subCategoryStore(Request $request)
+    {
+        $validated = $request->validate([
+            'sub-categories' => 'required|string|max:255',
+            'id' => 'required|string|max:255',
+        ]);
+
+        $token = session('api_token_admin');
+        $response = Http::withToken($token)->post('https://api.carikerjo.id/sub-categories', [
+            'name' => $validated['sub-categories'],
+            'categoryId' => $validated['id'],
+        ]);
+
+        if ($response->successful()) {
+            return redirect()->route('admin.sub-categories.show', $validated['id'])->with('success', 'Category berhasil ditambahkan');
+        }
+
+        return redirect()->route('admin.sub-categories.show', $validated['id'])->with('error', 'Gagal menambahkan Category');
+    }
+
+    public function subCategoryUpdate(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'sub-categories' => 'required|string|max:255',
+            'id' => 'required|string',  // Pastikan ID kategori ada
+        ]);
+
+        $token = session('api_token_admin');
+        $response = Http::withToken($token)->put("https://api.carikerjo.id/sub-categories/{$id}", [
+            'name' => $validated['sub-categories'],
+            'categoryId' => $validated['id'],
+        ]);
+
+        if ($response->successful()) {
+            return redirect()->route('admin.sub-categories.show', $validated['id'])->with('success', 'Subcategory berhasil diupdate');
+        }
+
+        return redirect()->route('admin.sub-categories.show', $validated['id'])->with('error', 'Gagal memperbarui Subcategory');
+    }
+
+
+    //==========================================Industries
     public function industryIndex()
     {
         $token = session('api_token_admin');

@@ -72,7 +72,7 @@
             <!-- ========== Left Sidebar Start ========== -->
             <div class="vertical-menu">
 
-                <div data-simplebar class="h-100">
+                <div data-simplebar class="h-100 simplebar-scrollable-y">
 
                     <!--- Sidemenu -->
                     <div id="sidebar-menu">
@@ -83,16 +83,13 @@
                             <li>
                                 <a href="{{ route('admin_dashboard') }}">
                                     <i data-feather="home"></i>
-                                    <span class="badge rounded-pill bg-success-subtle text-success float-end">9+</span>
                                     <span data-key="t-dashboard">Dashboard</span>
                                 </a>
                             </li>
-
-                            <li class="menu-title" data-key="t-apps">Apps</li>
                 
                             <li>
                                 <a href="javascript: void(0);" class="has-arrow">
-                                    <i data-feather="shopping-cart"></i>
+                                    <i data-feather="crosshair"></i>
                                     <span data-key="t-ecommerce">Job</span>
                                 </a>
                                 <ul class="sub-menu" aria-expanded="false">
@@ -104,13 +101,19 @@
 
                             <li>
                                 <a href="{{ route('admin.industries.index') }}">
-                                    <i data-feather="message-square"></i>
+                                    <i class="mdi mdi-robot-industrial"></i>
                                     <span data-key="t-chat">Industries</span>
                                 </a>
                             </li>
                             <li>
+                                <a href="{{ route('admin.categories.index') }}">
+                                    <i class="mdi mdi-apps"></i>
+                                    <span data-key="t-chat">Categories</span>
+                                </a>
+                            </li>
+                            <li>
                                 <a href="{{ route('admin.provinces.index') }}">
-                                    <i data-feather="message-square"></i>
+                                    <i class="mdi mdi-map-marker-radius"></i>
                                     <span data-key="t-chat">Provinces</span>
                                 </a>
                             </li>

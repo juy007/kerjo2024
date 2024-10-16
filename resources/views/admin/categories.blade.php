@@ -13,12 +13,11 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18">Job Levels</h4>
+                    <h4 class="mb-sm-0 font-size-18">Categories</h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">Job</a></li>
-                            <li class="breadcrumb-item active">Job Levels</li>
+
                         </ol>
                     </div>
 
@@ -37,19 +36,19 @@
                             </div>
                             <div class="col-sm-8">
                                 <div class="text-sm-end">
-                                    <button class="btn btn-primary waves-effect waves-light me-2" data-bs-toggle="modal" data-bs-target="#formTambah">Tambah Job Levels</button>
+                                    <button class="btn btn-primary waves-effect waves-light me-2" data-bs-toggle="modal" data-bs-target="#formTambah">Tambah Categories</button>
                                     <div id="formTambah" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">
                                         <div class="modal-dialog">
-                                            <form class="modal-content" method="POST" action="{{ route('admin.job-levels.store') }}">
+                                            <form class="modal-content" method="POST" action="{{ route('admin.categories.store') }}">
                                                 @csrf
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="myModalLabel">Tambah Job Levels</h5>
+                                                    <h5 class="modal-title" id="myModalLabel">Tambah Categories</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="mb-4">
-                                                        <label class="form-label" for="job-levels"></label>
-                                                        <input class="form-control" type="text" id="job-levels" name="job-levels" placeholder="Job Levels">
+                                                        <label class="form-label" for="categories"></label>
+                                                        <input class="form-control" type="text" id="categories" name="categories" placeholder="Categories">
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -77,29 +76,30 @@
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Nama Job Levels</th>
+                                            <th>Nama Categories</th>
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach($jobLevels['data'] as $jobLevel)
+                                        @foreach($categories['data'] as $category)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $jobLevel['name'] }}</td>
+                                            <td>{{ $category['name'] }}</td>
                                             <td>
-                                                <a href="#" class="btn btn-soft-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#formUpdate{{ $jobLevel['_id'] }}"><i data-feather="edit"></i> Edit</a>
-                                                <div id="formUpdate{{ $jobLevel['_id'] }}" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">
+                                                <a href="{{ route('admin.sub-categories.show',  $category['_id']) }}" class="btn btn-soft-success btn-sm waves-effect waves-light"><i data-feather="eye"></i> Sub Categories</a>
+                                                <a href="#" class="btn btn-soft-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#formUpdate{{ $category['_id'] }}"><i data-feather="edit"></i> Edit</a>
+                                                <div id="formUpdate{{ $category['_id'] }}" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">
                                                     <div class="modal-dialog">
-                                                        <form class="modal-content" method="POST" action="{{ route('admin.job-levels.update', $jobLevel['_id']) }}">
+                                                        <form class="modal-content" method="POST" action="{{ route('admin.categories.update', $category['_id']) }}">
                                                             @csrf
                                                             @method('PUT')
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title" id="myModalLabel">Update Job Levels</h5>
+                                                                <h5 class="modal-title" id="myModalLabel">Update Categories</h5>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
                                                                 <div class="mb-4">
-                                                                    <label class="form-label" for="job-levels"></label>
-                                                                    <input class="form-control" type="text" id="job-levels" name="job-levels" value="{{ $jobLevel['name'] }}" placeholder="job statuses">
+                                                                    <label class="form-label" for="Categories"></label>
+                                                                    <input class="form-control" type="text" id="categories" name="categories" value="{{ $category['name'] }}" placeholder="Categories">
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
@@ -109,7 +109,7 @@
                                                         </form><!-- /.modal-content -->
                                                     </div>
                                                 </div><!-- end col-->
-                                                <form action="{{ route('admin.job-levels.destroy', $jobLevel['_id']) }}" method="POST" style="display:inline-block;">
+                                                <form action="{{ route('admin.categories.destroy', $category['_id']) }}" method="POST" style="display:inline-block;">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-soft-danger btn-sm waves-effect waves-light"><i data-feather="trash-2"></i> Delete</button>

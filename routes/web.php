@@ -42,6 +42,24 @@ Route::middleware('admin.token')->group(function () {
     Route::put('/admin/job-levels/{id}', [Admin::class, 'jobLevelsUpdate'])->name('admin.job-levels.update');
     Route::delete('/admin/job-levels/{id}', [Admin::class, 'jobLevelsDestroy'])->name('admin.job-levels.destroy');
 
+    // Job Types
+    Route::get('/admin/job-types', [Admin::class, 'jobTypesIndex'])->name('admin.job-types.index');
+    Route::post('/admin/job-types', [Admin::class, 'jobTypesStore'])->name('admin.job-types.store');
+    Route::put('/admin/job-types/{id}', [Admin::class, 'jobTypesUpdate'])->name('admin.job-types.update');
+    Route::delete('/admin/job-types/{id}', [Admin::class, 'jobTypesDestroy'])->name('admin.job-types.destroy');
+
+    //categories
+    Route::get('/categories', [Admin::class, 'categoryIndex'])->name('admin.categories.index');
+    Route::post('/categories', [Admin::class, 'categoryStore'])->name('admin.categories.store');
+    Route::put('/categories/{id}', [Admin::class, 'categoryUpdate'])->name('admin.categories.update');
+    Route::delete('/categories/{id}', [Admin::class, 'categoryDestroy'])->name('admin.categories.destroy');
+
+    //Sub Categories
+    Route::get('/sub-categories/{id}', [Admin::class, 'subCategoryIndex'])->name('admin.sub-categories.show');
+    Route::post('/sub-categories', [Admin::class, 'subCategoryStore'])->name('admin.sub-categories.store');  // Menyimpan subcategory baru
+    Route::put('/sub-categories/{id}', [Admin::class, 'subCategoryUpdate'])->name('admin.sub-categories.update');  // Update subcategory
+    Route::delete('/sub-categories/{id}', [Admin::class, 'subCategoryDestroy'])->name('admin.sub-categories.destroy');  // Hapus subcategory
+
     //provinces
     Route::get('/provinces', [Admin::class, 'provinceIndex'])->name('admin.provinces.index');
     Route::post('/provinces-post', [Admin::class, 'provinceStore'])->name('admin.provinces.store');
@@ -59,18 +77,6 @@ Route::middleware('admin.token')->group(function () {
     Route::post('/adminlogout', [Admin::class, 'logout'])->name('admin_logout');
 });
 Route::get('/ok', [Admin::class, 'ok'])->name('ok');
-
-
-
-
-
-// Job Types
-Route::get('/admin/job-types', [Admin::class, 'jobTypesIndex'])->name('admin.job-types.index');
-Route::post('/admin/job-types', [Admin::class, 'jobTypesStore'])->name('admin.job-types.store');
-Route::put('/admin/job-types/{id}', [Admin::class, 'jobTypesUpdate'])->name('admin.job-types.update');
-Route::delete('/admin/job-types/{id}', [Admin::class, 'jobTypesDestroy'])->name('admin.job-types.destroy');
-
-
 
 // Regencies
 Route::get('/regencies', [Admin::class, 'regencyIndex'])->name('admin.regencies.index');

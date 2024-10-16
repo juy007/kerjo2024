@@ -134,7 +134,7 @@
                     </div>
                     <div class="form-check sidebar-setting">
                         <input class="form-check-input" type="radio" name="sidebar-size"
-                            id="sidebar-size-small" value="small" onchange="document.body.setAttribute('data-sidebar-size', 'sm')">
+                            id="sidebar-size-small" value="small" checked onchange="document.body.setAttribute('data-sidebar-size', 'sm')">
                         <label class="form-check-label" for="sidebar-size-small">Small (Icon View)</label>
                     </div>
 
@@ -188,7 +188,7 @@
         <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
         <script src="{{ asset('assets/libs/feather-icons/feather.min.js') }}"></script>
         <!-- pace js -->
-        <script src="{{ asset('assets/libs/pace-js/pace.min.js') }}"></script>
+        <script src="{{ asset('assets/libs/pace-js/pace.min.jss') }}"></script>
 
         
         <!-- apexcharts -->

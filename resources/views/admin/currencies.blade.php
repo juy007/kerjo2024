@@ -13,7 +13,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18"><i class="mdi mdi-map-marker-radius"></i> Provinces</h4>
+                    <h4 class="mb-sm-0 font-size-18"><i class="mdi mdi-currency-usd-circle"></i> Currencies</h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
@@ -36,19 +36,19 @@
                             </div>
                             <div class="col-sm-8">
                                 <div class="text-sm-end">
-                                    <button class="btn btn-primary waves-effect waves-light me-2" data-bs-toggle="modal" data-bs-target="#formTambah">Tambah Provinces</button>
+                                    <button class="btn btn-primary waves-effect waves-light me-2" data-bs-toggle="modal" data-bs-target="#formTambah">Tambah Currencies</button>
                                     <div id="formTambah" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">
                                         <div class="modal-dialog">
-                                            <form class="modal-content" method="POST" action="{{ route('admin.provinces.store') }}">
+                                            <form class="modal-content" method="POST" action="{{ route('admin.currencies.store') }}">
                                                 @csrf
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="myModalLabel">Tambah Provinces</h5>
+                                                    <h5 class="modal-title" id="myModalLabel">Tambah Currencies</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="mb-4">
-                                                        <label class="form-label" for=" Provinces"></label>
-                                                        <input class="form-control" type="text" id="provinces" name="provinces" placeholder="Provinces">
+                                                        <label class="form-label" for="currencies"></label>
+                                                        <input class="form-control" type="text" id="currencies" name="currencies" placeholder="Currencies">
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -76,30 +76,29 @@
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Nama Provinces</th>
+                                            <th>Nama Currencies</th>
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach($provinces['data'] as $province)
+                                        @foreach($currencies['data'] as $currencies)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $province['name'] }}</td>
+                                            <td>{{ $currencies['name'] }}</td>
                                             <td>
-                                                <a href="#" class="btn btn-soft-success btn-sm waves-effect waves-light"><i data-feather="eye"></i> Regencies</a>
-                                                <a href="#" class="btn btn-soft-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#formUpdate{{ $province['_id'] }}"><i data-feather="edit"></i> Edit</a>
-                                                <div id="formUpdate{{ $province['_id'] }}" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">
+                                                <a href="#" class="btn btn-soft-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#formUpdate{{ $currencies['_id'] }}"><i data-feather="edit"></i> Edit</a>
+                                                <div id="formUpdate{{ $currencies['_id'] }}" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">
                                                     <div class="modal-dialog">
-                                                        <form class="modal-content" method="POST" action="{{ route('admin.provinces.update', $province['_id']) }}">
+                                                        <form class="modal-content" method="POST" action="{{ route('admin.currencies.update', $currencies['_id']) }}">
                                                             @csrf
                                                             @method('PUT')
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title" id="myModalLabel">Update Provinces</h5>
+                                                                <h5 class="modal-title" id="myModalLabel">Update Currencies</h5>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
                                                                 <div class="mb-4">
-                                                                    <label class="form-label" for="Provinces"></label>
-                                                                    <input class="form-control" type="text" id="provinces" name="provinces" value="{{ $province['name'] }}" placeholder="Provinces">
+                                                                    <label class="form-label" for="currencies"></label>
+                                                                    <input class="form-control" type="text" id="currencies" name="currencies" value="{{ $currencies['name'] }}" placeholder="Currencies">
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
@@ -109,7 +108,7 @@
                                                         </form><!-- /.modal-content -->
                                                     </div>
                                                 </div><!-- end col-->
-                                                <form action="{{ route('admin.provinces.destroy', $province['_id']) }}" method="POST" style="display:inline-block;">
+                                                <form action="{{ route('admin.currencies.destroy', $currencies['_id']) }}" method="POST" style="display:inline-block;">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-soft-danger btn-sm waves-effect waves-light"><i data-feather="trash-2"></i> Delete</button>

@@ -37,15 +37,16 @@
                         </button>
 
                         <!-- App Search-->
-                       
                     </div>
 
                     <div class="d-flex">
 
                         <div class="dropdown d-inline-block">
+                            <!--
                             <button type="button" class="btn header-item right-bar-toggle me-2">
                                 <i data-feather="settings" class="icon-lg"></i>
                             </button>
+                            -->
                         </div>
 
                         <div class="dropdown d-inline-block">
@@ -58,10 +59,15 @@
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <!-- item-->
+                                 <!--
                                 <a class="dropdown-item" href="apps-contacts-profile.html"><i class="mdi mdi-face-profile font-size-16 align-middle me-1"></i> Profile</a>
                                 <a class="dropdown-item" href="auth-lock-screen.html"><i class="mdi mdi-lock font-size-16 align-middle me-1"></i> Lock screen</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="auth-logout.html"><i class="mdi mdi-logout font-size-16 align-middle me-1"></i> Logout</a>
+                                -->
+                                <form action="{{ route('admin_logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item"><i class="mdi mdi-logout font-size-16 align-middle me-1"></i> Logout</button>
+                                </form>
                             </div>
                         </div>
 
@@ -86,7 +92,12 @@
                                     <span data-key="t-dashboard">Dashboard</span>
                                 </a>
                             </li>
-                
+                            <li>
+                                <a href="{{ route('admin.companies.index') }}">
+                                    <i class="mdi mdi-fridge-industrial"></i>
+                                    <span data-key="t-chat">Company</span>
+                                </a>
+                            </li>
                             <li>
                                 <a href="javascript: void(0);" class="has-arrow">
                                     <i data-feather="crosshair"></i>
@@ -115,6 +126,12 @@
                                 <a href="{{ route('admin.provinces.index') }}">
                                     <i class="mdi mdi-map-marker-radius"></i>
                                     <span data-key="t-chat">Provinces</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.currencies.index') }}">
+                                    <i class="mdi mdi-currency-usd-circle"></i>
+                                    <span data-key="t-chat">Currencies</span>
                                 </a>
                             </li>
                         </ul>

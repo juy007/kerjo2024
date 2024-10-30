@@ -43,12 +43,12 @@
                                         </div>
                                         <form class="mt-4 pt-2" method="POST" action="{{ route('userValidation') }}" enctype="multipart/form-data"> @csrf
                                         <div class="mb-2">
-                                                <input type="email" class="form-control" name="email" id="input-username" placeholder="Enter User Name">
+                                                <input type="email" class="form-control" name="email" id="input-username" value="carikerjo@carikerjo.id" placeholder="Enter User Name">
                                                 <label for="input-username"></label>
                                             </div>
 
                                             <div class="mb-2 auth-pass-inputgroup">
-                                                <input type="password" class="form-control pe-5" name="password" id="password-input" placeholder="Enter Password">
+                                                <input type="password" class="form-control pe-5" name="password" id="password-input" value="AVERus04^^69" placeholder="Enter Password">
                                                 <label for="input-password"></label>
                                             </div>    
                                         <!--<div class="form-floating form-floating-custom mb-4">

@@ -30,6 +30,13 @@ Route::post('/login-validation', [Admin::class, 'login_validation'])->name('logi
 Route::middleware('admin.token')->group(function () {
     Route::get('/admin-dashboard', [Admin::class, 'dashboard'])->name('admin_dashboard');
 
+    //companies
+    Route::get('/companies', [Admin::class, 'companyIndex'])->name('admin.companies.index');
+    Route::post('/companies', [Admin::class, 'companyStore'])->name('admin.companies.store');
+    Route::get('/companies/{id}', [Admin::class, 'companyShow'])->name('admin.companies.show');
+    Route::put('/companies/{id}', [Admin::class, 'companyUpdate'])->name('admin.companies.update');
+    Route::delete('/companies/{id}', [Admin::class, 'companyDestroy'])->name('admin.companies.destroy');
+
     // Job Statuses
     Route::get('/admin/job-statuses', [Admin::class, 'jobStatusesIndex'])->name('admin.job-statuses.index');
     Route::post('/admin/job-statuses', [Admin::class, 'jobStatusesStore'])->name('admin.job-statuses.store');
@@ -74,6 +81,23 @@ Route::middleware('admin.token')->group(function () {
     Route::put('/industries/{id}', [Admin::class, 'industryUpdate'])->name('admin.industries.update');
     Route::delete('/industries/{id}', [Admin::class, 'industryDestroy'])->name('admin.industries.destroy');
 
+    //currencies
+    Route::get('/currencies', [Admin::class, 'currenciesIndex'])->name('admin.currencies.index');
+    Route::post('/currencies', [Admin::class, 'currenciesStore'])->name('admin.currencies.store');
+    Route::put('/currencies/{id}', [Admin::class, 'currenciesUpdate'])->name('admin.currencies.update');
+    Route::delete('/currencies/{id}', [Admin::class, 'currenciesDestroy'])->name('admin.currencies.destroy');
+
+    Route::get('/proxy-image/logo/{path}', function ($path) {
+        $url = "https://api.carikerjo.id/upload/logo/" . $path;
+
+        // Gunakan Guzzle HTTP Client untuk mengambil gambar dari URL asli
+        $client = new \GuzzleHttp\Client();
+        $response = $client->get($url);
+
+        return response($response->getBody(), 200)
+            ->header('Content-Type', $response->getHeader('Content-Type')[0]);
+    });
+
     Route::post('/adminlogout', [Admin::class, 'logout'])->name('admin_logout');
 });
 Route::get('/ok', [Admin::class, 'ok'])->name('ok');
@@ -106,9 +130,13 @@ Route::post('password/reset', [Account::class, 'reset'])->name('password.update'
 Route::middleware('auth.token')->group(function () {
     Route::middleware(['check.company.industries'])->group(function () {
         Route::get('/dashboard', [User::class, 'index'])->name('dashboard_user');
-        Route::get('/tambah-lowongan', [User::class, 'form_lowongan'])->name('form_lowongan');
-        Route::get('/posting-lowongan', [User::class, 'posting_lowongan'])->name('posting_lowongan');
-        Route::get('/detail-lowongan', [User::class, 'detail_lowongan'])->name('detail_lowongan');
+
+        Route::get('/job', [User::class, 'indexJob'])->name('index_job');
+        Route::get('/tambah-job', [User::class, 'formJob'])->name('form_job');
+        Route::post('/save-job', [User::class, 'saveJob'])->name('save_job');
+        Route::delete('/delete-job/{id}', [User::class, 'deleteJob'])->name('delete_job');
+        Route::get('/detail-job', [User::class, 'detail_Job'])->name('detail_job');
+
         Route::get('/detail-pelamar', [User::class, 'detail_pelamar'])->name('detail_pelamar');
     });
     Route::get('/part-1', [Account::class, 'company_profile_part1'])->name('company_profile_part1');
@@ -140,4 +168,6 @@ Route::middleware('auth.token')->group(function () {
     });
 });
 
+// Login & Register User
+Route::get('/db', [Account::class, 'dbNotFound'])->name('db_error');
 Route::get('/input', [Account::class, 'input'])->name('input');

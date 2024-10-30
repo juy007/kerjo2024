@@ -88,7 +88,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $category['name'] }}</td>
                                             <td>
-                                                
+    
                                                 <a href="#" class="btn btn-soft-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#formUpdate{{ $category['_id'] }}"><i data-feather="edit"></i> Edit</a>
                                                 <div id="formUpdate{{ $category['_id'] }}" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">
                                                     <div class="modal-dialog">

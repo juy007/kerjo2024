@@ -13,7 +13,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18">Categories</h4>
+                    <h4 class="mb-sm-0 font-size-18"><i class="mdi mdi-apps"></i> Categories</h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
@@ -77,14 +77,16 @@
                                         <tr>
                                             <th>No</th>
                                             <th>Nama Categories</th>
+                                            <th>Jumlah Sub Categories</th>
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
                                         @foreach($categories['data'] as $category)
                                         <tr>
-                                            <td>{{ $loop->iteration }}</td>
+                                            <td align="center">{{ $loop->iteration }}</td>
                                             <td>{{ $category['name'] }}</td>
-                                            <td>
+                                            <td align="center">{{ count($category['subCategories']) }}</td>
+                                            <td align="center">
                                                 <a href="{{ route('admin.sub-categories.show',  $category['_id']) }}" class="btn btn-soft-success btn-sm waves-effect waves-light"><i data-feather="eye"></i> Sub Categories</a>
                                                 <a href="#" class="btn btn-soft-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#formUpdate{{ $category['_id'] }}"><i data-feather="edit"></i> Edit</a>
                                                 <div id="formUpdate{{ $category['_id'] }}" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">

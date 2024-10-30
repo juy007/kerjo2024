@@ -1,0 +1,171 @@
+@media (min-width: 446px) {
+    .screen {
+        width: 340px;
+        height: 650px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 0px 0px 50px 50px;
+        margin-left: auto;
+        margin-right: auto;
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        margin-top: 60px;
+        left: 49%; /* Posisikan di tengah secara horizontal */
+        transform: translateX(-50%);
+    }
+
+    .phonePreview {
+        max-width: 375px;
+        height: auto;
+        margin-top: 30px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 50px;
+        position: sticky; /* Mengatur elemen menjadi sticky */
+        top: 80px; /* Elemen akan menjadi sticky setelah di-scroll melewati 20px dari atas */
+        z-index: 1000; /* Agar elemen berada di atas elemen lainnya jika perlu */
+    }
+    .containerx {
+        padding: 20px;
+    }
+}
+
+@media (min-width: 767px) {
+    .phonePreview {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (max-width: 445px) {
+    .screen {
+        width: 65vw;
+        height: 60vh; /*110vh*/
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 0px 0px 50px 50px;
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        margin-top: 70px;
+        left: 52%;
+        transform: translate(-52%, 0%);
+    }
+
+    .phonePreview {
+        width: 300px;
+        height: auto;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 30px;
+        border-radius: 50px;
+        position: sticky; /* Mengatur elemen menjadi sticky */
+        top: 80px; /* Elemen akan menjadi sticky setelah di-scroll melewati 20px dari atas */
+        z-index: 1000; /* Agar elemen berada di atas elemen lainnya jika perlu */
+    }
+
+    .containerx {
+        padding: 0px;
+        width: 100%;
+    }
+}
+
+.job-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.job-header img {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    margin-right: 15px;
+}
+
+.job-header .job-title {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.job-header .job-company {
+    font-size: 10px;
+    color: #6c757d;
+}
+
+.job-header .job-posted {
+    font-size: 10px;
+    color: #6c757d;
+    margin-left: auto;
+}
+
+.job-details {
+    margin-bottom: 20px;
+}
+
+.job-details .row {
+    margin-bottom: 10px;
+}
+
+.job-details {
+    font-size: 13px;
+}
+
+.job-details .label {
+    font-weight: bold;
+}
+
+.job-description {
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.job-description .section-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.job-description p {
+    margin-bottom: 10px;
+}
+
+.job-description ul {
+    padding-left: 20px;
+}
+
+.job-description ul li {
+    margin-bottom: 5px;
+}
+
+.divider {
+    margin-top: 10px;
+    border-top: 1px solid #e0e0e0;
+}
+
+@media (min-width: 468px) {
+}
+
+.screen1 {
+    width: 340px;
+    height: 690px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 50px;
+
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    margin-top: 115px;
+    left: 50%;
+    transform: translate(-52%, 0%);
+}
+
+.phonePreview2 {
+    max-width: 375px;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    border-radius: 50px;
+}

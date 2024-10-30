@@ -31,50 +31,52 @@ class Account extends Controller
             'password' => 'required',
         ]);
 
-        $response = Http::post('https://api.carikerjo.id/auth/login', [
-            'email' => $request->email,
-            'password' => $request->password,
-        ]);
+        try {
+            $response = Http::post('https://api.carikerjo.id/auth/login', [
+                'email' => $request->email,
+                'password' => $request->password,
+            ]);
 
-        if ($response->successful()) {
-            $data = $response->json();
+            if ($response->successful()) {
+                $data = $response->json();
 
-            /*
-            if (isset($data['data']['_id'])) {
-            $otpResponse = Http::post('https://api.carikerjo.id/auth/requestOtp', ['userId' => $data['data']['_id'],]);
-            // Periksa respons OTP
-            if ($otpResponse->json()['statusCode'] == 201) {return redirect()->route('otp');}}
-            */
+                /*
+                if (isset($data['data']['_id'])) {
+                $otpResponse = Http::post('https://api.carikerjo.id/auth/requestOtp', ['userId' => $data['data']['_id'],]);
+                // Periksa respons OTP
+                if ($otpResponse->json()['statusCode'] == 201) {return redirect()->route('otp');}}
+                */
 
-            Session::put('api_token',  $data['data']);
-            $token = Session::get('api_token');
-            $response = Http::withToken($token)->get('https://api.carikerjo.id/auth/my-company-profile');
-            $profileData = $response->json();
+                Session::put('api_token',  $data['data']);
+                $token = Session::get('api_token');
+                $response = Http::withToken($token)->get('https://api.carikerjo.id/auth/my-company-profile');
+                $profileData = $response->json();
 
-            Session::put('user_id', $profileData['data']['_id']);
-            Session::put('company_id', $profileData['data']['company']['_id']);
-            Session::put('company_name', $profileData['data']['company']['name']);
-            Session::put('company_brand', $profileData['data']['company']['brand']);
-            Session::put('company_logo', $profileData['data']['company']['logo']);
-            Session::put('company_email', $profileData['data']['company']['email']);
-            Session::put('company_phone', $profileData['data']['company']['phoneNumber']);
-            Session::put('company_overview', $profileData['data']['company']['overview']);
-            Session::put('company_industries', $profileData['data']['company']['industries']);
-            Session::put('company_galleries', $profileData['data']['company']['galleries']);
-            Session::put('company_active', $profileData['data']['company']['active']);
-            Session::put('company_established', $profileData['data']['company']['established']);
-            Session::put('company_location', $profileData['data']['company']['location']);
+                Session::put('user_id', $profileData['data']['_id']);
+                Session::put('company_id', $profileData['data']['company']['_id']);
+                Session::put('company_name', $profileData['data']['company']['name']);
+                Session::put('company_brand', $profileData['data']['company']['brand']);
+                Session::put('company_logo', $profileData['data']['company']['logo']);
+                Session::put('company_email', $profileData['data']['company']['email']);
+                Session::put('company_phone', $profileData['data']['company']['phoneNumber']);
+                Session::put('company_overview', $profileData['data']['company']['overview']);
+                Session::put('company_industries', $profileData['data']['company']['industries']);
+                Session::put('company_galleries', $profileData['data']['company']['galleries']);
+                Session::put('company_active', $profileData['data']['company']['active']);
+                //Session::put('company_established', $profileData['data']['company']['established']);
+                Session::put('company_location', $profileData['data']['company']['location']);
 
 
-            if ($request->remember) {
-                // Simpan token ke cookie
-                return redirect()->route('dashboard_user')->withCookie(cookie('api_token', $token, 60 * 24 * 30)); // 30 hari
+                if ($request->remember) {
+                    return redirect()->route('dashboard_user')->withCookie(cookie('api_token', $token, 60 * 24 * 30)); // 30 hari
+                }
+                return redirect()->route('dashboard_user');
             }
-            return redirect()->route('dashboard_user');
+            return redirect()->route('login')->with('notifLogin', 'Please check your email and password and try again.');
+        } catch (\Exception $e) {
+            return redirect()->route('db_error');
         }
-        return redirect()->route('login')->with('notifLogin', 'Please check your email and password and try again.');
     }
-
 
     public function logout(Request $request)
     {
@@ -112,51 +114,54 @@ class Account extends Controller
             'name' => $validatedData['name'],
             'phoneNumber' => $validatedData['phone'],
         ];
+        try {
+            $response = Http::post('https://api.carikerjo.id/auth/register-company', $dataToSend);
+            if ($response->failed()) {
+                return back()->withInput()->with('notifRegister', "The registration has failed, please try again later.");
+            }
+            $responseData = $response->json();
 
-        $response = Http::post('https://api.carikerjo.id/auth/register-company', $dataToSend);
-        if ($response->failed()) {
-            return back()->withInput()->with('notifRegister', "The registration has failed, please try again later.");
+            if ($responseData['statusCode'] == '500') {
+                return back()->withInput()->with('notifRegister', "Email already used");
+            }
+
+            $login = Http::post('https://api.carikerjo.id/auth/login', ['email' => $validatedData['email'], 'password' => $validatedData['password'],]);
+            $dataLogin = $login->json();
+
+            Session::put('api_token',  $dataLogin['data']);
+            $token = Session::get('api_token');
+            $dataProfile = Http::withToken($token)->get('https://api.carikerjo.id/auth/my-company-profile');
+            $profileData = $dataProfile->json();
+
+            Session::put('user_id', $profileData['data']['_id']);
+            Session::put('company_id', $profileData['data']['company']['_id']);
+            Session::put('company_name', $profileData['data']['company']['name']);
+            Session::put('company_brand', $profileData['data']['company']['brand']);
+            Session::put('company_logo', $profileData['data']['company']['logo']);
+            Session::put('company_email', $profileData['data']['company']['email']);
+            Session::put('company_phone', $profileData['data']['company']['phoneNumber']);
+            Session::put('company_overview', $profileData['data']['company']['overview']);
+            Session::put('company_industries', $profileData['data']['company']['industries']);
+            Session::put('company_galleries', $profileData['data']['company']['galleries']);
+            Session::put('company_active', $profileData['data']['company']['active']);
+            Session::put('company_established', $profileData['data']['company']['established']);
+            Session::put('company_location', $profileData['data']['company']['location']);
+
+            // Generate OTP dan kirim ke API
+            /*
+            $otp = rand(100000, 999999);
+            Http::post('https://api.carikerjo.id/auth/verifyOtp', [
+                'userId' => $responseData['data']['_id'],
+                'otp' => $otp,
+            ]);
+            session(['otp' => $otp]);
+
+            return redirect()->route('otp');
+            */
+            return redirect()->route('company_profile_part1');
+        } catch (\Exception $e) {
+            return redirect()->route('db_error');
         }
-        $responseData = $response->json();
-
-        if ($responseData['statusCode'] == '500') {
-            return back()->withInput()->with('notifRegister', "Email already used");
-        }
-
-        $login = Http::post('https://api.carikerjo.id/auth/login', ['email' => $validatedData['email'], 'password' => $validatedData['password'],]);
-        $dataLogin = $login->json();
-
-        Session::put('api_token',  $dataLogin['data']);
-        $token = Session::get('api_token');
-        $dataProfile = Http::withToken($token)->get('https://api.carikerjo.id/auth/my-company-profile');
-        $profileData = $dataProfile->json();
-
-        Session::put('user_id', $profileData['data']['_id']);
-        Session::put('company_id', $profileData['data']['company']['_id']);
-        Session::put('company_name', $profileData['data']['company']['name']);
-        Session::put('company_brand', $profileData['data']['company']['brand']);
-        Session::put('company_logo', $profileData['data']['company']['logo']);
-        Session::put('company_email', $profileData['data']['company']['email']);
-        Session::put('company_phone', $profileData['data']['company']['phoneNumber']);
-        Session::put('company_overview', $profileData['data']['company']['overview']);
-        Session::put('company_industries', $profileData['data']['company']['industries']);
-        Session::put('company_galleries', $profileData['data']['company']['galleries']);
-        Session::put('company_active', $profileData['data']['company']['active']);
-        Session::put('company_established', $profileData['data']['company']['established']);
-        Session::put('company_location', $profileData['data']['company']['location']);
-
-        // Generate OTP dan kirim ke API
-        /*
-        $otp = rand(100000, 999999);
-        Http::post('https://api.carikerjo.id/auth/verifyOtp', [
-            'userId' => $responseData['data']['_id'],
-            'otp' => $otp,
-        ]);
-        session(['otp' => $otp]);
-
-        return redirect()->route('otp');
-        */
-        return redirect()->route('company_profile_part1');
     }
 
     public function company_profile_part1()
@@ -169,23 +174,24 @@ class Account extends Controller
                 return redirect()->route('company_profile_part2');
             }
         }
-        $token = Session::get('api_token');
-        $response = Http::withToken($token)->get('https://api.carikerjo.id/industries');
-        $industries = $response->json('data');
-        return view('user.form_company_profile_part1', compact('industries'));
+        try {
+            $token = Session::get('api_token');
+            $response = Http::withToken($token)->get('https://api.carikerjo.id/industries');
+            $industries = $response->json('data');
+            return view('user.form_company_profile_part1', compact('industries'));
+        } catch (\Exception $e) {
+            return redirect()->route('db_error');
+        }
     }
 
     public function submitCompany_profile_part1(Request $request)
     {
-        // Validasi data industri
         $request->validate([
             'industries' => 'required|array',
             //'industries.*' => 'string',
         ]);
-        //$industries = implode(',', $request->industries);
         session(['selected_industries' => $request->industries]);
 
-        // Redirect ke halaman form perusahaan
         return redirect()->route('company_profile_part2');
     }
 
@@ -199,12 +205,15 @@ class Account extends Controller
                 return redirect()->route('company_profile_part2');
             }
         }
+        try {
+            $token = Session::get('api_token');
+            $responseProvinces = Http::withToken($token)->get('https://api.carikerjo.id/provinces');
+            $provinces = $responseProvinces->json('data');
 
-        $token = Session::get('api_token');
-        $responseProvinces = Http::withToken($token)->get('https://api.carikerjo.id/provinces');
-        $provinces = $responseProvinces->json('data');
-
-        return view('user.form_company_profile_part2', compact('provinces'));
+            return view('user.form_company_profile_part2', compact('provinces'));
+        } catch (\Exception $e) {
+            return redirect()->route('db_error');
+        }
     }
 
     public function submitCompany_profile_part2(Request $request)
@@ -223,64 +232,60 @@ class Account extends Controller
 
         if ($request->hasFile('logo_perusahaan')) {
             $logo = $request->file('logo_perusahaan');
+            try {
+                $logoResponse = Http::withToken($token)
+                    ->attach('file', file_get_contents($logo), $logo->getClientOriginalName())
+                    ->post('https://api.carikerjo.id/medias/upload-logo');
 
-            // Upload logo
-            $logoResponse = Http::withToken($token)
-                ->attach('file', file_get_contents($logo), $logo->getClientOriginalName())
-                ->post('https://api.carikerjo.id/medias/upload-logo');
+                if (!$logoResponse->successful()) {
+                    return redirect()->back()->withErrors(['error' => 'Failed to upload logo.']);
+                }
 
-            // Cek respons upload logo
-            if (!$logoResponse->successful()) {
-                return redirect()->back()->withErrors(['error' => 'Failed to upload logo.']);
-            }
+                $logoUrl = $logoResponse->json('data.path');
+                $galleryUrls = [];
 
-            $logoUrl = $logoResponse->json('data.path');
-            $galleryUrls = [];
+                if ($request->hasFile('gallery')) {
+                    foreach ($request->file('gallery') as $galleryImage) {
+                        $galleryResponse = Http::withToken($token)
+                            ->attach('file', file_get_contents($galleryImage), $galleryImage->getClientOriginalName())
+                            ->post('https://api.carikerjo.id/medias/upload-gallery');
 
-            if ($request->hasFile('gallery')) {
-                foreach ($request->file('gallery') as $galleryImage) {
-                    // Upload setiap gambar galeri
-                    $galleryResponse = Http::withToken($token)
-                        ->attach('file', file_get_contents($galleryImage), $galleryImage->getClientOriginalName())
-                        ->post('https://api.carikerjo.id/medias/upload-gallery');
-
-                    // Cek respons upload galeri
-                    if ($galleryResponse->successful()) {
-                        $galleryUrls[] = $galleryResponse->json('data.path'); // Path gambar galeri
-                    } else {
-                        return redirect()->back()->withErrors(['error' => 'Failed to upload gallery images.']);
+                        if ($galleryResponse->successful()) {
+                            $galleryUrls[] = $galleryResponse->json('data.path'); // Path gambar galeri
+                        } else {
+                            return redirect()->back()->withErrors(['error' => 'Failed to upload gallery images.']);
+                        }
                     }
                 }
-            }
 
-            $industries = session('selected_industries');
+                $industries = session('selected_industries');
 
-            // Data yang akan dikirim ke API
-            $data = [
-                'name' => $validatedData['nama_perusahaan'],
-                'brand' => $validatedData['nama_brand'],
-                'overview' => $validatedData['tentang_perusahaan'],
-                'industries' => $industries,
-                'established' => $validatedData['tanggal_berdiri_perusahaan'],
-                'provinceId' => $validatedData['lokasi_perusahaan'],
-                'logo' => $logoUrl,
-                'galleries' => $galleryUrls, // Isi dengan URL galeri yang di-upload
-            ];
+                $data = [
+                    'name' => $validatedData['nama_perusahaan'],
+                    'brand' => $validatedData['nama_brand'],
+                    'overview' => $validatedData['tentang_perusahaan'],
+                    'industries' => $industries,
+                    'established' => $validatedData['tanggal_berdiri_perusahaan'],
+                    'provinceId' => $validatedData['lokasi_perusahaan'],
+                    'logo' => $logoUrl,
+                    'galleries' => $galleryUrls, // Isi dengan URL galeri yang di-upload
+                ];
 
-            // Kirim data ke API untuk memperbarui profil perusahaan
-            $response = Http::withToken($token)->put('https://api.carikerjo.id/auth/my-company-profile', $data);
+                $response = Http::withToken($token)->put('https://api.carikerjo.id/auth/my-company-profile', $data);
 
-            if ($response->successful()) {
-                Session::put('company_industries', $industries);
-                Session::put('name_industries', $validatedData['nama_perusahaan']);
-                return redirect()->route('dashboard_user')->with('success', 'Company profile updated successfully.');
-            } else {
-                echo $response->body();
-                //return redirect()->back()->withErrors(['error' => 'Failed to update company profile.']);
+                if ($response->successful()) {
+                    Session::put('company_industries', $industries);
+                    Session::put('name_industries', $validatedData['nama_perusahaan']);
+                    return redirect()->route('dashboard_user')->with('success', 'Company profile updated successfully.');
+                } else {
+                    //echo $response->body();
+                    return redirect()->back()->withErrors(['error' => 'Failed to update company profile.']);
+                }
+            } catch (\Exception $e) {
+                return redirect()->route('db_error');
             }
         }
     }
-
 
     public function otp()
     {
@@ -371,35 +376,32 @@ class Account extends Controller
     public function sendResetLinkEmail(Request $request)
     {
         $request->validate(['email' => 'required|email']);
+        try {
+            $response = Http::post('https://api.carikerjo.id/auth/forgetPassword', [
+                'email' => $request->email,
+            ]);
 
-        // Mengirim permintaan ke API eksternal untuk mengirim email reset password
-        $response = Http::post('https://api.carikerjo.id/auth/forgetPassword', [
-            'email' => $request->email,
-        ]);
+            if ($response->successful()) {
+                $linkToken = $response->json()['data'];
 
-        if ($response->successful()) {
-            // Ambil token dari response API
-            $linkToken = $response->json()['data'];
+                $parsed_url = parse_url($linkToken);
+                $query = $parsed_url['query'];
 
-            // Buat URL reset password
-            $parsed_url = parse_url($linkToken);
-            $query = $parsed_url['query'];
+                parse_str($query, $params);
 
-            // Parse query menjadi array
-            parse_str($query, $params);
+                $token = $params['token'];
+                $url = "http://127.0.0.1:8000/passwordReset/" . $token;
+                //$url = $linkToken;
 
-            // Ambil token dari parameter
-            $token = $params['token'];
-            $url = "http://127.0.0.1:8000/passwordReset/" . $token;
-            //$url = $linkToken;
+                Mail::to($request->email)->send(new ResetPasswordMail($url));
 
-            // Kirim email dengan link reset password
-             Mail::to($request->email)->send(new ResetPasswordMail($url));
+                return back()->with('status', 'Reset link sent to your email.   token = ' . $url);
+            }
 
-            return back()->with('status', 'Reset link sent to your email.   token = ' . $url);
+            return back()->with(['email' => 'Failed to send reset link.']);
+        } catch (\Exception $e) {
+            return redirect()->route('db_error');
         }
-
-        return back()->with(['email' => 'Failed to send reset link.']);
     }
 
     public function showResetForm(Request $request, $token)
@@ -407,7 +409,6 @@ class Account extends Controller
         return view('account.form_new_password', ['token' => $token, 'email' => $request->email]);
     }
 
-    // Proses update password baru
     public function reset(Request $request)
     {
         $request->validate([
@@ -415,21 +416,27 @@ class Account extends Controller
             'email' => 'required|email',
             'password' => 'required|string|confirmed|min:8',
         ]);
+        try {
+            $response = Http::post('https://api.carikerjo.id/auth/resetPassword', [
+                'email' => $request->email,
+                'password' => $request->password,
+                'token' => $request->token,
+            ]);
 
-        // Mengirim permintaan ke API eksternal untuk reset password
-        $response = Http::post('https://api.carikerjo.id/auth/resetPassword', [
-            'email' => $request->email,
-            'password' => $request->password,
-            'token' => $request->token,
-        ]);
+            if ($response->successful()) {
+                return redirect()->route('login')->with('status', 'Password has been reset successfully.');
+            }
 
-        if ($response->successful()) {
-            return redirect()->route('login')->with('status', 'Password has been reset successfully.');
+            return back()->withErrors(['email' => 'Failed to reset password.']);
+        } catch (\Exception $e) {
+            return redirect()->route('db_error');
         }
-
-        return back()->withErrors(['email' => 'Failed to reset password.']);
     }
 
+    public function dbNotFound()
+    {
+        return view('account.dbNotFound');
+    }
     public function input()
     {
         $provinces = [

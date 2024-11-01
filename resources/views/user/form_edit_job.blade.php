@@ -114,10 +114,10 @@
                                             <div class="row mb-3">
                                                 <label class="form-label" for="formrow-email-input1">Expired Date</label>
                                                 <div class="col-md-6">
-                                                    <input class="form-control" type="datetime-local" value="{{ $jobs['startDate'] }}" name="date_start" id="form-expired-start">
+                                                    <input class="form-control" type="date" value="{{ \Carbon\Carbon::parse($jobs['startDate'])->format('Y-m-d') }}" name="date_start" id="form-expired-start">
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <input class="form-control" type="date" value="" name="date_end" id="form-expired-end">
+                                                    <input class="form-control" type="date" value="{{ \Carbon\Carbon::parse($jobs['endDate'])->format('Y-m-d') }}" name="date_end" id="form-expired-end">
                                                 </div>
                                             </div>
                                             <div class="mb-3">

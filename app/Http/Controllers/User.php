@@ -249,9 +249,21 @@ class User extends Controller
         }
     }
 
-    public function detailJob()
+    public function detailJob($id)
     {
-        return view('user.detail_job');
+        $token = session('api_token');
+        try {
+            $response = Http::withToken($token)->get("https://api.carikerjo.id/jobs/{$id}");
+
+            if ($response->successful()) {
+                $jobs = $response->json();
+                return view('user.detail_job', compact('jobs'));
+            }
+
+            return view('user.api_error');
+        } catch (\Exception $e) {
+            return redirect()->route('db_error');
+        }
     }
 
     public function detail_pelamar()

@@ -137,7 +137,7 @@ Route::middleware('auth.token')->group(function () {
         Route::get('/edit-job/{id}', [User::class, 'editJob'])->name('edit_job');
         Route::put('/save-update-job/{id}', [User::class, 'saveUpdateJob'])->name('save_update_job');
         Route::delete('/delete-job/{id}', [User::class, 'deleteJob'])->name('delete_job');
-        Route::get('/detail-job', [User::class, 'detail_Job'])->name('detail_job');
+        Route::get('/detail-job/{id}', [User::class, 'detailJob'])->name('detail_job');
 
         Route::get('/detail-pelamar', [User::class, 'detail_pelamar'])->name('detail_pelamar');
     });

@@ -58,7 +58,7 @@
                                     <div class="d-flex">
                                         <div class="flex-1">
                                             <p class="text-muted mb-2">
-                                                <a href="{{ route('detail_job') }}">
+                                                <a href="{{ route('detail_job', $jobs['_id']) }}">
                                                     <h4 class="mb-sm-0 font-size-18">{{ $jobs['title'] }}</h4>
                                                 </a>
                                             </p>

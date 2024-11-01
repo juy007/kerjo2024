@@ -82,7 +82,7 @@
                                 <div>
                                     <ul class="list-inline float-sm-end mb-sm-0">
                                         <li class="list-inline-item">
-                                            <button class="btn btn-soft-primary"><i class="mdi mdi-pencil font-size-18"></i></button>
+                                            <a href="{{ route('edit_job', $jobs['_id']) }}" class="btn btn-soft-primary"><i class="mdi mdi-pencil font-size-18"></i></a>
                                         </li>
                                         <li class="list-inline-item">
                                             <form action="{{ route('delete_job', $jobs['_id']) }}" method="POST" style="display:inline-block;">

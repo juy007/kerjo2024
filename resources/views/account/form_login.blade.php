@@ -9,7 +9,7 @@
         <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
         <meta content="Themesbrand" name="author" />
         <!-- App favicon -->
-        <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
+        <link rel="shortcut icon" href="{{ asset('assets/images/logo/fav.png') }}">
 
         <!-- preloader css -->
         <link rel="stylesheet" href="{{ asset('assets/css/preloader.min.css') }}" type="text/css" />

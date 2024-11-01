@@ -134,6 +134,8 @@ Route::middleware('auth.token')->group(function () {
         Route::get('/job', [User::class, 'indexJob'])->name('index_job');
         Route::get('/tambah-job', [User::class, 'formJob'])->name('form_job');
         Route::post('/save-job', [User::class, 'saveJob'])->name('save_job');
+        Route::get('/edit-job/{id}', [User::class, 'editJob'])->name('edit_job');
+        Route::put('/save-update-job/{id}', [User::class, 'saveUpdateJob'])->name('save_update_job');
         Route::delete('/delete-job/{id}', [User::class, 'deleteJob'])->name('delete_job');
         Route::get('/detail-job', [User::class, 'detail_Job'])->name('detail_job');
 

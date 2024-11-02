@@ -173,3 +173,10 @@ Route::middleware('auth.token')->group(function () {
 // Login & Register User
 Route::get('/db', [Account::class, 'dbNotFound'])->name('db_error');
 Route::get('/input', [Account::class, 'input'])->name('input');
+
+/*use App\Services\TestFirebase;
+
+Route::get('/test-firebase', function (TestFirebase $testFirebase) {
+    $messaging = $testFirebase->test();
+    return response()->json(['message' => 'Firebase Messaging instance created successfully!']);
+});*/

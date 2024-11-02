@@ -62,7 +62,7 @@
                                                     <h4 class="mb-sm-0 font-size-18">{{ $jobs['title'] }}</h4>
                                                 </a>
                                             </p>
-                                            <p class="text-muted">{!! $jobs['description'] !!}</p>
+                                            <p class="text-muted">{{ strip_tags($jobs['description']) }}</p>
                                             <p class="text-muted">Last update {{ \Carbon\Carbon::parse($jobs['updatedAt'])->format('d/m/Y') }}</p>
                                             <p class="text-muted">Expired date {{ \Carbon\Carbon::parse($jobs['endDate'])->format('d/m/Y') }}</p>
                                         </div>

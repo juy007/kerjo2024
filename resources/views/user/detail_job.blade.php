@@ -40,9 +40,9 @@
                     <div class="col-xl-6 col-md-6 col-12">
                         <div class="d-flex flex-column">
                             <div class="flex-1">
-                                <h4 class="mb-sm-3 font-size-18">Data Analyst</h4>
+                                <h4 class="mb-sm-3 font-size-18">{{ $jobs['title'] }}</h4>
                                 <p class="text-muted">Posted By Kerjo</p>
-                                <p class="text-muted">Sebagai Data Analis di perusahaan kami, Anda akan menjadi bagian penting dalam tim yang bertanggung jawab untuk mengumpulkan, menganalisis, dan menginterpretasi data untuk mendukung pengambilan keputusan bisnis.</p>
+                                <p class="text-muted">{!! $jobs['description'] !!}</p>
                                 <p class="text-muted mt-4"><span class="mdi mdi-bookmark"></span> Bookmark: 24</p>
                             </div>
                         </div>
@@ -52,9 +52,9 @@
                     <div class="col-xl-2 col-md-2 col-6 pt-4 pt-md-5">
                         <div>
                             <h4 class="mb-sm-0 font-size-18 mt-3">Lokasi</h4>
-                            <p class="text-muted">Sudriman, Jakarta Selatan</p>
+                            <p class="text-muted">{{ $jobs['province']['name'] }}</p>
                             <h4 class="mb-sm-0 font-size-18 mt-4">Status Karyawan</h4>
-                            <p class="text-muted">Karyawan Tetap</p>
+                            <p class="text-muted">{{ $jobs['jobStatus']['name'] }}</p>
                         </div>
                     </div>
 
@@ -62,9 +62,9 @@
                     <div class="col-xl-2 col-md-2 col-6 pt-4 pt-md-5">
                         <div>
                             <h4 class="mb-sm-0 font-size-18 mt-3">Tipe Pekerjaan</h4>
-                            <p class="text-muted">Full Time</p>
+                            <p class="text-muted">{{ $jobs['jobType']['name'] }}</p>
                             <h4 class="mb-sm-0 font-size-18 mt-4">Posisi Level</h4>
-                            <p class="text-muted">Staff</p>
+                            <p class="text-muted">{{ $jobs['jobLevel']['name'] }}</p>
                         </div>
                     </div>
 
@@ -72,13 +72,13 @@
                     <div class="col-xl-2 col-md-2 col-12 pt-4 pt-md-5">
                         <div>
                             <h4 class="mb-sm-0 font-size-18 mt-3">Kategori Pekerjaan</h4>
-                            <p class="text-muted">IT Komputer - Software</p>
+                            <p class="text-muted">{{ $subCategoriesShow['name'] }}</p>
                         </div>
                     </div>
 
                     <!-- Expiry Date -->
                     <div class="col-xl-12 col-md-12 col-12">
-                        <p class="text-muted text-end">Expired date 08/12/2023</p>
+                        <p class="text-muted text-end">Expired date {{ \Carbon\Carbon::parse($jobs['endDate'])->format('d/m/Y') }}</p>
                     </div>
                 </div>
             </div>

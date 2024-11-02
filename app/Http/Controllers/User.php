@@ -253,14 +253,24 @@ class User extends Controller
     {
         $token = session('api_token');
         try {
-            $response = Http::withToken($token)->get("https://api.carikerjo.id/jobs/{$id}");
+            $responses = Http::pool(fn($pool) => [
+                $pool->withToken($token)->get("https://api.carikerjo.id/jobs/{$id}"),
+                $pool->withToken($token)->get('https://api.carikerjo.id/sub-categories'),
+            ]);
 
-            if ($response->successful()) {
-                $jobs = $response->json();
-                return view('user.detail_job', compact('jobs'));
+            // Jika salah satu request gagal, handle di sini
+            $failedResponse = array_filter($responses, fn($response) => !$response->successful());
+            if (count($failedResponse) > 0) {
+                return view('user.api_error')->with('error', 'Gagal mengambil data dari API');
             }
 
-            return view('user.api_error');
+            // Ambil semua hasil request sekaligus
+            $jobs = $responses[0]->json('data');
+            $subCategories = $responses[1]->json('data');
+
+            // Sub-kategori yang sesuai dengan job
+            $subCategoriesShow = collect($subCategories)->firstWhere('_id', $jobs['subCategory']);
+            return view('user.detail_job', compact('jobs', 'subCategoriesShow'));
         } catch (\Exception $e) {
             return redirect()->route('db_error');
         }

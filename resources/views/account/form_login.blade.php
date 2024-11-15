@@ -43,7 +43,7 @@
                                         </div>
                                         <form class="mt-4 pt-2" method="POST" action="{{ route('userValidation') }}" enctype="multipart/form-data"> @csrf
                                         <div class="mb-2">
-                                                <input type="email" class="form-control" name="email" id="input-username" value="carikerjo@carikerjo.id" placeholder="Enter User Name">
+                                                <input type="email" class="form-control" name="email" id="input-username" value="company@carikerjo.id" placeholder="Enter User Name">
                                                 <label for="input-username"></label>
                                             </div>
 

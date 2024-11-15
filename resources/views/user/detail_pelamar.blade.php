@@ -112,10 +112,10 @@
                                 <div class="col-md-12 timeline-C ps-4 pb-4">
                                     <div class="timelineRounded"></div>
                                     <div class="timeline-D">
-                                        <h4>PT. IT Digital Solution</h4>
-                                        <h4 class="mt-3">Senior Data Analyst </h4>
-                                        <p class="text-mute font-size-18">Agustus 2023 - Sekarang</p>
-                                        <p class="text-mute font-size-18 timeline-text-justify">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
+                                        <h4 class="font-size-18">PT. IT Digital Solution</h4>
+                                        <h4 class="mt-3 font-size-17">Senior Data Analyst </h4>
+                                        <p class="text-mute font-size-15">Agustus 2023 - Sekarang</p>
+                                        <p class="text-mute font-size-15 timeline-text-justify">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
                                     </div>
                                 </div>
                                 <div class="col-md-12 timeline-C ps-4 pb-4">

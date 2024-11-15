@@ -1,11 +1,14 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\EnsureTokenIsValid;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Account;
 use App\Http\Controllers\User;
+use App\Http\Controllers\NotificationController;
+
 
 
 /*
@@ -28,6 +31,9 @@ Route::get('/adminkerjo', [Admin::class, 'index'])->name('admin_login');
 Route::post('/login-validation', [Admin::class, 'login_validation'])->name('login_validation');
 
 Route::middleware('admin.token')->group(function () {
+    //Notifikasi
+    Route::post('/send-notification', [NotificationController::class, 'sendNotification']);
+
     Route::get('/admin-dashboard', [Admin::class, 'dashboard'])->name('admin_dashboard');
 
     //companies
@@ -138,8 +144,9 @@ Route::middleware('auth.token')->group(function () {
         Route::put('/save-update-job/{id}', [User::class, 'saveUpdateJob'])->name('save_update_job');
         Route::delete('/delete-job/{id}', [User::class, 'deleteJob'])->name('delete_job');
         Route::get('/detail-job/{id}', [User::class, 'detailJob'])->name('detail_job');
+        Route::put('/save-update-status/{id}', [User::class, 'saveUpdateStatus'])->name('save_update_status');
 
-        Route::get('/detail-pelamar', [User::class, 'detail_pelamar'])->name('detail_pelamar');
+        Route::get('/detail-pelamar/{id}', [User::class, 'detail_pelamar'])->name('detail_pelamar');
     });
     Route::get('/part-1', [Account::class, 'company_profile_part1'])->name('company_profile_part1');
     Route::post('/submit-part-1', [Account::class, 'submitCompany_profile_part1'])->name('submit_company_profile_part1');
@@ -150,6 +157,26 @@ Route::middleware('auth.token')->group(function () {
     Route::get('/proxy-image/logo/{path}', function ($path) {
         $url = "https://api.carikerjo.id/upload/logo/" . $path;
 
+        // Path gambar ikon default jika gambar tidak ditemukan
+        $defaultIconPath = public_path('assets/images/u_kerjo.png'); // Atur path gambar ikon default sesuai dengan lokasi Anda
+
+        try {
+            // Gunakan Guzzle HTTP Client untuk mengambil gambar dari URL asli
+            $client = new \GuzzleHttp\Client();
+            $response = $client->get($url);
+
+            // Jika berhasil, kembalikan gambar dengan header yang sesuai
+            return response($response->getBody(), 200)
+                ->header('Content-Type', $response->getHeader('Content-Type')[0]);
+        } catch (RequestException $e) {
+            // Jika gagal (misalnya gambar tidak ada), kembalikan gambar ikon default
+            return response()->file($defaultIconPath);
+        }
+    });
+
+    Route::get('/proxy-image/gallery/{path}', function ($path) {
+        $url = "https://api.carikerjo.id/upload/gallery/" . $path;
+
         // Gunakan Guzzle HTTP Client untuk mengambil gambar dari URL asli
         $client = new \GuzzleHttp\Client();
         $response = $client->get($url);
@@ -158,8 +185,19 @@ Route::middleware('auth.token')->group(function () {
             ->header('Content-Type', $response->getHeader('Content-Type')[0]);
     });
 
-    Route::get('/proxy-image/gallery/{path}', function ($path) {
-        $url = "https://api.carikerjo.id/upload/gallery/" . $path;
+    Route::get('/proxy-image/avatar/{path}', function ($path) {
+        $url = "https://api.carikerjo.id/upload/avatar/" . $path;
+
+        // Gunakan Guzzle HTTP Client untuk mengambil gambar dari URL asli
+        $client = new \GuzzleHttp\Client();
+        $response = $client->get($url);
+
+        return response($response->getBody(), 200)
+            ->header('Content-Type', $response->getHeader('Content-Type')[0]);
+    });
+
+    Route::get('/proxy-cv/{path}', function ($path) {
+        $url = "https://api.carikerjo.id/upload/cv/" . $path;
 
         // Gunakan Guzzle HTTP Client untuk mengambil gambar dari URL asli
         $client = new \GuzzleHttp\Client();

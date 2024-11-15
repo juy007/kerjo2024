@@ -39,7 +39,8 @@ class User extends Controller
             ]);
 
             if (!$responses[0]->successful() || !$responses[1]->successful() || !$responses[2]->successful() || !$responses[3]->successful() || !$responses[4]->successful() || !$responses[5]->successful()) {
-                return view('user.api_error')->with('error', 'Gagal mengambil data dari API');
+                session()->flash('notifAPI', 'Halaman Form Job');
+                return view('user.api_error');
             }
 
             $provinces = $responses[0]->json('data');
@@ -50,7 +51,8 @@ class User extends Controller
             $jobLevels = $responses[5]->json('data');
             return view('user.form_job', compact('provinces', 'currencies', 'subCategories', 'jobStatuses', 'jobTypes', 'jobLevels'));
         } catch (\Exception $e) {
-            return redirect()->route('db_error');
+            session()->flash('notifAPI', 'Halaman Form Job');
+            return view('user.api_error');
         }
     }
 
@@ -113,7 +115,7 @@ class User extends Controller
             }
             return redirect()->back()->with('error', 'Lowongan Gagal Ditambahkan');
         } catch (\Exception $e) {
-            return redirect()->route('db_error');
+            return redirect()->back()->with('error', 'Tidak terhubung ke server');
         }
     }
 
@@ -128,9 +130,11 @@ class User extends Controller
                 return view('user.posting_job', compact('jobs'));
             }
 
+            session()->flash('notifAPI', 'Halaman Postingan Pekerjaan');
             return view('user.api_error');
         } catch (\Exception $e) {
-            return redirect()->route('db_error');
+            session()->flash('notifAPI', 'Halaman Postingan Pekerjaan');
+            return view('user.api_error');
         }
     }
 
@@ -151,7 +155,8 @@ class User extends Controller
             // Jika salah satu request gagal, handle di sini
             $failedResponse = array_filter($responses, fn($response) => !$response->successful());
             if (count($failedResponse) > 0) {
-                return view('user.api_error')->with('error', 'Gagal mengambil data dari API');
+                session()->flash('notifAPI', 'Halaman Form Job');
+                return view('user.api_error');
             }
 
             // Ambil semua hasil request sekaligus
@@ -168,7 +173,8 @@ class User extends Controller
 
             return view('user.form_edit_job', compact('subCategoriesShow', 'provinces', 'currencies', 'subCategories', 'jobStatuses', 'jobTypes', 'jobLevels', 'jobs'));
         } catch (\Exception $e) {
-            return redirect()->route('db_error');
+            session()->flash('notifAPI', 'Halaman Form Job');
+            return view('user.api_error');
         }
     }
 
@@ -228,8 +234,7 @@ class User extends Controller
             }
             return redirect()->back()->with('error', 'Lowongan Gagal Diupdate');
         } catch (\Exception $e) {
-            //echo $e->getMessage();
-            return redirect()->route('db_error');
+            return redirect()->back()->with('error', 'Tidak terhubung ke server');
         }
     }
 
@@ -245,7 +250,7 @@ class User extends Controller
 
             return redirect()->back()->with('error', 'Gagal menghapus Job');
         } catch (\Exception $e) {
-            return redirect()->route('db_error');
+            return redirect()->back()->with('error', 'Tidak terhubung ke server');
         }
     }
 
@@ -256,28 +261,89 @@ class User extends Controller
             $responses = Http::pool(fn($pool) => [
                 $pool->withToken($token)->get("https://api.carikerjo.id/jobs/{$id}"),
                 $pool->withToken($token)->get('https://api.carikerjo.id/sub-categories'),
+                $pool->withToken($token)->get("https://api.carikerjo.id/applications/job/{$id}"),
             ]);
-
+            
             // Jika salah satu request gagal, handle di sini
             $failedResponse = array_filter($responses, fn($response) => !$response->successful());
             if (count($failedResponse) > 0) {
-                return view('user.api_error')->with('error', 'Gagal mengambil data dari API');
+                session()->flash('notifAPI', 'Halaman Detail Job');
+                return view('user.api_error');
             }
 
             // Ambil semua hasil request sekaligus
             $jobs = $responses[0]->json('data');
             $subCategories = $responses[1]->json('data');
+            $applications = $responses[2]->json('data');
+            $experiences = $responses[2]['data'][0]['user']['experiences'];
+            
 
             // Sub-kategori yang sesuai dengan job
             $subCategoriesShow = collect($subCategories)->firstWhere('_id', $jobs['subCategory']);
-            return view('user.detail_job', compact('jobs', 'subCategoriesShow'));
+            return view('user.detail_job', compact('jobs', 'applications', 'experiences', 'subCategoriesShow'));
         } catch (\Exception $e) {
-            return redirect()->route('db_error');
+            session()->flash('notifAPI', 'Halaman Detail Job');
+            return view('user.api_error');
         }
     }
 
-    public function detail_pelamar()
+    public function saveUpdateStatus(Request $request, $id)
     {
-        return view('user.detail_pelamar');
+        $validated = $request->validate([
+            'userId' => 'required|string|max:255',
+            'status' => 'required|string|max:255',
+            'jobId' => 'required|string|max:255',
+        ]);
+
+        // Ambil token dari session
+        $token = session('api_token');
+        try {
+            // Kirim request POST ke API
+            $response = Http::withToken($token)->put("https://api.carikerjo.id/applications/{$id}", [
+                'status' => $validated['status'],
+                'userId' => $validated['userId'],
+            ]);
+
+            if ($response->successful()) {
+                return redirect()->route('detail_job', $validated['jobId'])->with('success', 'Update Berhasil');
+            }
+            return redirect()->back()->with('error', 'Update gagal');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Tidak terhubung ke server');
+        }
+    }
+
+    public function detail_pelamar($id)
+    {
+
+        $token = session('api_token');
+        try {
+            $responses = Http::pool(fn($pool) => [
+                $pool->withToken($token)->get("https://api.carikerjo.id/jobs/{$id}"),
+                $pool->withToken($token)->get('https://api.carikerjo.id/sub-categories'),
+                $pool->withToken($token)->get("https://api.carikerjo.id/applications/job/{$id}"),
+            ]);
+            
+            // Jika salah satu request gagal, handle di sini
+            $failedResponse = array_filter($responses, fn($response) => !$response->successful());
+            if (count($failedResponse) > 0) {
+                session()->flash('notifAPI', 'Halaman Detail Pelamar');
+                return view('user.api_error');
+            }
+
+            // Ambil semua hasil request sekaligus
+            $jobs = $responses[0]->json('data');
+            $subCategories = $responses[1]->json('data');
+            $applications = $responses[2]->json('data');
+            $experiences = $responses[2]['data'][0]['user']['experiences'];
+            
+
+            // Sub-kategori yang sesuai dengan job
+            $subCategoriesShow = collect($subCategories)->firstWhere('_id', $jobs['subCategory']);
+            return view('user.detail_pelamar', compact('jobs', 'applications', 'experiences', 'subCategoriesShow'));
+        } catch (\Exception $e) {
+            session()->flash('notifAPI', 'Halaman Detail Pelamar');
+            return view('user.api_error');
+        }
     }
 }

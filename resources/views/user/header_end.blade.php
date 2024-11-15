@@ -112,7 +112,7 @@
                         <div class="dropdown d-inline-block">
                             <button type="button" class="btn header-item bg-light-subtle border-start border-end" id="page-header-user-dropdown"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="rounded-circle header-profile-user" src="{{ url('proxy-image/logo/img-1727799480936.png') }}" alt="Header Avatar">
+                                <img class="rounded-circle header-profile-user" src="{{ url('proxy-image/logo/'. str_replace('../public/upload/logo/', '', session('company_logo') )) }}" alt="Header Avatar">
                                 <span class="d-none d-xl-inline-block ms-1 fw-medium"></span>
                                 <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                             </button>

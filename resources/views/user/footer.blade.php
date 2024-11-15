@@ -202,16 +202,7 @@
 
                 <script src="{{ asset('assets/js/pages/allchart.js') }}"></script>
 
-                <!-- dashboard init -->
-
-
                 <script src="{{ asset('assets/js/app.js') }}"></script>
-
-                <!-- aaaaaaaaaaaaaaaaaaa -->
-
-                <!-- color picker js -->
-                <script src="{{ asset('assets/libs/@simonwep/pickr/pickr.min.js') }}"></script>
-                <script src="{{ asset('assets/libs/@simonwep/pickr/pickr.es5.min.js') }}"></script>
 
                 <!-- datepicker js -->
                 <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>

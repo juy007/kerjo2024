@@ -31,6 +31,11 @@
                             <div class="col-sm-5" style="margin-left:auto;margin-right:auto;">
                                 <a class="btn btn-primary w-100 waves-effect waves-light" href="{{ route('index_job') }}">BUAT POSTINGAN PEKERJAAN</a>
                             </div>
+                            @if(session('xxx'))
+                            <div class="alert alert-danger">
+                                {{ session('xxx') }}
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -40,7 +45,6 @@
 
     </div> <!-- container-fluid -->
 </div>
-<img src="https://api.carikerjo.id/public/upload/logo/img-1727697832816.png" alt="">
 <!-- End Page-content -->
 @include('user/footer')
 </body>

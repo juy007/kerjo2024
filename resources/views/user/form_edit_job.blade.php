@@ -129,15 +129,15 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div class="mb-3">
+                                            <div class="mb-3" id="editor1">
                                                 <label for="form-deskripsi-pekerjaan" class="form-label">Deskripsi Pekerjaan</label>
                                                 <textarea class="form-control" name="deskripsi" id="form-deskripsi-pekerjaan" rows="5">{{ $jobs['description'] }}</textarea>
                                             </div>
-                                            <div class="mb-3">
+                                            <div class="mb-3" id="editor2">
                                                 <label for="form-detail" class="form-label">Detail</label>
                                                 <textarea class="form-control" name="detail" id="form-detail" rows="5">{{ $jobs['detail'] }}</textarea>
                                             </div>
-                                            <div class="mb-3">
+                                            <div class="mb-3" id="editor3">
                                                 <label for="form-kualifikasi" class="form-label">Kualifikasi</label>
                                                 <textarea class="form-control" name="kualifikasi" id="form-kualifikasi" rows="5">{{ $jobs['qualification'] }}</textarea>
                                             </div>
@@ -334,11 +334,19 @@
                                                             </div>
                                                             <div class="job-description">
                                                                 <div class="section-title">
+                                                                    Detail
                                                                 </div>
-                                                                <p id="detail_pre">
+                                                                <p id="job_detail_pre">
                                                                     Sebagai Data Analis di perusahaan kami, Anda akan menjadi bagian penting dalam tim yang bertanggung jawab untuk mengumpulkan, menganalisis, dan menginterpretasi data untuk mendukung pengambilan keputusan bisnis.
                                                                 </p>
-
+                                                            </div>
+                                                            <div class="job-description">
+                                                                <div class="section-title">
+                                                                    Kualifikasi
+                                                                </div>
+                                                                <p id="job_kualifikasi_pre">
+                                                                    Sebagai Data Analis di perusahaan kami, Anda akan menjadi bagian penting dalam tim yang bertanggung jawab untuk mengumpulkan, menganalisis, dan menginterpretasi data untuk mendukung pengambilan keputusan bisnis.
+                                                                </p>
                                                             </div>
                                                         </div>
                                                     </div>

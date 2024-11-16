@@ -146,7 +146,7 @@ Route::middleware('auth.token')->group(function () {
         Route::get('/detail-job/{id}', [User::class, 'detailJob'])->name('detail_job');
         Route::put('/save-update-status/{id}', [User::class, 'saveUpdateStatus'])->name('save_update_status');
 
-        Route::get('/detail-pelamar/{id}', [User::class, 'detail_pelamar'])->name('detail_pelamar');
+        Route::get('/detail-pelamar/{id}/{jobId}', [User::class, 'detail_pelamar'])->name('detail_pelamar');
     });
     Route::get('/part-1', [Account::class, 'company_profile_part1'])->name('company_profile_part1');
     Route::post('/submit-part-1', [Account::class, 'submitCompany_profile_part1'])->name('submit_company_profile_part1');

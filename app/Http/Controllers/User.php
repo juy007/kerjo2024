@@ -313,15 +313,13 @@ class User extends Controller
         }
     }
 
-    public function detail_pelamar($id)
+    public function detail_pelamar($id, $jobId)
     {
 
         $token = session('api_token');
         try {
             $responses = Http::pool(fn($pool) => [
-                $pool->withToken($token)->get("https://api.carikerjo.id/jobs/{$id}"),
-                $pool->withToken($token)->get('https://api.carikerjo.id/sub-categories'),
-                $pool->withToken($token)->get("https://api.carikerjo.id/applications/job/{$id}"),
+                $pool->withToken($token)->get("https://api.carikerjo.id/applications/job/{$jobId}"),
             ]);
             
             // Jika salah satu request gagal, handle di sini
@@ -331,16 +329,9 @@ class User extends Controller
                 return view('user.api_error');
             }
 
-            // Ambil semua hasil request sekaligus
-            $jobs = $responses[0]->json('data');
-            $subCategories = $responses[1]->json('data');
-            $applications = $responses[2]->json('data');
-            $experiences = $responses[2]['data'][0]['user']['experiences'];
-            
-
-            // Sub-kategori yang sesuai dengan job
-            $subCategoriesShow = collect($subCategories)->firstWhere('_id', $jobs['subCategory']);
-            return view('user.detail_pelamar', compact('jobs', 'applications', 'experiences', 'subCategoriesShow'));
+            $applications = $responses[0]->json('data');            
+            $userData = collect($applications)->firstWhere('_id', $id);
+            return view('user.detail_pelamar', compact('userData'));
         } catch (\Exception $e) {
             session()->flash('notifAPI', 'Halaman Detail Pelamar');
             return view('user.api_error');

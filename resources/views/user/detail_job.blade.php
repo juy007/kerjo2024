@@ -145,7 +145,7 @@
                                         <div class="d-flex">
                                             <img src="{{ url('proxy-image/avatar/'. str_replace('../public/upload/avatar/', '', $applications['user']['avatar'] )) }}" class="avatar-md rounded-circle" alt="img" />
                                             <div class="flex-1 ms-4">
-                                                <h5 class="mb-2 font-size-15 text-primary"><a href="{{ route('detail_pelamar', $applications['job']) }}">{{ $applications['user']['name'] }}</a></h5>
+                                                <h5 class="mb-2 font-size-15 text-primary"><a href="{{ route('detail_pelamar',  ['id' => $applications['_id'], 'jobId' => $applications['job']]) }}">{{ $applications['user']['name'] }}</a></h5>
                                                 <p class="text-muted">{{ $applications['user']['email'] }}</p>
                                             </div>
                                         </div>

@@ -164,7 +164,7 @@
                                             <div class="divider"></div><br>
                                             <div class="job-header">
 
-                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/logo/img-1727799480936.png') }}" width="50" />
+                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/logo/'. str_replace('../public/upload/logo/', '', session('company_logo') )) }}" width="50" />
                                                 <div>
                                                     <div class="job-title">
                                                         Data Analyst
@@ -272,7 +272,7 @@
                                                             <div class="divider"></div><br>
                                                             <div class="job-header">
 
-                                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/logo/img-1727799480936.png') }}" width="50" />
+                                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/logo/'. str_replace('../public/upload/logo/', '', session('company_logo') )) }}" width="50" />
                                                                 <div>
                                                                     <div id="job_title_pre" class="job-title">
                                                                         Data Analyst
@@ -376,42 +376,7 @@
 <!-- choices js -->
 <script src="{{ asset('assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
 <script src="{{ asset('assets/js/pages/form-editor.init.js') }}"></script>
-
-<script>
-    function getSelectedText(selectId) {
-        var selectElement = document.getElementById(selectId);
-        var selectedText = selectElement.options[selectElement.selectedIndex].text;
-        return selectedText;
-    }
-
-    function previewPhone() {
-        // Daftar ID elemen yang perlu diambil nilainya atau teksnya
-        var fields = ['form-lowongan', 'form-lokasi', 'form-tipe-pekerjaan', 'form-tipe-status-karyawan', 'form-posisi-level', 'form-deskripsi-pekerjaan', 'form-detail', 'kategori'];
-
-        // ID elemen preview yang sesuai dengan `fields`
-        var previews = ['job_title_pre', 'lokasi_pre', 'tipe_pekerjaan_pre', 'status_karyawan_pre', 'posisi_level_pre', 'job_description_pre', 'detail_pre', 'kategori_pekerjaan_pre'];
-
-        // Lakukan iterasi untuk setiap field
-        fields.forEach(function(field, index) {
-            // Jika elemen adalah select, ambil teks yang dipilih
-            if (document.getElementById(field).tagName === 'SELECT') {
-                document.getElementById(previews[index]).innerHTML = getSelectedText(field);
-                /*} else if (field === 'form-deskripsi-pekerjaan') {
-                    // Jika elemen adalah CKEditor, gunakan CKEditor untuk ambil data
-                    document.getElementById(previews[index]).innerHTML = CKEDITOR.instances['form-deskripsi-pekerjaan'].getData();*/
-            } else {
-                // Jika bukan select dan bukan CKEditor, ambil value biasa
-                document.getElementById(previews[index]).innerHTML = document.getElementById(field).value || "";
-            }
-        });
-
-        // Menampilkan modal
-        new bootstrap.Modal(document.getElementById('modal-preview'), {
-            keyboard: false
-        }).show();
-    }
-</script>
-
+<script src="{{ asset('assets/js/previewPhone.js') }}"></script>
 
 </body>
 

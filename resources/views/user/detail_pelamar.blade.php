@@ -63,7 +63,7 @@
                             <h4 class="mb-sm-0 font-size-18 mt-4">CV</h4>
                             <p class="text-muted font-size-16"><a href="{{ url('proxy-cv/' . str_replace('../public/upload/cv/', '', $userData['cv']['link'])) }}">Download</a></p>
                             <h4 class="mb-sm-0 font-size-18 mt-4">Lokasi</h4>
-                            <p class="text-muted font-size-16">Jakarta, Indonesia</p>
+                            <p class="text-muted font-size-16">Jakarta</p>
                         </div>
                     </div>
                     <div class="col-xl-2 col-md-2 pt-lg-5">

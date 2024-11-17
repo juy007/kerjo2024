@@ -1,6 +1,6 @@
 </head>
 
-    <body data-topbar="dark" class="pace-done pace-done sidebar-enable" data-sidebar-size="lg">
+    <body data-topbar="light" class="pace-done pace-done sidebar-enable" data-sidebar-size="lg">
 
     <!-- <body data-layout="horizontal"> -->
 
@@ -18,7 +18,7 @@
                                     <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="30">
                                 </span>
                                 <span class="logo-lg">
-                                    <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="24"> <span class="logo-txt">Dason</span>
+                                    <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="24"> <span class="logo-txt"></span>
                                 </span>
                             </a>
 
@@ -27,7 +27,7 @@
                                     <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="30">
                                 </span>
                                 <span class="logo-lg">
-                                    <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="24"> <span class="logo-txt">Dason</span>
+                                    <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="24"> <span class="logo-txt"></span>
                                 </span>
                             </a>
                         </div>

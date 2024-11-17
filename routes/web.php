@@ -157,21 +157,12 @@ Route::middleware('auth.token')->group(function () {
     Route::get('/proxy-image/logo/{path}', function ($path) {
         $url = "https://api.carikerjo.id/upload/logo/" . $path;
 
-        // Path gambar ikon default jika gambar tidak ditemukan
-        $defaultIconPath = public_path('assets/images/u_kerjo.png'); // Atur path gambar ikon default sesuai dengan lokasi Anda
+     
+       $client = new \GuzzleHttp\Client();
+       $response = $client->get($url);
 
-        try {
-            // Gunakan Guzzle HTTP Client untuk mengambil gambar dari URL asli
-            $client = new \GuzzleHttp\Client();
-            $response = $client->get($url);
-
-            // Jika berhasil, kembalikan gambar dengan header yang sesuai
-            return response($response->getBody(), 200)
-                ->header('Content-Type', $response->getHeader('Content-Type')[0]);
-        } catch (RequestException $e) {
-            // Jika gagal (misalnya gambar tidak ada), kembalikan gambar ikon default
-            return response()->file($defaultIconPath);
-        }
+       return response($response->getBody(), 200)
+           ->header('Content-Type', $response->getHeader('Content-Type')[0]);
     });
 
     Route::get('/proxy-image/gallery/{path}', function ($path) {

@@ -128,9 +128,9 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Pelamar</th>
-                                    <th>Handphone</th>
+                                    <th>Handphone</th><!--
                                     <th>Jabatan</th>
-                                    <th>Pengalaman Kerja</th>
+                                    <th>Pengalaman Kerja</th>-->
                                     <th>Status</th>
                                     <th>CV</th>
                                     <th>Action</th>
@@ -150,7 +150,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td>{{ $applications['user']['phone'] }}</td>
+                                    <td>{{ $applications['user']['phone'] }}</td><!--
                                     <td>{{ $experiences[0]['position'] }}</td>
                                     <td align="center">
                                         @php
@@ -159,7 +159,7 @@
                                         $yearsWorked = $endYear - $startYear;
                                         @endphp
                                         {{ $yearsWorked }} Tahun
-                                    </td>
+                                    </td>-->
                                     <td>{{ $applications['status'] }}</td>
                                     <td><a href="{{ url('proxy-cv/' . str_replace('../public/upload/cv/', '', $applications['cv']['link'])) }}">Download</a></td>
                                     <td>

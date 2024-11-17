@@ -1,0 +1,36 @@
+#previewContainer img {
+    max-width: 100px;
+    max-height: 100px;
+    margin: 5px;
+}
+
+#video {
+    display: none;
+    margin-bottom: 10px;
+}
+
+#openCamera {
+    /*height: 50px;*/
+}
+
+#closeCamera {
+    /*height: 50px;*/
+}
+
+.custom-file-upload2 {
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    background-color: #FFF;
+    color: #1C84EE;
+    border: 1px solid #1C84EE;
+    border-radius: 8px;
+    width: 90px;
+    height: 30px;
+    text-align: center;
+    font-weight: bold;
+}
+
+#fileInput {
+    display: none;
+}

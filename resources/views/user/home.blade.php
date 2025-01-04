@@ -29,7 +29,7 @@
                             <p>Anda belum membuat postingan lowongan kerja sama sekali, yuk<br>
                                 posting lowongan kerja untuk perusahaan anda agar bisa mendapatkan karyawan baru</p>
                             <div class="col-sm-5" style="margin-left:auto;margin-right:auto;">
-                                <a class="btn btn-primary w-100 waves-effect waves-light" href="{{ route('index_job') }}">BUAT POSTINGAN PEKERJAAN</a>
+                                <a class="btn btn-primary w-100 waves-effect waves-light" href="{{ route('form_job') }}">BUAT POSTINGAN PEKERJAAN</a>
                             </div>
                             @if(session('xxx'))
                             <div class="alert alert-danger">

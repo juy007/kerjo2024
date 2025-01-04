@@ -60,7 +60,7 @@
                                             <div class="mb-3">
                                                 <label for="kategori" class="form-label font-size-13">Kategori</label>
                                                 <select class="form-control" data-trigger name="kategori" id="kategori">
-                                                    <option selected value="{{ $jobs['subCategory'] }}">{{ $subCategoriesShow['name'] }}</option>
+                                                    <option selected value="{{ $jobs['subCategory']['name'] }}">{{ $jobs['subCategory']['name'] }}</option>
                                                     @foreach($subCategories as $subCategories)
                                                     <option value="{{ $subCategories['_id'] }}">{{ $subCategories['name'] }}</option>
                                                     @endforeach
@@ -164,7 +164,7 @@
                                             <div class="divider"></div><br>
                                             <div class="job-header">
 
-                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/logo/'. str_replace('../public/upload/logo/', '', session('company_logo') )) }}" width="50" />
+                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/logo/'. str_replace('public/upload/logo/', '', session('company_logo') )) }}" width="50" />
                                                 <div>
                                                     <div class="job-title">
                                                         Data Analyst
@@ -272,7 +272,7 @@
                                                             <div class="divider"></div><br>
                                                             <div class="job-header">
 
-                                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/logo/'. str_replace('../public/upload/logo/', '', session('company_logo') )) }}" width="50" />
+                                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/logo/'. str_replace('public/upload/logo/', '', session('company_logo') )) }}" width="50" />
                                                                 <div>
                                                                     <div id="job_title_pre" class="job-title">
                                                                         Data Analyst

@@ -8,9 +8,17 @@
                     <div class="d-flex">
                         <!-- LOGO -->
                         <div class="navbar-brand-box">
+                            <a href="{{ route('dashboard_user') }}" class="logo logo-dark">
+                                <span class="logo-sm">
+                                    <img src="{{ asset('assets/images/logo/Kerjo sm.png') }}" alt="" height="27"><span class="logo-txt">ok</span>
+                                </span>
+                                <span class="logo-lg">
+                                    <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="27"> <span class="logo-txt"></span>
+                                </span>
+                            </a>
                             <a href="{{ route('dashboard_user') }}" class="logo logo-light">
                                 <span class="logo-sm">
-                                    <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="27">
+                                    <img src="{{ asset('assets/images/logo/Kerjo sm.png') }}" alt="" height="27"><span class="logo-txt">ok</span>
                                 </span>
                                 <span class="logo-lg">
                                     <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="27"> <span class="logo-txt"></span>
@@ -20,7 +28,8 @@
                     </div>
 
                     <div class="d-flex">
-                        <div class="dropdown d-inline-block"><span>Lowongan</span>
+                        <div class="dropdown d-inline-block">
+                            <span><a class="text-dark" href="{{ route('index_job') }}">Lowongan</a></span>
                             <button type="button" class="btn header-item noti-icon position-relative" id="page-header-notifications-dropdown"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i data-feather="bell" class="icon-lg"></i>
@@ -112,15 +121,15 @@
                         <div class="dropdown d-inline-block">
                             <button type="button" class="btn header-item bg-light-subtle border-start border-end" id="page-header-user-dropdown"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="rounded-circle header-profile-user" src="{{ url('proxy-image/logo/'. str_replace('../public/upload/logo/', '', session('company_logo') )) }}" alt="Header Avatar">
+                                <img class="rounded-circle header-profile-user" src="{{ url('proxy-image/logo/'. str_replace('public/upload/logo/', '', session('company_logo') )) }}" alt="Header Avatar">
                                 <span class="d-none d-xl-inline-block ms-1 fw-medium"></span>
                                 <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end">
                                 <!-- item-->
-                                 <!--
-                                <a class="dropdown-item" href="apps-contacts-profile.html"><i class="mdi mdi-face-profile font-size-16 align-middle me-1"></i> Akun</a>
-                                <a class="dropdown-item" href="apps-contacts-profile.html"><i class="mdi mdi-office-building font-size-16 align-middle me-1"></i> Perusahaan</a>
+                                 
+                                <a class="dropdown-item" href="{{ route('index_user') }}"><i class="mdi mdi-face-profile font-size-16 align-middle me-1"></i> User</a>
+                                <!--<a class="dropdown-item" href="apps-contacts-profile.html"><i class="mdi mdi-office-building font-size-16 align-middle me-1"></i> Perusahaan</a>
                                 <a class="dropdown-item" href="apps-contacts-profile.html"><i class="mdi mdi-image-multiple font-size-16 align-middle me-1"></i> Galeri</a>
                                 <a class="dropdown-item" href="apps-contacts-profile.html"><i class="mdi mdi-fridge-industrial font-size-16 align-middle me-1"></i> Industri</a>
                                 <a class="dropdown-item" href="auth-lock-screen.html"><i class="mdi mdi-lock font-size-16 align-middle me-1"></i> Lock screen</a>-->

@@ -20,7 +20,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18">Detail</h4>
+                    <h4 class="mb-sm-0 font-size-18">Data User</h4>
 
                     <div class="page-title-right">
 
@@ -30,63 +30,6 @@
             </div>
         </div>
         <!-- end page title -->
-
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <!-- Bagian Kiri -->
-                            <div class="col-xl-6 col-md-6 col-12">
-                                <div class="d-flex flex-column">
-                                    <div class="flex-1">
-                                        <h4 class="mb-sm-3 font-size-18">{{ $jobs['title'] }}</h4>
-                                        <p class="text-muted">Posted By Kerjo</p>
-                                        <p class="text-muted">{!! $jobs['description'] !!}</p>
-                                        <p class="text-muted mt-4"><span class="mdi mdi-bookmark"></span> Bookmark: {{ count($jobs['bookmarks']) }}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Lokasi dan Status Karyawan -->
-                            <div class="col-xl-2 col-md-2 col-6 pt-4 pt-md-5">
-                                <div>
-                                    <h4 class="mb-sm-0 font-size-18 mt-3">Lokasi</h4>
-                                    <p class="text-muted">{{ $jobs['province']['name'] }}</p>
-                                    <h4 class="mb-sm-0 font-size-18 mt-4">Status Karyawan</h4>
-                                    <p class="text-muted">{{ $jobs['jobStatus']['name'] }}</p>
-                                </div>
-                            </div>
-
-                            <!-- Tipe Pekerjaan dan Level -->
-                            <div class="col-xl-2 col-md-2 col-6 pt-4 pt-md-5">
-                                <div>
-                                    <h4 class="mb-sm-0 font-size-18 mt-3">Tipe Pekerjaan</h4>
-                                    <p class="text-muted">{{ $jobs['jobType']['name'] }}</p>
-                                    <h4 class="mb-sm-0 font-size-18 mt-4">Posisi Level</h4>
-                                    <p class="text-muted">{{ isset($jobs['jobLevel']['name']) ? $jobs['jobLevel']['name'] : '-' }}</p>
-                                </div>
-                            </div>
-
-                            <!-- Kategori Pekerjaan -->
-                            <div class="col-xl-2 col-md-2 col-12 pt-4 pt-md-5">
-                                <div>
-                                    <h4 class="mb-sm-0 font-size-18 mt-3">Kategori Pekerjaan</h4>
-                                    <p class="text-muted">{{ $jobs['subCategory']['name'] }}</p>
-                                </div>
-                            </div>
-
-                            <!-- Expiry Date -->
-                            <div class="col-xl-12 col-md-12 col-12">
-                                <p class="text-muted text-end">Expired date {{ \Carbon\Carbon::parse($jobs['endDate'])->format('d/m/Y') }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- end card -->
-            </div>
-        </div>
-
 
         <div class="row">
             <div class="col-12">
@@ -271,7 +214,7 @@
             function(settings, data, dataIndex) {
                 // Mendapatkan nilai filter
                 var status = statusEl.value;
-                var rowStatus = data[3]; // Asumsi kolom status ada di index ke-5
+                var rowStatus = data[5]; // Asumsi kolom status ada di index ke-5
 
                 // Mengembalikan true jika baris harus ditampilkan
                 if (status === '' || rowStatus === status) {

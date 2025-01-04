@@ -114,7 +114,7 @@ class Account extends Controller
             'name' => $validatedData['name'],
             'phoneNumber' => $validatedData['phone'],
         ];
-        try {
+        
             $response = Http::post('https://api.carikerjo.id/auth/register-company', $dataToSend);
             if ($response->failed()) {
                 return back()->withInput()->with('notifRegister', "The registration has failed, please try again later.");
@@ -144,8 +144,8 @@ class Account extends Controller
             Session::put('company_industries', $profileData['data']['company']['industries']);
             Session::put('company_galleries', $profileData['data']['company']['galleries']);
             Session::put('company_active', $profileData['data']['company']['active']);
-            Session::put('company_established', $profileData['data']['company']['established']);
-            Session::put('company_location', $profileData['data']['company']['location']);
+            //Session::put('company_established', $profileData['data']['company']['established']);
+            //Session::put('company_location', $profileData['data']['company']['location']);
 
             // Generate OTP dan kirim ke API
             /*
@@ -159,9 +159,7 @@ class Account extends Controller
             return redirect()->route('otp');
             */
             return redirect()->route('company_profile_part1');
-        } catch (\Exception $e) {
-            return redirect()->route('db_error');
-        }
+        
     }
 
     public function company_profile_part1()

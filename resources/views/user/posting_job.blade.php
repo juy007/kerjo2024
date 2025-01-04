@@ -74,7 +74,7 @@
                                     <p class="text-muted mb-2">
                                     <h4 class="mb-sm-0 font-size-18 text-center">Total Lamaran</h4>
                                     </p>
-                                    <h1 class="mt-5">20</h1>
+                                    <h1 class="mt-5">{{ count($jobs['applications']) }}</h1>
 
                                 </div>
                             </div>

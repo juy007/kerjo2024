@@ -102,6 +102,7 @@ class User extends Controller
                 'endDate' => $validated['date_end'],
                 'salaryStart' => $validated['gaji_min'],
                 'salaryEnd' => $validated['gaji_max'],
+                'salaryFrequency' => "200000",
                 'jobLevelId' => $validated['posisi_level'],
                 'description' => $validated['deskripsi'],
                 'detail' => $validated['detail'],
@@ -112,7 +113,7 @@ class User extends Controller
 
             if ($response->successful()) {
                 return redirect()->route('form_job')->with('success', 'Lowongan Berhasil Ditambahkan');
-            }
+            }//echo $response->body();
             return redirect()->back()->with('error', 'Lowongan Gagal Ditambahkan');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Tidak terhubung ke server');
@@ -334,6 +335,34 @@ class User extends Controller
             return view('user.detail_pelamar', compact('userData'));
         } catch (\Exception $e) {
             session()->flash('notifAPI', 'Halaman Detail Pelamar');
+            return view('user.api_error');
+        }
+    }
+
+    public function indexUser()
+    {
+        $id = '67336ccc8d85e7b5e026d80a';
+        $token = session('api_token');
+        try {
+            $responses = Http::pool(fn($pool) => [
+                $pool->withToken($token)->get("https://api.carikerjo.id/applications/job/{$id}"),
+            ]);
+            
+            // Jika salah satu request gagal, handle di sini
+            $failedResponse = array_filter($responses, fn($response) => !$response->successful());
+            if (count($failedResponse) > 0) {
+                session()->flash('notifAPI', 'Halaman Detail Job');
+                return view('user.api_error');
+            }
+
+            
+            $applications = $responses[0]->json('data');
+            $experiences = $responses[0]['data'][0]['user']['experiences'];
+            
+
+            return view('user.user', compact('applications', 'experiences'));
+        } catch (\Exception $e) {
+            session()->flash('notifAPI', 'Halaman Detail Job');
             return view('user.api_error');
         }
     }

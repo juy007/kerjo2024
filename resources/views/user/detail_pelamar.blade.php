@@ -62,18 +62,19 @@
                             <p class="text-muted font-size-16">Data Analyst</p>
                             <h4 class="mb-sm-0 font-size-18 mt-4">CV</h4>
                             <p class="text-muted font-size-16"><a href="{{ url('proxy-cv/' . str_replace('../public/upload/cv/', '', $userData['cv']['link'])) }}">Download</a></p>
-                            <h4 class="mb-sm-0 font-size-18 mt-4">Lokasi</h4>
-                            <p class="text-muted font-size-16">Jakarta</p>
+                            
                         </div>
                     </div>
                     <div class="col-xl-2 col-md-2 pt-lg-5">
-                        <div>
+                        <div><!--
                             <h4 class="mb-sm-0 font-size-18 mt-4">Pengalaman Kerja</h4>
                             <p class="text-muted font-size-16">4 Tahun</p>
                             <h4 class="mb-sm-0 font-size-18 mt-4">Bahasa Inggris</h4>
-                            <p class="text-muted font-size-16">Fasih</p>
+                            <p class="text-muted font-size-16">Fasih</p>-->
                             <h4 class="mb-sm-0 font-size-18 mt-4">Status</h4>
                             <p class="text-muted font-size-16">{{ $userData['status'] }}</p>
+                            <h4 class="mb-sm-0 font-size-18 mt-4">Lokasi</h4>
+                            <p class="text-muted font-size-16">Jakarta</p>
                         </div>
                     </div>
                     <style>

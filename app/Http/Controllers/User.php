@@ -16,6 +16,7 @@ use App\Mail\OtpMail;
 use App\Mail\ResetPasswordMail;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Collection;
 
 
 class User extends Controller
@@ -113,7 +114,7 @@ class User extends Controller
 
             if ($response->successful()) {
                 return redirect()->route('form_job')->with('success', 'Lowongan Berhasil Ditambahkan');
-            }//echo $response->body();
+            } //echo $response->body();
             return redirect()->back()->with('error', 'Lowongan Gagal Ditambahkan');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Tidak terhubung ke server');
@@ -264,7 +265,7 @@ class User extends Controller
                 $pool->withToken($token)->get('https://api.carikerjo.id/sub-categories'),
                 $pool->withToken($token)->get("https://api.carikerjo.id/applications/job/{$id}"),
             ]);
-            
+
             // Jika salah satu request gagal, handle di sini
             $failedResponse = array_filter($responses, fn($response) => !$response->successful());
             if (count($failedResponse) > 0) {
@@ -277,7 +278,7 @@ class User extends Controller
             $subCategories = $responses[1]->json('data');
             $applications = $responses[2]->json('data');
             $experiences = $responses[2]['data'][0]['user']['experiences'];
-            
+
 
             // Sub-kategori yang sesuai dengan job
             $subCategoriesShow = collect($subCategories)->firstWhere('_id', $jobs['subCategory']);
@@ -322,7 +323,7 @@ class User extends Controller
             $responses = Http::pool(fn($pool) => [
                 $pool->withToken($token)->get("https://api.carikerjo.id/applications/job/{$jobId}"),
             ]);
-            
+
             // Jika salah satu request gagal, handle di sini
             $failedResponse = array_filter($responses, fn($response) => !$response->successful());
             if (count($failedResponse) > 0) {
@@ -330,7 +331,7 @@ class User extends Controller
                 return view('user.api_error');
             }
 
-            $applications = $responses[0]->json('data');            
+            $applications = $responses[0]->json('data');
             $userData = collect($applications)->firstWhere('_id', $id);
             return view('user.detail_pelamar', compact('userData'));
         } catch (\Exception $e) {
@@ -341,29 +342,267 @@ class User extends Controller
 
     public function indexUser()
     {
-        $id = '67336ccc8d85e7b5e026d80a';
         $token = session('api_token');
         try {
-            $responses = Http::pool(fn($pool) => [
-                $pool->withToken($token)->get("https://api.carikerjo.id/applications/job/{$id}"),
-            ]);
-            
-            // Jika salah satu request gagal, handle di sini
-            $failedResponse = array_filter($responses, fn($response) => !$response->successful());
-            if (count($failedResponse) > 0) {
-                session()->flash('notifAPI', 'Halaman Detail Job');
+            // Ambil data pengguna
+            $response = Http::withToken($token)->get('https://api.carikerjo.id/users');
+
+            // Cek jika response gagal
+            if (!$response->successful()) {
+                session()->flash('notifAPI', 'Halaman Data User');
                 return view('user.api_error');
             }
 
-            
-            $applications = $responses[0]->json('data');
-            $experiences = $responses[0]['data'][0]['user']['experiences'];
-            
-
-            return view('user.user', compact('applications', 'experiences'));
+            // Dapatkan data dari response
+            $users = $response->json()['data'];
+            // Pass the data to the view
+            return view('user.user', compact('users'));
         } catch (\Exception $e) {
-            session()->flash('notifAPI', 'Halaman Detail Job');
+            session()->flash('notifAPI', 'Halaman Data User');
             return view('user.api_error');
+        }
+    }
+
+    function indexMessage()
+    {
+        $token = session('api_token');
+        try {
+            // Ambil data pesan dari API
+            $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message');
+            if (!$responseMessages->successful()) {
+                session()->flash('notifAPI', 'Halaman Message');
+                return view('user.api_error');
+            }
+            $messages = collect($responseMessages->json()['data']); // Ubah menjadi Collection untuk kemudahan manipulasi
+
+            // Ambil data pengguna dari API
+            $responseUsers = Http::withToken($token)->get('https://api.carikerjo.id/users');
+            if (!$responseUsers->successful()) {
+                session()->flash('notifAPI', 'Gagal mengambil data pengguna');
+                return view('user.api_error');
+            }
+            $users = collect($responseUsers->json()['data']);
+
+            // Gabungkan data pesan dengan nama pengirim dan avatar, kemudian kelompokkan berdasarkan 'from'
+            $groupedMessages = $messages->map(function ($message) use ($users) {
+                $sender = $users->firstWhere('_id', $message['from']);
+                return [
+                    '_id' => $message['_id'],
+                    'content' => $message['content'],
+                    'status' => $message['status'],
+                    'from' => $message['from'],
+                    'createdAt' => $message['createdAt'],
+                    'sender_name' => $sender['name'] ?? 'Unknown',
+                    'sender_avatar' => $sender['avatar'] ?? '../public/upload/avatar/default.jpg',
+                ];
+            })
+            ->sortByDesc('createdAt') // Mengurutkan dari yang terbaru ke lama
+            ->groupBy('from');
+
+            // Kirim data terkelompok ke view
+            return view('user.message', compact('groupedMessages'));
+        } catch (\Exception $e) {
+            session()->flash('notifAPI', 'Terjadi kesalahan saat memuat data pesan');
+            return view('user.api_error');
+        }
+    }
+
+    public function detailMessage($id)
+    {
+        $token = session('api_token');
+        try {
+            // Ambil data pesan dari API
+            $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message');
+            if (!$responseMessages->successful()) {
+                session()->flash('notifAPI', 'Halaman Message');
+                return view('user.api_error');
+            }
+            $messages = collect($responseMessages->json()['data']); // Ubah menjadi Collection untuk kemudahan manipulasi
+
+            // Ambil data pengguna dari API
+            $responseUsers = Http::withToken($token)->get('https://api.carikerjo.id/users');
+            if (!$responseUsers->successful()) {
+                session()->flash('notifAPI', 'Gagal mengambil data pengguna');
+                return view('user.api_error');
+            }
+            $users = collect($responseUsers->json()['data']);
+
+            // Gabungkan data pesan dengan nama pengirim dan avatar, kemudian kelompokkan berdasarkan 'from'
+            $groupedMessages = $messages->map(function ($message) use ($users) {
+                $sender = $users->firstWhere('_id', $message['from']);
+                return [
+                    '_id' => $message['_id'],
+                    'content' => $message['content'],
+                    'status' => $message['status'],
+                    'from' => $message['from'],
+                    'createdAt' => $message['createdAt'],
+                    'sender_name' => $sender['name'] ?? 'Unknown',
+                    'sender_avatar' => $sender['avatar'],
+                ];
+            })
+            ->sortByDesc('createdAt') // Mengurutkan dari yang terbaru ke lama
+            ->groupBy('from');
+
+            $rUser = $users->firstWhere('_id', $id);
+            // Kirim data terkelompok ke view
+            return view('user.message_read', compact('groupedMessages','rUser'));
+        } catch (\Exception $e) {
+            session()->flash('notifAPI', 'Terjadi kesalahan saat memuat data pesan');
+            return view('user.api_error');
+        }
+    }
+
+    public function detailMessageAjax($id)
+    {
+
+        $token = session('api_token');
+
+        try {
+
+            // Ambil data pesan dari API
+            $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message');
+            if (!$responseMessages->successful()) {
+                session()->flash('notifAPI', 'Halaman Message');
+                return view('user.api_error');
+            }
+
+            // Decode response API
+            $messages = $responseMessages->json()['data'];
+
+            // Filter data pesan berdasarkan "from" menggunakan $id
+            $filteredMessages = array_filter($messages, function ($message) use ($id) {
+                return $message['from'] === $id;
+            });
+
+            // Ambil data pengguna dari API
+            $responseUsers = Http::withToken($token)->get('https://api.carikerjo.id/users');
+            if (!$responseUsers->successful()) {
+                session()->flash('notifAPI', 'Gagal mengambil data pengguna');
+                return view('user.api_error');
+            }
+
+            // Decode response API pengguna
+            $users = $responseUsers->json()['data'];
+
+            // Filter data pengguna berdasarkan "id"
+            $filteredUser = array_filter($users, function ($user) use ($id) {
+                return $user['_id'] === $id;
+            });
+
+            // Pastikan hanya ada satu pengguna yang ditemukan
+            $user = reset($filteredUser); // Ambil elemen pertama dari hasil filter
+            if (!$user) {
+                return response()->json(['error' => 'User not found'], 404);
+            }
+
+            $userHtml = '
+            <div class="p-3 px-lg-4 border-bottom">
+                <div class="row">
+                    <div class="col-xl-4 col-7">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0 avatar-sm me-3 d-sm-block d-none">
+                                <img src="/upload/avatar/user.jpg" alt="" class="img-fluid d-block rounded-circle">
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="font-size-14 mb-1 text-truncate"><a href="#" class="text-dark"></a></h5>
+                                <p class="text-muted text-truncate mb-0">Online</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            ';
+
+            // Buat HTML untuk pesan
+            $messageHtml = '
+            <ul class="list-unstyled mb-0">
+                <li class="right">
+                    <div class="conversation-list">
+                        <div class="d-flex">
+                            <img src="/upload/avatar/user.jpg" class="rounded-circle avatar-sm" alt="">
+                            <div class="flex-1">
+                                <div class="ctext-wrap">
+                                    <div class="ctext-wrap-content">
+                                        <div class="conversation-name"><span class="time">12:00 PM</span></div>
+                                        <p class="mb-0">Hello!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="left">
+                    <div class="conversation-list">
+                        <div class="d-flex">
+                            <img src="/upload/avatar/admin.jpg" class="rounded-circle avatar-sm" alt="">
+                            <div class="flex-1">
+                                <div class="ctext-wrap">
+                                    <div class="ctext-wrap-content">
+                                        <div class="conversation-name"><span class="time">12:01 PM</span></div>
+                                        <p class="mb-0">Hi, how are you?</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            ';
+
+            dd([
+                'userHtml' => $userHtml,
+                'messageHtml' => $messageHtml,
+            ]);
+
+            return response()->json([
+                'userHtml' => $userHtml,
+                'messageHtml' => $messageHtml,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to load data'], 500);
+        }
+    }
+
+
+    function message_send(Request $request)
+    {
+        $token = session('api_token');
+        // Kirim request POST ke API
+        // Validasi input
+        $validated = $request->validate([
+            'userId' => 'required',
+            'content' => 'required|string',
+        ]);
+
+        // Data yang akan dikirim ke API
+        $data = [
+            'fromId' => session('user_id'),
+            'content' => $validated['content'],
+            'status' => 'unread',
+            'userId' => $validated['userId'],
+        ];
+
+        try {
+            $response = Http::withToken($token)->post('https://api.carikerjo.id/messages/send-message', $data);
+
+            // Cek jika API mengembalikan response sukses
+            if ($response->successful()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Pesan berhasil dikirim!',
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal mengirim pesan. Coba lagi nanti.',
+                ], 500);
+            }
+        } catch (\Exception $e) {
+            // Tangani error jika request ke API gagal
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan jaringan. Coba lagi nanti.',
+            ], 500);
         }
     }
 }

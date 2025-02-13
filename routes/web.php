@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use App\Http\Middleware\EnsureTokenIsValid;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Account;
@@ -149,6 +151,10 @@ Route::middleware('auth.token')->group(function () {
         Route::get('/detail-pelamar/{id}/{jobId}', [User::class, 'detail_pelamar'])->name('detail_pelamar');
 
         Route::get('/user', [User::class, 'indexUser'])->name('index_user');
+
+        Route::get('/message', [User::class, 'indexMessage'])->name('index_message');
+        Route::get('/read/{id}', [User::class, 'detailMessage'])->name('detail_message');
+        Route::post('/send', [User::class, 'message_send'])->name('message_send');
     });
     Route::get('/part-1', [Account::class, 'company_profile_part1'])->name('company_profile_part1');
     Route::post('/submit-part-1', [Account::class, 'submitCompany_profile_part1'])->name('submit_company_profile_part1');
@@ -159,12 +165,33 @@ Route::middleware('auth.token')->group(function () {
     Route::get('/proxy-image/logo/{path}', function ($path) {
         $url = "https://api.carikerjo.id/upload/logo/" . $path;
 
-     
-       $client = new \GuzzleHttp\Client();
-       $response = $client->get($url);
+        $client = new Client();
 
-       return response($response->getBody(), 200)
-           ->header('Content-Type', $response->getHeader('Content-Type')[0]);
+        try {
+            // Ambil gambar dari API
+            $response = $client->get($url);
+
+            return response($response->getBody(), 200)
+                ->header('Content-Type', $response->getHeader('Content-Type')[0]);
+        } catch (RequestException $e) {
+            // Jika gagal, kembalikan gambar default yang ada di assets
+            return redirect(asset('assets/images/u_kerjo.png'));
+        }
+    });
+
+    Route::get('/proxy-image/src/{path}', function ($path) {
+        $filePath = public_path("assets/images/logo/" . $path);
+
+
+        if (!file_exists($filePath)) {
+            abort(404, 'Image not found');
+        }
+
+        $mimeType = mime_content_type($filePath);
+
+        return response()->file($filePath, [
+            'Content-Type' => $mimeType,
+        ]);
     });
 
     Route::get('/proxy-image/gallery/{path}', function ($path) {
@@ -180,14 +207,20 @@ Route::middleware('auth.token')->group(function () {
 
     Route::get('/proxy-image/avatar/{path}', function ($path) {
         $url = "https://api.carikerjo.id/upload/avatar/" . $path;
+        $client = new Client();
 
-        // Gunakan Guzzle HTTP Client untuk mengambil gambar dari URL asli
-        $client = new \GuzzleHttp\Client();
-        $response = $client->get($url);
+        try {
+            // Ambil gambar dari API
+            $response = $client->get($url);
 
-        return response($response->getBody(), 200)
-            ->header('Content-Type', $response->getHeader('Content-Type')[0]);
+            return response($response->getBody(), 200)
+                ->header('Content-Type', $response->getHeader('Content-Type')[0]);
+        } catch (RequestException $e) {
+            // Jika gagal, kembalikan gambar default yang ada di assets
+            return redirect(asset('assets/images/u_kerjo.png'));
+        }
     });
+
 
     Route::get('/proxy-cv/{path}', function ($path) {
         $url = "https://api.carikerjo.id/upload/cv/" . $path;

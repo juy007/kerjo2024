@@ -143,7 +143,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>
                                         <div class="d-flex">
-                                            <img src="{{ url('proxy-image/avatar/'. str_replace('../public/upload/avatar/', '', $applications['user']['avatar'] )) }}" class="avatar-md rounded-circle" alt="img" />
+                                            <img src="{{ url('proxy-image/avatar/'. str_replace(['../public/upload/avatar/', './public/upload/avatar/'], '', $applications['user']['avatar'] )) }}" class="avatar-md rounded-circle" alt="img" />
                                             <div class="flex-1 ms-4">
                                                 <h5 class="mb-2 font-size-15 text-primary"><a href="{{ route('detail_pelamar',  ['id' => $applications['_id'], 'jobId' => $applications['job']]) }}">{{ $applications['user']['name'] }}</a></h5>
                                                 <p class="text-muted">{{ $applications['user']['email'] }}</p>
@@ -169,7 +169,7 @@
                                             <input type="hidden" name="userId" value="{{ $applications['user']['_id'] }}">
                                             <input type="hidden" name="status" value="Rejected">
                                             <input type="hidden" name="jobId" value="{{ $applications['job'] }}">
-                                            <button type="submit" class="btn btn-outline-danger">Tolak</button>
+                                            <!--<button type="submit" class="btn btn-outline-danger">Tolak</button>-->
                                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formUpdate{{ $applications['_id'] }}">Proses</button>
                                         </form>
                                         <div id="formUpdate{{ $applications['_id'] }}" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">
@@ -237,59 +237,8 @@
 <!-- Datatable init js -->
 <script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script>
 
-<script>
-    $(document).ready(function() {
-        let tagfilter = document.getElementById('filter');
-        let tagsearch = document.querySelector('#datatable_filter input[type="search"]');
-
-        if (tagfilter && tagsearch) {
-            tagfilter.appendChild(tagsearch);
-        } else {
-            console.error("Elemen tidak ditemukan!");
-        }
-        $('input[type="search"]').attr('placeholder', 'Search');
-        $('input[type="search"]').removeClass('form-control-sm');
-        document.getElementById('datatable_filter').innerHTML = "";
-
-        let show_data = document.getElementById('show_data');
-        let f_show_data = document.querySelector('#dataTables_length');
-        show_data.appendChild(f_show_data);
-        console.log(f_show_data);
-    });
-</script>
-
-<script>
-    $(document).ready(function() {
-        // Inisialisasi DataTable
-        const table = $('#datatable').DataTable();
-
-        // Mendapatkan elemen dropdown
-        const statusEl = document.querySelector('#statusFilter');
-
-        // Fungsi pencarian kustom
-        $.fn.dataTable.ext.search.push(
-            function(settings, data, dataIndex) {
-                // Mendapatkan nilai filter
-                var status = statusEl.value;
-                var rowStatus = data[3]; // Asumsi kolom status ada di index ke-5
-
-                // Mengembalikan true jika baris harus ditampilkan
-                if (status === '' || rowStatus === status) {
-                    return true;
-                }
-
-                // Mengembalikan false jika baris harus disembunyikan
-                return false;
-            }
-        );
-
-        // Event listener untuk filter
-        statusEl.addEventListener('change', function() {
-            table.draw(); // Redraw tabel untuk menerapkan filter
-        });
-    });
-</script>
 <script src="{{ asset('assets/js/app.js') }}"></script>
+<script src="{{ asset('assets/js/dataApply.js') }}"></script>
 </body>
 
 </html>

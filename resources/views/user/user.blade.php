@@ -6,6 +6,9 @@
 <!-- Responsive datatable examples -->
 <link href="{{ asset('assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@5.2.2/dist/emoji-button.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@5.2.2/dist/emoji-button.min.js"></script>
+
 @include('user/header_end')
 <style>
     th {
@@ -47,19 +50,30 @@
                                 {{ session('error') }}
                             </div>
                             @endif
+
+
+
+                            <h3 class="mb-sm-0 font-size-18"><i class="mdi mdi-filter"></i> Filter</h3>
+                            <hr>
                             <div id="filter" class="col-md-3 mb-3">
                             </div>
+
                             <div class="col-md-3 mb-3">
-                                <select id="statusFilter" class="form-select">
-                                    <option value="">Status</option>
-                                    <option value="">Semua</option>
-                                    <option value="Submitted">Submitted</option>
-                                    <option value="Reviewed">Reviewed</option>
-                                    <option value="Interview">Interview</option>
-                                    <option value="Rejected">Rejected</option>
-                                </select>
+                                <input type="text" class="form-control" id="lokasiFilter" name="lokasi" placeholder="Lokasi">
                             </div>
-                            <div id="show_data" class="col-md-6 mb-3">
+                            <div class="col-md-3 mb-3">
+                                <input type="text" class="form-control" id="gajiFilter" name="gaji" oninput="formatCurrency(this)" placeholder="Gaji">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <input type="text" class="form-control" id="pekerjaanFilter" name="pekerjaan" placeholder="Pekerjaan">
+                            </div>
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <button id="applyFilters" type="button" class="btn btn-secondary me-1"><i class="fa fas fa-search"></i> Cari</button>
+                                <button id="resetFilters" type="button" class="btn btn-danger"><i class="mdi mdi-close-circle"></i> Reset</button>
+                            </div>
+
+
+                            <div id="show_data" class="col-md-6">
 
                             </div>
 
@@ -70,85 +84,75 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Pelamar</th>
-                                    <th>Handphone</th><!--
-                                    <th>Jabatan</th>
-                                    <th>Pengalaman Kerja</th>-->
-                                    <th>Status</th>
-                                    <th>CV</th>
+                                    <th>Nama</th>
+                                    <th>Lokasi</th>
+                                    <th>Gaji</th>
+                                    <th>Pekerjaan</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                @foreach($applications as $applications)
+                                @foreach($users as $dataUser)
                                 <tr valign="middle">
                                     <td>{{ $loop->iteration }}</td>
                                     <td>
                                         <div class="d-flex">
-                                            <img src="{{ url('proxy-image/avatar/'. str_replace('../public/upload/avatar/', '', $applications['user']['avatar'] )) }}" class="avatar-md rounded-circle" alt="img" />
+                                            <img src="{{ url('proxy-image/avatar/'. str_replace(['../public/upload/avatar/', './public/upload/avatar/'], '', $dataUser['avatar'] )) }}" class="avatar-md rounded-circle" alt="img" />
                                             <div class="flex-1 ms-4">
-                                                <h5 class="mb-2 font-size-15 text-primary"><a href="{{ route('detail_pelamar',  ['id' => $applications['_id'], 'jobId' => $applications['job']]) }}">{{ $applications['user']['name'] }}</a></h5>
-                                                <p class="text-muted">{{ $applications['user']['email'] }}</p>
+                                                <h5 class="mb-2 font-size-15 text-primary"><a href="">{{ $dataUser['name'] }}</a></h5>
+                                                <p class="text-muted">{{ $dataUser['email'] }} | {{ $dataUser['phone'] ?? 'N/A' }}</p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>{{ $applications['user']['phone'] }}</td><!--
-                                    <td>{{ $experiences[0]['position'] }}</td>
-                                    <td align="center">
-                                        @php
-                                        $startYear = (int) $experiences[0]['startYear'];
-                                        $endYear = (int) $experiences[0]['endYear'];
-                                        $yearsWorked = $endYear - $startYear;
-                                        @endphp
-                                        {{ $yearsWorked }} Tahun
-                                    </td>-->
-                                    <td>{{ $applications['status'] }}</td>
-                                    <td><a href="{{ url('proxy-cv/' . str_replace('../public/upload/cv/', '', $applications['cv']['link'])) }}">Download</a></td>
+                                    <td>{{ $dataUser['location'] ?? '-' }}</td>
+                                    <td></td>
+                                    <td>{{ $dataUser['title'] ?? '-' }}</td>
                                     <td>
-                                        <form method="POST" action="{{ route('save_update_status', $applications['_id']) }}" enctype="multipart/form-data">
-                                            @csrf
-                                            @method('PUT')
-                                            <input type="hidden" name="userId" value="{{ $applications['user']['_id'] }}">
-                                            <input type="hidden" name="status" value="Rejected">
-                                            <input type="hidden" name="jobId" value="{{ $applications['job'] }}">
-                                            <button type="submit" class="btn btn-outline-danger">Tolak</button>
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formUpdate{{ $applications['_id'] }}">Proses</button>
-                                        </form>
-                                        <div id="formUpdate{{ $applications['_id'] }}" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">
-                                            <div class="modal-dialog">
-                                                <form class="modal-content" method="POST" action="{{  route('save_update_status', $applications['_id']) }}">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="myModalLabel">Pilih Status</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="mb-4">
-                                                        <input type="hidden" name="userId" value="{{ $applications['user']['_id'] }}">
-                                                        <input type="hidden" name="jobId" value="{{ $applications['job'] }}">
-                                                            <select id="statusFilter" class="form-select" name="status" required>
-                                                                <option value="">Pilih Status</option>
-                                                                <option value="Submitted">Submitted</option>
-                                                                <option value="Reviewed">Reviewed</option>
-                                                                <option value="Interview">Interview</option>
-                                                                <option value="Rejected">Rejected</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Batal</button>
-                                                        <button type="submit" class="btn btn-primary waves-effect waves-light">Simpan</button>
-                                                    </div>
-                                                </form><!-- /.modal-content -->
-                                            </div>
-                                        </div><!-- end col-->
+                                        <a href="#" class="btn btn-primary btn-sm">Detail</a>
+
+                                        <button type="button" class="btn btn-warning btn-sm openMessageModal"
+                                            data-id="{{ $dataUser['_id'] }}"
+                                            data-name="{{ $dataUser['name'] }}"
+                                            data-avatar="{{ url('proxy-image/avatar/'. str_replace('../public/upload/avatar/', '', $dataUser['avatar'] )) }}">
+                                            Message
+                                        </button>
                                     </td>
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
+                        <div id="messageModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            <img id="modalAvatar" src="" alt="Avatar" class="rounded-circle avatar-md me-2">
+                                            <span id="modalName"></span>
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Alert Container -->
+                                        <div id="modalAlertContainer"></div>
+
+                                        <!-- Form -->
+                                        <form id="messageForm">
+                                            <input type="hidden" id="modalUserId" name="userId" value="{{ $dataUser['_id'] }}">
+                                            <div class="mb-3">
+                                                <textarea class="form-control mb-3" name="content" id="chatContent" rows="5" placeholder="Type your message..."></textarea>
+                                            </div>
+
+                                            <!-- Emoji Button & Submit Button -->
+                                            <div class="d-flex gap-2 justify-content-end">
+                                            <!--<button type="button" id="emojiPickerButton" class="btn btn-secondary">😀</button>-->
+                                                <button type="submit" class="btn btn-primary">Kirim</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
@@ -179,60 +183,100 @@
 
 <!-- Datatable init js -->
 <script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script>
-
-<script>
-    $(document).ready(function() {
-        let tagfilter = document.getElementById('filter');
-        let tagsearch = document.querySelector('#datatable_filter input[type="search"]');
-
-        if (tagfilter && tagsearch) {
-            tagfilter.appendChild(tagsearch);
-        } else {
-            console.error("Elemen tidak ditemukan!");
-        }
-        $('input[type="search"]').attr('placeholder', 'Search');
-        $('input[type="search"]').removeClass('form-control-sm');
-        document.getElementById('datatable_filter').innerHTML = "";
-
-        let show_data = document.getElementById('show_data');
-        let f_show_data = document.querySelector('#dataTables_length');
-        show_data.appendChild(f_show_data);
-        console.log(f_show_data);
-    });
-</script>
-
-<script>
-    $(document).ready(function() {
-        // Inisialisasi DataTable
-        const table = $('#datatable').DataTable();
-
-        // Mendapatkan elemen dropdown
-        const statusEl = document.querySelector('#statusFilter');
-
-        // Fungsi pencarian kustom
-        $.fn.dataTable.ext.search.push(
-            function(settings, data, dataIndex) {
-                // Mendapatkan nilai filter
-                var status = statusEl.value;
-                var rowStatus = data[5]; // Asumsi kolom status ada di index ke-5
-
-                // Mengembalikan true jika baris harus ditampilkan
-                if (status === '' || rowStatus === status) {
-                    return true;
-                }
-
-                // Mengembalikan false jika baris harus disembunyikan
-                return false;
-            }
-        );
-
-        // Event listener untuk filter
-        statusEl.addEventListener('change', function() {
-            table.draw(); // Redraw tabel untuk menerapkan filter
-        });
-    });
-</script>
+<script src="{{ asset('assets/js/formCurrency.js') }}"></script>
+<script src="{{ asset('assets/js/dataUser.js') }}"></script>
 <script src="{{ asset('assets/js/app.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
+        const modalUserId = document.getElementById('modalUserId');
+        const modalName = document.getElementById('modalName');
+        const modalAvatar = document.getElementById('modalAvatar');
+        const chatContent = document.getElementById('chatContent');
+        const alertContainer = document.getElementById('modalAlertContainer'); // Container untuk alert di dalam modal
+
+        // Event listener untuk tombol membuka modal
+        document.querySelectorAll('.openMessageModal').forEach(button => {
+            button.addEventListener('click', function() {
+                const userId = this.getAttribute('data-id');
+                const userName = this.getAttribute('data-name');
+                const userAvatar = this.getAttribute('data-avatar');
+
+                modalUserId.value = userId;
+                modalName.textContent = userName;
+                modalAvatar.src = userAvatar;
+
+                // Clear previous message dan alert
+                chatContent.value = '';
+                alertContainer.innerHTML = '';
+
+                // Show the modal
+                messageModal.show();
+            });
+        });
+
+        // Event listener untuk form submit
+        document.getElementById('messageForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const submitButton = this.querySelector('button[type="submit"]');
+            const chatMessage = chatContent.value.trim(); // Trim untuk menghapus spasi berlebih
+
+            // Validasi jika form kosong
+            if (chatMessage === '') {
+                showModalAlert('danger', 'Pesan tidak boleh kosong!');
+                return; // Stop pengiriman jika kosong
+            }
+
+            // Ubah tombol menjadi "Mengirim..."
+            submitButton.textContent = 'Mengirim...';
+            submitButton.disabled = true;
+
+            // Simulasi AJAX (ganti dengan endpoint API sebenarnya)
+            fetch('{{ route("message_send") }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: modalUserId.value,
+                        content: chatMessage
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showModalAlert('success', 'Pesan berhasil dikirim!');
+                        chatContent.value = ''; // Reset textarea setelah sukses
+                    } else {
+                        showModalAlert('danger', 'Terjadi kesalahan, silakan coba lagi.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showModalAlert('danger', 'Terjadi kesalahan jaringan, silakan coba lagi.');
+                })
+                .finally(() => {
+                    // Kembalikan tombol ke teks awal
+                    submitButton.textContent = 'Kirim';
+                    submitButton.disabled = false;
+                });
+        });
+
+        // Fungsi untuk menampilkan alert di dalam modal
+        function showModalAlert(type, message) {
+            const alertHTML = `
+            <div class="alert alert-${type} alert-border-left alert-dismissible fade show" role="alert">
+                <i class="mdi ${type === 'success' ? 'mdi-check-all' : 'mdi-block-helper'} me-3 align-middle"></i>
+                <strong>${type === 'success' ? 'Success' : 'Error'}</strong> - ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`;
+            alertContainer.innerHTML = alertHTML;
+        }
+    });
+</script>
 </body>
 
 </html>

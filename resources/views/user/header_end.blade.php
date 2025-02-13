@@ -33,7 +33,7 @@
                             <button type="button" class="btn header-item noti-icon position-relative" id="page-header-notifications-dropdown"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i data-feather="bell" class="icon-lg"></i>
-                                <span class="badge bg-danger rounded-pill">5</span>
+                                <span class="badge bg-danger rounded-pill">4</span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
                                 aria-labelledby="page-header-notifications-dropdown">
@@ -121,7 +121,7 @@
                         <div class="dropdown d-inline-block">
                             <button type="button" class="btn header-item bg-light-subtle border-start border-end" id="page-header-user-dropdown"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="rounded-circle header-profile-user" src="{{ url('proxy-image/logo/'. str_replace('public/upload/logo/', '', session('company_logo') )) }}" alt="Header Avatar">
+                                <img class="rounded-circle header-profile-user" src="{{ url('proxy-image/logo/'. str_replace('../public/upload/logo/', '', session('company_logo') )) }}" alt="Header Avatar">
                                 <span class="d-none d-xl-inline-block ms-1 fw-medium"></span>
                                 <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                             </button>
@@ -129,8 +129,8 @@
                                 <!-- item-->
                                  
                                 <a class="dropdown-item" href="{{ route('index_user') }}"><i class="mdi mdi-face-profile font-size-16 align-middle me-1"></i> User</a>
-                                <!--<a class="dropdown-item" href="apps-contacts-profile.html"><i class="mdi mdi-office-building font-size-16 align-middle me-1"></i> Perusahaan</a>
-                                <a class="dropdown-item" href="apps-contacts-profile.html"><i class="mdi mdi-image-multiple font-size-16 align-middle me-1"></i> Galeri</a>
+                                <a class="dropdown-item" href="{{ route('index_message') }}"><i class="mdi mdi-message font-size-16 align-middle me-1"></i> Message</a>
+                                <!--<a class="dropdown-item" href="apps-contacts-profile.html"><i class="mdi mdi-image-multiple font-size-16 align-middle me-1"></i> Galeri</a>
                                 <a class="dropdown-item" href="apps-contacts-profile.html"><i class="mdi mdi-fridge-industrial font-size-16 align-middle me-1"></i> Industri</a>
                                 <a class="dropdown-item" href="auth-lock-screen.html"><i class="mdi mdi-lock font-size-16 align-middle me-1"></i> Lock screen</a>-->
                                 <div class="dropdown-divider"></div>

@@ -81,7 +81,7 @@
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach($jobTypes['data'] as $jobType)
+                                        @foreach($jobTypes as $jobType)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $jobType['name'] }}</td>

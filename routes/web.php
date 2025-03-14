@@ -117,8 +117,6 @@ Route::get('/regencies/{id}', [Admin::class, 'regencyShow'])->name('admin.regenc
 Route::put('/regencies/{id}', [Admin::class, 'regencyUpdate'])->name('admin.regencies.update');
 Route::delete('/regencies/{id}', [Admin::class, 'regencyDestroy'])->name('admin.regencies.destroy');
 
-
-
 // Login & Register User
 Route::get('/', [Account::class, 'index'])->name('login');
 Route::post('/user-validation', [Account::class, 'loginValidation'])->name('userValidation');
@@ -175,7 +173,7 @@ Route::middleware('auth.token')->group(function () {
                 ->header('Content-Type', $response->getHeader('Content-Type')[0]);
         } catch (RequestException $e) {
             // Jika gagal, kembalikan gambar default yang ada di assets
-            return redirect(asset('assets/images/u_kerjo.png'));
+            return redirect(asset('assets/images/logo/noimg.png'));
         }
     });
 
@@ -193,6 +191,23 @@ Route::middleware('auth.token')->group(function () {
             'Content-Type' => $mimeType,
         ]);
     });
+
+
+    Route::get('/proxy-img/{path}', function ($path) {
+        $filePath = public_path("assets/images/" . $path);
+
+
+        if (!file_exists($filePath)) {
+            abort(404, 'Image not found');
+        }
+
+        $mimeType = mime_content_type($filePath);
+
+        return response()->file($filePath, [
+            'Content-Type' => $mimeType,
+        ]);
+    });
+
 
     Route::get('/proxy-image/gallery/{path}', function ($path) {
         $url = "https://api.carikerjo.id/upload/gallery/" . $path;
@@ -217,7 +232,7 @@ Route::middleware('auth.token')->group(function () {
                 ->header('Content-Type', $response->getHeader('Content-Type')[0]);
         } catch (RequestException $e) {
             // Jika gagal, kembalikan gambar default yang ada di assets
-            return redirect(asset('assets/images/u_kerjo.png'));
+            return redirect(asset('assets/images/logo/noimg.png'));
         }
     });
 

@@ -80,7 +80,7 @@
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach($industries['data'] as $industrie)
+                                        @foreach($industries as $industrie)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $industrie['name'] }}</td>

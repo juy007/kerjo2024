@@ -80,12 +80,12 @@
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach($provinces['data'] as $province)
+                                        @foreach($provinces as $province)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $province['name'] }}</td>
                                             <td>
-                                                <a href="#" class="btn btn-soft-success btn-sm waves-effect waves-light"><i data-feather="eye"></i> Regencies</a>
+                                                <a href="{{ route('admin.provinces.show', $province['_id']) }}" class="btn btn-soft-success btn-sm waves-effect waves-light"><i data-feather="eye"></i> Regencies</a>
                                                 <a href="#" class="btn btn-soft-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#formUpdate{{ $province['_id'] }}"><i data-feather="edit"></i> Edit</a>
                                                 <div id="formUpdate{{ $province['_id'] }}" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">
                                                     <div class="modal-dialog">

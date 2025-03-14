@@ -81,7 +81,7 @@
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach($categories['data'] as $category)
+                                        @foreach($categories as $category)
                                         <tr>
                                             <td align="center">{{ $loop->iteration }}</td>
                                             <td>{{ $category['name'] }}</td>

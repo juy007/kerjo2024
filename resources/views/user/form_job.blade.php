@@ -155,14 +155,14 @@
 
                             <div class="col-xl-8 col-md-8">
                                 <div class="phonePreview">
-                                    <img class="img-fluid" style="max-width: 100%;" src="{{ asset('assets/images/logo/phone.png') }}" alt="">
+                                    <img class="img-fluid" style="max-width:100%;" src="{{ url('proxy-image/src/phone.png') }}" alt="">
                                     <div class="screen">
                                         <div class="containerx">
                                             <h5><i class="mdi mdi-arrow-left"></i> Deskripsi Pekerjaan</h5>
                                             <div class="divider"></div><br>
                                             <div class="job-header">
 
-                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/logo/'. str_replace('public/upload/logo/', '', session('company_logo') )) }}" width="50" />
+                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/src/fav.png') }}" width="50" />
                                                 <div>
                                                     <div class="job-title">
                                                         Data Analyst
@@ -263,7 +263,7 @@
                                             </div>
                                             <div class="modal-body">
                                                 <div class="phonePreview2">
-                                                    <img class="img-fluid" style="max-width:100%;" src="{{ asset('assets/images/logo/phone.png') }}" alt="">
+                                                    <img class="img-fluid" style="max-width:100%;" src="{{ url('proxy-image/src/phone.png') }}" alt="">
                                                     <div class="screen1">
                                                         <div class="containerx">
                                                             <h5><i class="mdi mdi-arrow-left"></i> Deskripsi Pekerjaan</h5>

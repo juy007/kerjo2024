@@ -368,7 +368,9 @@ class User extends Controller
         $token = session('api_token');
         try {
             // Ambil data pesan dari API
-            $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message');
+            $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message', [
+                'limit' => 100,
+            ]);
             if (!$responseMessages->successful()) {
                 session()->flash('notifAPI', 'Halaman Message');
                 return view('user.api_error');
@@ -412,7 +414,9 @@ class User extends Controller
         $token = session('api_token');
         try {
             // Ambil data pesan dari API
-            $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message');
+            $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message', [
+                'limit' => 100,
+            ]);
             if (!$responseMessages->successful()) {
                 session()->flash('notifAPI', 'Halaman Message');
                 return view('user.api_error');
@@ -460,7 +464,9 @@ class User extends Controller
         try {
 
             // Ambil data pesan dari API
-            $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message');
+            $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message', [
+                'limit' => 100,
+            ]);
             if (!$responseMessages->successful()) {
                 session()->flash('notifAPI', 'Halaman Message');
                 return view('user.api_error');

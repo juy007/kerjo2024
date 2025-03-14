@@ -46,9 +46,13 @@
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <div class="mb-4">
+                                                    <div>
                                                         <label class="form-label" for="currencies"></label>
                                                         <input class="form-control" type="text" id="currencies" name="currencies" placeholder="Currencies">
+                                                    </div>
+                                                    <div>
+                                                        <label class="form-label" for="symbol1"></label>
+                                                        <input class="form-control" type="text" id="symbol1" name="symbol" placeholder="Symbol">
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -77,13 +81,15 @@
                                         <tr>
                                             <th>No</th>
                                             <th>Nama Currencies</th>
+                                            <th>Simbol</th>
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach($currencies['data'] as $currencies)
+                                        @foreach($currencies as $currencies)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $currencies['name'] }}</td>
+                                            <td>{{ $currencies['symbol'] }}</td>
                                             <td>
                                                 <a href="#" class="btn btn-soft-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#formUpdate{{ $currencies['_id'] }}"><i data-feather="edit"></i> Edit</a>
                                                 <div id="formUpdate{{ $currencies['_id'] }}" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">
@@ -99,6 +105,10 @@
                                                                 <div class="mb-4">
                                                                     <label class="form-label" for="currencies"></label>
                                                                     <input class="form-control" type="text" id="currencies" name="currencies" value="{{ $currencies['name'] }}" placeholder="Currencies">
+                                                                </div>
+                                                                <div class="mb-4">
+                                                                    <label class="form-label" for="symbol"></label>
+                                                                    <input class="form-control" type="text" id="symbol" name="symbol" value="{{ $currencies['symbol'] }}" placeholder="Currencies">
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">

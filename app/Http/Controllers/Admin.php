@@ -72,13 +72,34 @@ class Admin extends Controller
     {
         $token = session('api_token_admin');
         try {
-            $response = Http::withToken($token)->get('https://api.carikerjo.id/companies');
+            $response = Http::withToken($token)->get('https://api.carikerjo.id/companies', [
+                'limit' => 100,
+            ]);
 
             if ($response->successful()) {
-                $company = $response->json();
+                $data = $response->json();
+                $company = $data['data']['findQuery'] ?? [];
+                
                 return view('admin.company', compact('company'));
             }
-            return redirect()->back()->with('error', 'Gagal mengambil data Job Statuses');
+            return redirect()->back()->with('error', 'Gagal mengambil data Company');
+        } catch (\Exception $e) {
+            return redirect()->route('db_error');
+        }
+    }
+
+    public function companyShow($id)
+    {
+        $token = session('api_token_admin');
+        try {
+            $response = Http::withToken($token)->get("https://api.carikerjo.id/companies/{$id}");
+            
+            if ($response->successful()) {
+                $company = $response->json();
+                return view('admin.company_detail', compact('company'));
+            }
+
+            return redirect()->back()->with('error', 'Gagal mengambil data Company');
         } catch (\Exception $e) {
             return redirect()->route('db_error');
         }
@@ -88,10 +109,14 @@ class Admin extends Controller
     {
         $token = session('api_token_admin');
         try {
-            $response = Http::withToken($token)->get('https://api.carikerjo.id/job-statuses');
+            $response = Http::withToken($token)->get('https://api.carikerjo.id/job-statuses', [
+                'limit' => 100,
+            ]);
 
             if ($response->successful()) {
-                $jobStatuses = $response->json(); // Mengambil data response sebagai array
+                $data = $response->json();
+                $jobStatuses = $data['data']['findQuery'] ?? [];
+                
                 return view('admin.job-statuses', compact('jobStatuses'));
             }
 
@@ -173,10 +198,14 @@ class Admin extends Controller
     {
         $token = session('api_token_admin');
         try {
-            $response = Http::withToken($token)->get('https://api.carikerjo.id/job-levels');
+            $response = Http::withToken($token)->get('https://api.carikerjo.id/job-levels', [
+                'limit' => 100,
+            ]);
 
             if ($response->successful()) {
-                $jobLevels = $response->json();
+                $data = $response->json();
+                $jobLevels = $data['data']['findQuery'] ?? [];
+
                 return view('admin.job-levels', compact('jobLevels'));
             }
 
@@ -252,10 +281,14 @@ class Admin extends Controller
     {
         $token = session('api_token_admin');
         try {
-            $response = Http::withToken($token)->get('https://api.carikerjo.id/job-types');
+            $response = Http::withToken($token)->get('https://api.carikerjo.id/job-types', [
+                'limit' => 100,
+            ]);
 
             if ($response->successful()) {
-                $jobTypes = $response->json();
+                $data = $response->json();
+                $jobTypes = $data['data']['findQuery'] ?? [];
+                
                 return view('admin.job-types', compact('jobTypes'));
             }
 
@@ -330,10 +363,16 @@ class Admin extends Controller
     public function provinceIndex()
     {
         $token = Session::get('api_token_admin');
+     
         try {
-            $response = Http::withToken($token)->get('https://api.carikerjo.id/provinces');
+            $response = Http::withToken($token)->get('https://api.carikerjo.id/provinces', [
+                'limit' => 100,
+            ]);
+
             if ($response->successful()) {
-                $provinces = $response->json();
+                $data = $response->json();
+                $provinces = $data['data']['findQuery'] ?? [];
+                
                 return view('admin.provinces', compact('provinces'));
             }
 
@@ -345,11 +384,13 @@ class Admin extends Controller
 
     public function provinceStore(Request $request)
     {
+        $token = session('api_token_admin');
+        
         $validated = $request->validate([
             'provinces' => 'required|string|max:255',
         ]);
 
-        $token = session('api_token_admin');
+        
         try {
             $response = Http::withToken($token)->post('https://api.carikerjo.id/provinces', [
                 'name' => $validated['provinces'],
@@ -369,10 +410,11 @@ class Admin extends Controller
     {
         $token = session('api_token_admin');
         try {
-            $response = Http::withToken($token)->delete("https://api.carikerjo.id/provinces/{$id}");
+            $response = Http::withToken($token)->get("https://api.carikerjo.id/provinces/{$id}");
+            
             if ($response->successful()) {
                 $province = $response->json();
-                return view('admin.regencies', compact('province'));
+                return view('admin.provinces_detail', compact('province'));
             }
 
             return redirect()->back()->with('error', 'Gagal mengambil data Province');
@@ -426,7 +468,9 @@ class Admin extends Controller
         try {
             $response = Http::get('https://api.carikerjo.id/regencies');
             if ($response->successful()) {
-                $regencies = $response->json();
+                $data = $response->json();
+                $regencies = $data['data']['findQuery'] ?? [];
+                
                 return view('admin.regencies.index', compact('regencies'));
             }
 
@@ -515,10 +559,16 @@ class Admin extends Controller
     public function categoryIndex()
     {
         $token = Session::get('api_token_admin');
+
         try {
-            $response = Http::withToken($token)->get('https://api.carikerjo.id/categories');
+            $response = Http::withToken($token)->get('https://api.carikerjo.id/categories', [
+                'limit' => 100,
+            ]);
+
             if ($response->successful()) {
-                $categories = $response->json();
+                $data = $response->json();
+                $categories = $data['data']['findQuery'] ?? [];
+                
                 return view('admin.categories', compact('categories'));
             }
 
@@ -659,9 +709,13 @@ class Admin extends Controller
     {
         $token = session('api_token_admin');
         try {
-            $response = Http::withToken($token)->get('https://api.carikerjo.id/industries');
+            $response = Http::withToken($token)->get('https://api.carikerjo.id/industries', [
+                'limit' => 100,
+            ]);
+
             if ($response->successful()) {
-                $industries = $response->json();
+                $data = $response->json();
+                $industries = $data['data']['findQuery'] ?? [];
                 return view('admin.industries', compact('industries'));
             }
 
@@ -753,10 +807,14 @@ class Admin extends Controller
     {
         $token = session('api_token_admin');
         try {
-            $response = Http::withToken($token)->get('https://api.carikerjo.id/currencies');
+            $response = Http::withToken($token)->get('https://api.carikerjo.id/currencies', [
+                'limit' => 100,
+            ]);
 
             if ($response->successful()) {
-                $currencies = $response->json();
+                $data = $response->json();
+                $currencies = $data['data']['findQuery'] ?? [];
+                
                 return view('admin.currencies', compact('currencies'));
             }
 
@@ -770,12 +828,14 @@ class Admin extends Controller
     {
         $validated = $request->validate([
             'currencies' => 'required|string|max:255',
+            'symbol' => 'required|string|max:255',
         ]);
 
         $token = session('api_token_admin');
         try {
             $response = Http::withToken($token)->post('https://api.carikerjo.id/currencies', [
                 'name' => $validated['currencies'],
+                'symbol' => $validated['symbol'],
             ]);
 
             if ($response->successful()) {

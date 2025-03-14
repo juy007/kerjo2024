@@ -44,7 +44,7 @@
                                     <form class="mt-4 pt-2" method="POST" action="{{ route('login_validation') }}">
                                         @csrf
                                         <div class="form-floating form-floating-custom mb-4">
-                                            <input type="text" class="form-control" id="input-username" name="email" value="runbil@carikerjo.id" placeholder="Enter User Name">
+                                            <input type="text" class="form-control" id="input-username" name="email" value="admin@carikerjo.id" placeholder="Enter User Name">
                                             <label for="input-username">Username</label> <!-- Placeholder ditambahkan -->
                                             <div class="form-floating-icon">
                                                 <i data-feather="users"></i>

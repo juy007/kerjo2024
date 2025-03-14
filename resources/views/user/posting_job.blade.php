@@ -48,60 +48,65 @@
         </div>
 
         <div class="row">
-            @foreach($jobs['data'] as $jobs)
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-xl-6 col-md-6">
-                                <div>
-                                    <div class="d-flex">
-                                        <div class="flex-1">
-                                            <p class="text-muted mb-2">
-                                                <a href="{{ route('detail_job', $jobs['_id']) }}">
-                                                    <h4 class="mb-sm-0 font-size-18">{{ $jobs['title'] }}</h4>
-                                                </a>
-                                            </p>
-                                            <p class="text-muted">{{ strip_tags($jobs['description']) }}</p>
-                                            <p class="text-muted">Last update {{ \Carbon\Carbon::parse($jobs['updatedAt'])->format('d/m/Y') }}</p>
-                                            <p class="text-muted">Expired date {{ \Carbon\Carbon::parse($jobs['endDate'])->format('d/m/Y') }}</p>
+            @if(count($jobs['data']) > 0)
+                @foreach($jobs['data'] as $jobs)
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-xl-6 col-md-6">
+                                    <div>
+                                        <div class="d-flex">
+                                            <div class="flex-1">
+                                                <p class="text-muted mb-2">
+                                                    <a href="{{ route('detail_job', $jobs['_id']) }}">
+                                                        <h4 class="mb-sm-0 font-size-18">{{ $jobs['title'] }}</h4>
+                                                    </a>
+                                                </p>
+                                                <p class="text-muted">{{ strip_tags($jobs['description']) }}</p>
+                                                <p class="text-muted">Last update {{ \Carbon\Carbon::parse($jobs['updatedAt'])->format('d/m/Y') }}</p>
+                                                <p class="text-muted">Expired date {{ \Carbon\Carbon::parse($jobs['endDate'])->format('d/m/Y') }}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-xl-3 col-md-3">
-                                <div class="text-center">
-                                    <p class="text-muted mb-2">
-                                    <h4 class="mb-sm-0 font-size-18 text-center">Total Lamaran</h4>
-                                    </p>
-                                    <h1 class="mt-5">{{ count($jobs['applications']) }}</h1>
+                                <div class="col-xl-3 col-md-3">
+                                    <div class="text-center">
+                                        <p class="text-muted mb-2">
+                                        <h4 class="mb-sm-0 font-size-18 text-center">Total Lamaran</h4>
+                                        </p>
+                                        <h1 class="mt-5">{{ count($jobs['applications']) }}</h1>
 
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xl-3 col-md-3">
-                                <div>
-                                    <ul class="list-inline float-sm-end mb-sm-0">
-                                        <li class="list-inline-item">
-                                            <a href="{{ route('edit_job', $jobs['_id']) }}" class="btn btn-soft-primary"><i class="mdi mdi-pencil font-size-18"></i></a>
-                                        </li>
-                                        <li class="list-inline-item">
-                                            <form action="{{ route('delete_job', $jobs['_id']) }}" method="POST" style="display:inline-block;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn btn-soft-danger"><i class="mdi mdi-delete font-size-18"></i></button>
-                                            </form>
+                                <div class="col-xl-3 col-md-3">
+                                    <div>
+                                        <ul class="list-inline float-sm-end mb-sm-0">
+                                            <li class="list-inline-item">
+                                                <a href="{{ route('edit_job', $jobs['_id']) }}" class="btn btn-soft-primary"><i class="mdi mdi-pencil font-size-18"></i></a>
+                                            </li>
+                                            <li class="list-inline-item">
+                                                <form action="{{ route('delete_job', $jobs['_id']) }}" method="POST" style="display:inline-block;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-soft-danger"><i class="mdi mdi-delete font-size-18"></i></button>
+                                                </form>
 
-                                        </li>
-                                    </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- end card -->
                 </div>
-                <!-- end card -->
-            </div>
-            @endforeach
+                @endforeach
+            @else
+                <img style="max-height: 500px; width:auto;" src="{{ url('proxy-image/src/nodata.png') }}" alt="" class="img-fluid mx-auto d-block">
+            @endif
         </div>
+       
     </div> <!-- container-fluid -->
 </div>
 <!-- End Page-content -->

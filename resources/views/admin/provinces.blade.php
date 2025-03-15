@@ -80,7 +80,7 @@
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach($provinces as $province)
+                                        @foreach(collect($provinces['findQuery'])->sortBy('name') as $province)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $province['name'] }}</td>

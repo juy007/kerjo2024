@@ -82,6 +82,13 @@ Route::middleware('admin.token')->group(function () {
     Route::put('/provinces/{id}', [Admin::class, 'provinceUpdate'])->name('admin.provinces.update');
     Route::delete('/provinces/{id}', [Admin::class, 'provinceDestroy'])->name('admin.provinces.destroy');
 
+    // Regencies
+    Route::get('/regencies', [Admin::class, 'regencyIndex'])->name('admin.regencies.index');
+    Route::post('/regencies', [Admin::class, 'regencyStore'])->name('admin.regencies.store');
+    Route::get('/regencies/{id}', [Admin::class, 'regencyShow'])->name('admin.regencies.show');
+    Route::put('/regencies/{id}', [Admin::class, 'regencyUpdate'])->name('admin.regencies.update');
+    Route::delete('/regencies/{id}/{province_id}', [Admin::class, 'regencyDestroy'])->name('admin.regencies.destroy');
+
     //industries
     Route::get('/industries', [Admin::class, 'industryIndex'])->name('admin.industries.index');
     Route::post('/industries', [Admin::class, 'industryStore'])->name('admin.industries.store');
@@ -94,6 +101,9 @@ Route::middleware('admin.token')->group(function () {
     Route::post('/currencies', [Admin::class, 'currenciesStore'])->name('admin.currencies.store');
     Route::put('/currencies/{id}', [Admin::class, 'currenciesUpdate'])->name('admin.currencies.update');
     Route::delete('/currencies/{id}', [Admin::class, 'currenciesDestroy'])->name('admin.currencies.destroy');
+
+    Route::get('/postall', [Admin::class, 'post_all'])->name('admin.postall');
+    Route::get('/deleteall', [Admin::class, 'delete_all'])->name('admin.deleteall');
 
     Route::get('/proxy-image/logo/{path}', function ($path) {
         $url = "https://api.carikerjo.id/upload/logo/" . $path;
@@ -110,12 +120,6 @@ Route::middleware('admin.token')->group(function () {
 });
 Route::get('/ok', [Admin::class, 'ok'])->name('ok');
 
-// Regencies
-Route::get('/regencies', [Admin::class, 'regencyIndex'])->name('admin.regencies.index');
-Route::post('/regencies', [Admin::class, 'regencyStore'])->name('admin.regencies.store');
-Route::get('/regencies/{id}', [Admin::class, 'regencyShow'])->name('admin.regencies.show');
-Route::put('/regencies/{id}', [Admin::class, 'regencyUpdate'])->name('admin.regencies.update');
-Route::delete('/regencies/{id}', [Admin::class, 'regencyDestroy'])->name('admin.regencies.destroy');
 
 // Login & Register User
 Route::get('/', [Account::class, 'index'])->name('login');

@@ -13,7 +13,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18"><a href="{{ route('admin.provinces.index') }}" class="btn btn-secondary btn-rounded btn-sm"><i data-feather="chevron-left"></i><span></span></a><i class="mdi mdi-map-marker-radius"></i> Provinces</h4>
+                    <h4 class="mb-sm-0 font-size-18"><a href="{{ route('admin.provinces.index') }}" class="btn btn-secondary btn-rounded btn-sm"><i data-feather="chevron-left"></i><span></span></a>&nbsp;&nbsp;<i class="mdi mdi-map-marker-radius"></i> Provinces / {{ $regencies['data']['name'] }}</h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
@@ -36,19 +36,20 @@
                             </div>
                             <div class="col-sm-8">
                                 <div class="text-sm-end">
-                                    <button class="btn btn-primary waves-effect waves-light me-2" data-bs-toggle="modal" data-bs-target="#formTambah">Tambah Provinces</button>
+                                    <button class="btn btn-primary waves-effect waves-light me-2" data-bs-toggle="modal" data-bs-target="#formTambah">Tambah Regencies</button>
                                     <div id="formTambah" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">
                                         <div class="modal-dialog">
-                                            <form class="modal-content" method="POST" action="{{ route('admin.provinces.store') }}">
+                                            <form class="modal-content" method="POST" action="{{ route('admin.regencies.store') }}">
                                                 @csrf
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="myModalLabel">Tambah Provinces</h5>
+                                                    <h5 class="modal-title" id="myModalLabel">Tambah Regencies</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="mb-4">
-                                                        <label class="form-label" for=" Provinces"></label>
-                                                        <input class="form-control" type="text" id="provinces" name="provinces" placeholder="Provinces">
+                                                        <label class="form-label" for="regencies"></label>
+                                                        <input class="form-control" type="text" id="regencies" name="regencies" placeholder="Regencies">
+                                                        <input type="hidden" name="province_id" value="{{ $regencies['data']['_id'] }}">
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -72,33 +73,35 @@
                                     {{ session('error') }}
                                 </div>
                                 @endif
+                                @php $province_id = $regencies['data']['_id']; @endphp
                                 <table id="datatable" class="table table-bordered dt-responsive  nowrap w-100">
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Nama Provinces</th>
+                                            <th>Nama Regencies</th>
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach($province['data']['regencies'] as $province)
+                                        @foreach($regencies['data']['regencies'] as $regencies)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $province['name'] }}</td>
+                                            <td>{{ $regencies['name'] }}</td>
                                             <td>
-                                                <a href="#" class="btn btn-soft-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#formUpdate{{ $province['_id'] }}"><i data-feather="edit"></i> Edit</a>
-                                                <div id="formUpdate{{ $province['_id'] }}" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">
+                                                <a href="#" class="btn btn-soft-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#formUpdate{{ $regencies['_id'] }}"><i data-feather="edit"></i> Edit</a>
+                                                <div id="formUpdate{{ $regencies['_id'] }}" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">
                                                     <div class="modal-dialog">
-                                                        <form class="modal-content" method="POST" action="{{ route('admin.provinces.update', $province['_id']) }}">
+                                                        <form class="modal-content" method="POST" action="{{ route('admin.regencies.update', $regencies['_id']) }}">
                                                             @csrf
                                                             @method('PUT')
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title" id="myModalLabel">Update Provinces</h5>
+                                                                <h5 class="modal-title" id="myModalLabel">Update Regencies</h5>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
                                                                 <div class="mb-4">
-                                                                    <label class="form-label" for="Provinces"></label>
-                                                                    <input class="form-control" type="text" id="provinces" name="provinces" value="{{ $province['name'] }}" placeholder="Provinces">
+                                                                    <label class="form-label" for="regencies_update"></label>
+                                                                    <input class="form-control" type="text" id="regencies_update" name="regencies" value="{{ $regencies['name'] }}" placeholder="Regencies">
+                                                                    <input type="hidden" name="province_id" value="{{ $province_id }}">
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
@@ -108,7 +111,7 @@
                                                         </form><!-- /.modal-content -->
                                                     </div>
                                                 </div><!-- end col-->
-                                                <form action="{{ route('admin.provinces.destroy', $province['_id']) }}" method="POST" style="display:inline-block;">
+                                                <form action="{{ route('admin.regencies.destroy', ['id'=>$regencies['_id'],'province_id'=>$province_id]) }}" method="POST" style="display:inline-block;">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-soft-danger btn-sm waves-effect waves-light"><i data-feather="trash-2"></i> Delete</button>

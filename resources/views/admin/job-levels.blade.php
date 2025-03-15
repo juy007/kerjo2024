@@ -81,7 +81,7 @@
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach($jobLevels as $jobLevel)
+                                        @foreach(collect($jobLevels['findQuery'])->sortBy('name') as $jobLevel)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $jobLevel['name'] }}</td>

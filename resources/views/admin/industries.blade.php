@@ -80,7 +80,7 @@
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach($industries as $industrie)
+                                        @foreach(collect($industries['findQuery'])->sortBy('name') as $industrie)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $industrie['name'] }}</td>

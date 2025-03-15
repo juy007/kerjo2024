@@ -85,7 +85,7 @@
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach($currencies as $currencies)
+                                        @foreach($currencies['findQuery'] as $currencies)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $currencies['name'] }}</td>

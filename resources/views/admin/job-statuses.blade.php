@@ -81,7 +81,7 @@
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach($jobStatuses as $jobStatus)
+                                        @foreach(collect($jobStatuses['findQuery'])->sortBy('name') as $jobStatus)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $jobStatus['name'] }}</td>

@@ -81,7 +81,7 @@
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach($categories as $category)
+                                        @foreach(collect($categories['findQuery'])->sortBy('name') as $category)
                                         <tr>
                                             <td align="center">{{ $loop->iteration }}</td>
                                             <td>{{ $category['name'] }}</td>

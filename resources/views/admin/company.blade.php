@@ -80,7 +80,7 @@
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach($company as $company)
+                                        @foreach($company['findQuery'] as $company)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td><img class="rounded-circle header-profile-user" src="{{ url('proxy-image/logo/' . str_replace('../public/upload/logo/', '', $company['logo'])) }}" alt="Header Avatar">&nbsp; {{ $company['name'] }}</td>

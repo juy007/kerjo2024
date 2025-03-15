@@ -72,13 +72,11 @@ class Admin extends Controller
     {
         $token = session('api_token_admin');
         try {
-            $response = Http::withToken($token)->get('https://api.carikerjo.id/companies', [
-                'limit' => 100,
-            ]);
+            $response = Http::withToken($token)->get('https://api.carikerjo.id/companies', [ 'limit' => 200,]);
 
             if ($response->successful()) {
                 $data = $response->json();
-                $company = $data['data']['findQuery'] ?? [];
+                $company = $data['data'];
                 
                 return view('admin.company', compact('company'));
             }
@@ -109,13 +107,11 @@ class Admin extends Controller
     {
         $token = session('api_token_admin');
         try {
-            $response = Http::withToken($token)->get('https://api.carikerjo.id/job-statuses', [
-                'limit' => 100,
-            ]);
+            $response = Http::withToken($token)->get('https://api.carikerjo.id/job-statuses', [ 'limit' => 200,]);
 
             if ($response->successful()) {
                 $data = $response->json();
-                $jobStatuses = $data['data']['findQuery'] ?? [];
+                $jobStatuses = $data['data'];
                 
                 return view('admin.job-statuses', compact('jobStatuses'));
             }
@@ -198,13 +194,11 @@ class Admin extends Controller
     {
         $token = session('api_token_admin');
         try {
-            $response = Http::withToken($token)->get('https://api.carikerjo.id/job-levels', [
-                'limit' => 100,
-            ]);
+            $response = Http::withToken($token)->get('https://api.carikerjo.id/job-levels', [ 'limit' => 200,]);
 
             if ($response->successful()) {
                 $data = $response->json();
-                $jobLevels = $data['data']['findQuery'] ?? [];
+                $jobLevels = $data['data'];
 
                 return view('admin.job-levels', compact('jobLevels'));
             }
@@ -281,13 +275,11 @@ class Admin extends Controller
     {
         $token = session('api_token_admin');
         try {
-            $response = Http::withToken($token)->get('https://api.carikerjo.id/job-types', [
-                'limit' => 100,
-            ]);
+            $response = Http::withToken($token)->get('https://api.carikerjo.id/job-types', [ 'limit' => 200,]);
 
             if ($response->successful()) {
                 $data = $response->json();
-                $jobTypes = $data['data']['findQuery'] ?? [];
+                $jobTypes = $data['data'];
                 
                 return view('admin.job-types', compact('jobTypes'));
             }
@@ -365,13 +357,11 @@ class Admin extends Controller
         $token = Session::get('api_token_admin');
      
         try {
-            $response = Http::withToken($token)->get('https://api.carikerjo.id/provinces', [
-                'limit' => 100,
-            ]);
+            $response = Http::withToken($token)->get('https://api.carikerjo.id/provinces', [ 'limit' => 100, ]);
 
             if ($response->successful()) {
                 $data = $response->json();
-                $provinces = $data['data']['findQuery'] ?? [];
+                $provinces = $data['data'];
                 
                 return view('admin.provinces', compact('provinces'));
             }
@@ -410,11 +400,11 @@ class Admin extends Controller
     {
         $token = session('api_token_admin');
         try {
-            $response = Http::withToken($token)->get("https://api.carikerjo.id/provinces/{$id}");
+            $response = Http::withToken($token)->get("https://api.carikerjo.id/provinces/{$id}", [ "limit" => 100]);
             
             if ($response->successful()) {
-                $province = $response->json();
-                return view('admin.provinces_detail', compact('province'));
+                $regencies = $response->json();
+                return view('admin.provinces_detail', compact('regencies'));
             }
 
             return redirect()->back()->with('error', 'Gagal mengambil data Province');
@@ -466,10 +456,10 @@ class Admin extends Controller
     public function regencyIndex()
     {
         try {
-            $response = Http::get('https://api.carikerjo.id/regencies');
+            $response = Http::get('https://api.carikerjo.id/regencies', [ 'limit' => 200,]);
             if ($response->successful()) {
                 $data = $response->json();
-                $regencies = $data['data']['findQuery'] ?? [];
+                $regencies = $data['data'];
                 
                 return view('admin.regencies.index', compact('regencies'));
             }
@@ -483,17 +473,19 @@ class Admin extends Controller
     public function regencyStore(Request $request)
     {
         $validated = $request->validate([
-            'provinces' => 'required|string|max:255',
+            'regencies' => 'required|string|max:255',
+            'province_id' => 'required|string|max:255',
         ]);
 
         $token = session('api_token_admin');
         try {
             $response = Http::withToken($token)->post('https://api.carikerjo.id/regencies', [
-                'name' => $validated['provinces'],
+                'name' => $validated['regencies'],
+                'provinceId' => $validated['province_id'],
             ]);
 
             if ($response->successful()) {
-                return redirect()->route('admin.regencies.index')->with('success', 'Regency berhasil ditambahkan');
+                return redirect()->route('admin.provinces.show', $validated['province_id'])->with('success', 'Regency berhasil ditambahkan');
             }
 
             return redirect()->back()->with('error', 'Gagal menambahkan Regency');
@@ -520,17 +512,19 @@ class Admin extends Controller
     public function regencyUpdate(Request $request, $id)
     {
         $validated = $request->validate([
-            'provinces' => 'required|string|max:255',
+            'regencies' => 'required|string|max:255',
+            'province_id' => 'required|string|max:255',
         ]);
 
         $token = session('api_token_admin');
         try {
             $response = Http::withToken($token)->put("https://api.carikerjo.id/regencies/{$id}", [
-                'name' => $validated['provinces'],
+                'name' => $validated['regencies'],
+                'provinceId' => $validated['province_id']
             ]);
 
             if ($response->successful()) {
-                return redirect()->route('admin.regencies.index')->with('success', 'Regency berhasil diupdate');
+                return redirect()->route('admin.provinces.show', $validated['province_id'])->with('success', 'Regency berhasil diupdate');
             }
 
             return redirect()->back()->with('error', 'Gagal memperbarui Regency');
@@ -539,14 +533,14 @@ class Admin extends Controller
         }
     }
 
-    public function regencyDestroy($id)
+    public function regencyDestroy($id,$province_id)
     {
         $token = session('api_token_admin');
         try {
             $response = Http::withToken($token)->delete("https://api.carikerjo.id/regencies/{$id}");
 
             if ($response->successful()) {
-                return redirect()->route('admin.regencies.index')->with('success', 'Regency berhasil dihapus');
+                return redirect()->route('admin.province.show', $province_id)->with('success', 'Regency berhasil dihapus');
             }
 
             return redirect()->back()->with('error', 'Gagal menghapus Regency');
@@ -561,13 +555,11 @@ class Admin extends Controller
         $token = Session::get('api_token_admin');
 
         try {
-            $response = Http::withToken($token)->get('https://api.carikerjo.id/categories', [
-                'limit' => 100,
-            ]);
+            $response = Http::withToken($token)->get('https://api.carikerjo.id/categories', [ 'limit' => 200,]);
 
             if ($response->successful()) {
                 $data = $response->json();
-                $categories = $data['data']['findQuery'] ?? [];
+                $categories = $data['data'];
                 
                 return view('admin.categories', compact('categories'));
             }
@@ -709,13 +701,11 @@ class Admin extends Controller
     {
         $token = session('api_token_admin');
         try {
-            $response = Http::withToken($token)->get('https://api.carikerjo.id/industries', [
-                'limit' => 100,
-            ]);
+            $response = Http::withToken($token)->get('https://api.carikerjo.id/industries', [ 'limit' => 200,]);
 
             if ($response->successful()) {
                 $data = $response->json();
-                $industries = $data['data']['findQuery'] ?? [];
+                $industries = $data['data'];
                 return view('admin.industries', compact('industries'));
             }
 
@@ -807,13 +797,11 @@ class Admin extends Controller
     {
         $token = session('api_token_admin');
         try {
-            $response = Http::withToken($token)->get('https://api.carikerjo.id/currencies', [
-                'limit' => 100,
-            ]);
+            $response = Http::withToken($token)->get('https://api.carikerjo.id/currencies', [ 'limit' => 200,]);
 
             if ($response->successful()) {
                 $data = $response->json();
-                $currencies = $data['data']['findQuery'] ?? [];
+                $currencies = $data['data'];
                 
                 return view('admin.currencies', compact('currencies'));
             }
@@ -885,5 +873,110 @@ class Admin extends Controller
         } catch (\Exception $e) {
             return redirect()->route('db_error');
         }
+    }
+
+    public function post_all()
+    {
+        $token = session('api_token_admin');
+
+        $vals = [
+            "Kota Bandung",
+            "Kota Bekasi",
+            "Kota Bogor",
+            "Kota Cimahi",
+            "Kota Cirebon",
+            "Kota Depok",
+            "Kota Sukabumi",
+            "Kota Tasikmalaya",
+            "Kota Banjar",
+            "Kabupaten Bandung",
+            "Kabupaten Bandung Barat",
+            "Kabupaten Bekasi",
+            "Kabupaten Bogor",
+            "Kabupaten Ciamis",
+            "Kabupaten Cianjur",
+            "Kabupaten Cirebon",
+            "Kabupaten Garut",
+            "Kabupaten Indramayu",
+            "Kabupaten Karawang",
+            "Kabupaten Kuningan",
+            "Kabupaten Majalengka",
+            "Kabupaten Pangandaran",
+            "Kabupaten Purwakarta",
+            "Kabupaten Subang",
+            "Kabupaten Sukabumi",
+            "Kabupaten Sumedang",
+            "Kabupaten Tasikmalaya"
+        ];
+
+        foreach ($vals as $val) {
+            $response = Http::withToken($token)->post('https://api.carikerjo.id/regencies', [
+                'name' => $val,
+                "provinceId" => "67d4e22fb1f9532021a83077"
+            ]);
+
+            // Cek jika request gagal
+            if (!$response->successful()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => "Failed to input ID: $val",
+                    'response' => $response->json()
+                ], $response->status());
+            }
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'post successfully'
+        ]);
+    }
+
+    public function delete_all()
+    {
+        $token = session('api_token_admin');
+
+        $ids = [
+            "67d1be440c77957c950dc62d",
+            "67d1be440c77957c950dc62a",
+            "67d1be430c77957c950dc627",
+            "67d1be430c77957c950dc624",
+            "67d1be430c77957c950dc621",
+            "67d1be430c77957c950dc61e",
+            "67d1be430c77957c950dc61b",
+            "67d1be420c77957c950dc618",
+            "67d1be420c77957c950dc615",
+            "67d1be3f0c77957c950dc612",
+            "67d1be3e0c77957c950dc609",
+            "67d1be3e0c77957c950dc606",
+            "67d1be3e0c77957c950dc603",
+            "67d1be3e0c77957c950dc600",
+            "67d1be3e0c77957c950dc5fd",
+            "67d1be3e0c77957c950dc5fa",
+            "67d1be3e0c77957c950dc5f7",
+            "67d1be3d0c77957c950dc5f4",
+            "67d1be3d0c77957c950dc5f1",
+            "67d1be3d0c77957c950dc5ee",
+            "67d1be3d0c77957c950dc5eb",
+            "67d1be3d0c77957c950dc5e8",
+            "67d1be3d0c77957c950dc5e5",
+            "67d1be3d0c77957c950dc5e2",
+            "67d1be3c0c77957c950dc5df",
+        ];
+
+        foreach ($ids as $id) {
+            $response = Http::withToken($token)->delete("https://api.carikerjo.id/provinces/{$id}");
+
+            // Cek jika request gagal
+            if (!$response->successful()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => "Failed to delete ID: $id",
+                    'response' => $response->json()
+                ], $response->status());
+            }
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Categories deleted successfully'
+        ]);
     }
 }

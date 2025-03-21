@@ -55,31 +55,22 @@
 
                             <h3 class="mb-sm-0 font-size-18"><i class="mdi mdi-filter"></i> Filter</h3>
                             <hr>
+                            <div id="filter" class="col-md-3 mb-3">
+                            </div>
 
-                            <form action="{{ route('index_user') }}" method="GET" class="row">
-                                <div class="col-md-3 mb-3">
-                                    <input type="text" class="form-control" name="nama" placeholder="Nama" value="{{ request('nama') }}">
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <input type="text" class="form-control" name="lokasi" placeholder="Lokasi" value="{{ request('lokasi') }}">
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <input type="text" class="form-control" name="gaji" placeholder="Gaji" value="{{ request('gaji') }}">
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <input type="text" class="form-control" name="pekerjaan" placeholder="Pekerjaan" value="{{ request('pekerjaan') }}">
-                                </div>
-                                <div class="col-md-12 d-flex justify-content-center">
-                                    <button type="submit" class="btn btn-secondary me-1">
-                                        <i class="fa fas fa-search"></i> Cari
-                                    </button>
-                                    <a href="{{ route('index_user') }}" class="btn btn-danger">
-                                        <i class="mdi mdi-close-circle"></i> Reset
-                                    </a>
-                                </div>
-                            </form>
-
-
+                            <div class="col-md-3 mb-3">
+                                <input type="text" class="form-control" id="lokasiFilter" name="lokasi" placeholder="Lokasi">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <input type="text" class="form-control" id="gajiFilter" name="gaji" oninput="formatCurrency(this)" placeholder="Gaji">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <input type="text" class="form-control" id="pekerjaanFilter" name="pekerjaan" placeholder="Pekerjaan">
+                            </div>
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <button id="applyFilters" type="button" class="btn btn-secondary me-1"><i class="fa fas fa-search"></i> Cari</button>
+                                <button id="resetFilters" type="button" class="btn btn-danger"><i class="mdi mdi-close-circle"></i> Reset</button>
+                            </div>
 
 
                             <div id="show_data" class="col-md-6">
@@ -89,54 +80,48 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive mb-3">
-                            <table class="table table-bordered border-primary mb-0">
+                        <table id="datatable" class="table table-bordered dt-responsive  nowrap w-100">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama</th>
+                                    <th>Lokasi</th>
+                                    <th>Gaji</th>
+                                    <th>Pekerjaan</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
 
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>User</th>
-                                        <th>Lokasi</th>
-                                        <th>Gaji</th>
-                                        <th>Pekerjaan</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($users as $dataUser)
-                                    <tr valign="middle">
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>
-                                            <div class="d-flex">
-                                                <img src="{{ url('proxy-image/avatar/'. str_replace(['../public/upload/avatar/', './public/upload/avatar/'], '', $dataUser['avatar'] )) }}" class="avatar-md rounded-circle" alt="img" />
-                                                <div class="flex-1 ms-4">
-                                                    <h5 class="mb-2 font-size-15 text-primary"><a href="">{{ $dataUser['name'] }}</a></h5>
-                                                    <p class="text-muted">{{ $dataUser['email'] }} | {{ $dataUser['phone'] ?? 'N/A' }}</p>
-                                                </div>
+                            <tbody>
+                                @foreach($users['findQuery'] as $dataUser)
+                                <tr valign="middle">
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>
+                                        <div class="d-flex">
+                                            <img src="{{ url('proxy-image/avatar/'. str_replace(['../public/upload/avatar/', './public/upload/avatar/'], '', $dataUser['avatar'] )) }}" class="avatar-md rounded-circle" alt="img" />
+                                            <div class="flex-1 ms-4">
+                                                <h5 class="mb-2 font-size-15 text-primary"><a href="">{{ $dataUser['name'] }}</a></h5>
+                                                <p class="text-muted">{{ $dataUser['email'] }} | {{ $dataUser['phone'] ?? 'N/A' }}</p>
                                             </div>
-                                        </td>
-                                        <td>{{ $dataUser['location'] ?? '-' }}</td>
-                                        <td></td>
-                                        <td>{{ $dataUser['title'] ?? '-' }}</td>
-                                        <td>
-                                            <a href="#" class="btn btn-primary btn-sm">Detail</a>
+                                        </div>
+                                    </td>
+                                    <td>{{ $dataUser['location'] ?? '-' }}</td>
+                                    <td></td>
+                                    <td>{{ $dataUser['title'] ?? '-' }}</td>
+                                    <td>
+                                        <a href="#" class="btn btn-primary btn-sm">Detail</a>
 
-                                            <button type="button" class="btn btn-warning btn-sm openMessageModal"
-                                                data-id="{{ $dataUser['_id'] }}"
-                                                data-name="{{ $dataUser['name'] }}"
-                                                data-avatar="{{ url('proxy-image/avatar/'. str_replace('../public/upload/avatar/', '', $dataUser['avatar'] )) }}">
-                                                Message
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {{-- Pagination --}}
-                        @include('user.pagination', ['currentPage' => $currentPage, 'totalPages' => $totalPages, 'route' => 'index_user'])
-
+                                        <button type="button" class="btn btn-warning btn-sm openMessageModal"
+                                            data-id="{{ $dataUser['_id'] }}"
+                                            data-name="{{ $dataUser['name'] }}"
+                                            data-avatar="{{ url('proxy-image/avatar/'. str_replace('../public/upload/avatar/', '', $dataUser['avatar'] )) }}">
+                                            Message
+                                        </button>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                         <div id="messageModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -153,14 +138,14 @@
 
                                         <!-- Form -->
                                         <form id="messageForm">
-                                            <input type="hidden" id="modalUserId" name="userId" value="">
+                                            <input type="hidden" id="modalUserId" name="userId" value="{{ $dataUser['_id'] }}">
                                             <div class="mb-3">
                                                 <textarea class="form-control mb-3" name="content" id="chatContent" rows="5" placeholder="Type your message..."></textarea>
                                             </div>
 
                                             <!-- Emoji Button & Submit Button -->
                                             <div class="d-flex gap-2 justify-content-end">
-                                                <!--<button type="button" id="emojiPickerButton" class="btn btn-secondary">😀</button>-->
+                                            <!--<button type="button" id="emojiPickerButton" class="btn btn-secondary">😀</button>-->
                                                 <button type="submit" class="btn btn-primary">Kirim</button>
                                             </div>
                                         </form>
@@ -199,6 +184,7 @@
 <!-- Datatable init js -->
 <script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script>
 <script src="{{ asset('assets/js/formCurrency.js') }}"></script>
+<script src="{{ asset('assets/js/dataUser.js') }}"></script>
 <script src="{{ asset('assets/js/app.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {

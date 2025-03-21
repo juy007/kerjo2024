@@ -105,18 +105,18 @@ Route::middleware('admin.token')->group(function () {
     Route::get('/postall', [Admin::class, 'post_all'])->name('admin.postall');
     Route::get('/deleteall', [Admin::class, 'delete_all'])->name('admin.deleteall');
 
-    Route::get('/proxy-image/logo/{path}', function ($path) {
-        $url = "https://api.carikerjo.id/upload/logo/" . $path;
-
-        // Gunakan Guzzle HTTP Client untuk mengambil gambar dari URL asli
-        $client = new \GuzzleHttp\Client();
-        $response = $client->get($url);
-
-        return response($response->getBody(), 200)
-            ->header('Content-Type', $response->getHeader('Content-Type')[0]);
-    });
 
     Route::post('/adminlogout', [Admin::class, 'logout'])->name('admin_logout');
+
+    Route::get('/proxy-image/admin/{path}', function ($path) {
+        $filePath = public_path("assets/images/logo/" . $path);
+
+        if (!file_exists($filePath)) {
+            return redirect('/kerjo-img'); // Redirect jika file tidak ditemukan
+        }
+
+        return response()->file($filePath);
+    });
 });
 Route::get('/ok', [Admin::class, 'ok'])->name('ok');
 
@@ -166,7 +166,6 @@ Route::middleware('auth.token')->group(function () {
 
     Route::get('/proxy-image/logo/{path}', function ($path) {
         $url = "https://api.carikerjo.id/upload/logo/" . $path;
-
         $client = new Client();
 
         try {
@@ -176,10 +175,11 @@ Route::middleware('auth.token')->group(function () {
             return response($response->getBody(), 200)
                 ->header('Content-Type', $response->getHeader('Content-Type')[0]);
         } catch (RequestException $e) {
-            // Jika gagal, kembalikan gambar default yang ada di assets
-            return redirect(asset('assets/images/logo/noimg.png'));
+            return redirect('/kerjo-img');
         }
     });
+
+
 
     Route::get('/proxy-image/src/{path}', function ($path) {
         $filePath = public_path("assets/images/logo/" . $path);
@@ -215,13 +215,18 @@ Route::middleware('auth.token')->group(function () {
 
     Route::get('/proxy-image/gallery/{path}', function ($path) {
         $url = "https://api.carikerjo.id/upload/gallery/" . $path;
+        $client = new Client();
 
-        // Gunakan Guzzle HTTP Client untuk mengambil gambar dari URL asli
-        $client = new \GuzzleHttp\Client();
-        $response = $client->get($url);
+        try {
+            // Coba ambil gambar dari API
+            $response = $client->get($url);
 
-        return response($response->getBody(), 200)
-            ->header('Content-Type', $response->getHeader('Content-Type')[0]);
+            return response($response->getBody(), 200)
+                ->header('Content-Type', $response->getHeader('Content-Type')[0]);
+        } catch (RequestException $e) {
+            // Jika gagal, redirect ke route default-avatar
+            return redirect('/default-avatar');
+        }
     });
 
     Route::get('/proxy-image/avatar/{path}', function ($path) {
@@ -235,8 +240,7 @@ Route::middleware('auth.token')->group(function () {
             return response($response->getBody(), 200)
                 ->header('Content-Type', $response->getHeader('Content-Type')[0]);
         } catch (RequestException $e) {
-            // Jika gagal, kembalikan gambar default yang ada di assets
-            return redirect(asset('assets/images/logo/noimg.png'));
+            return redirect('/kerjo-img');
         }
     });
 
@@ -251,6 +255,11 @@ Route::middleware('auth.token')->group(function () {
         return response($response->getBody(), 200)
             ->header('Content-Type', $response->getHeader('Content-Type')[0]);
     });
+});
+
+Route::get('/kerjo-img', function () {
+    $defaultImagePath = public_path('assets/images/logo/noimg.png');
+    return response()->file($defaultImagePath);
 });
 
 // Login & Register User

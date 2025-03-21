@@ -34,14 +34,16 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="col-sm-12">
+                            <!--
                             @if (session('notifAPI'))
-                            <div class="alert alert-primary text-center">
-                                <h5 class="text-primary">{{ session('notifAPI') }}</h5>
+                            <div class="alert alert-warning text-center">
+                                <h5 class="text-warning">{{ session('notifAPI') }}</h5>
                             </div>
                             @endif
-                            <div class="alert alert-warning alert-dismissible fade show px-4 mb-0 text-center" role="alert">
-                                <i class="mdi mdi-alert-outline d-block display-4 mt-2 mb-3 text-warning"></i>
-                                <h5 class="text-warning">Tidak terhubung ke server</h5>
+                            -->
+                            <div class="alert alert-primary alert-dismissible fade show px-4 mb-0 text-center" role="alert">
+                                <i class="mdi mdi-alert-outline d-block display-4 mt-2 mb-3 text-primary"></i>
+                                <h5 class="text-primary">Periksa koneksi internet Anda</h5>
                                 <p></p>
                             </div>
                         </div>

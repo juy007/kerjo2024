@@ -18,9 +18,19 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Collection;
 
+use Livewire\Component;
+use App\Services\UserService;
+
 
 class User extends Controller
 {
+    protected $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public function index()
     {
         return view('user.home');
@@ -340,37 +350,44 @@ class User extends Controller
         }
     }
 
-    public function indexUser()
+    public function indexUser(Request $request)
     {
         $token = session('api_token');
-        try {
-            // Ambil data pengguna
-            $response = Http::withToken($token)->get('https://api.carikerjo.id/users');
+        $page = filter_var($request->query('page', 1), FILTER_VALIDATE_INT) ?: 1;
 
-            // Cek jika response gagal
-            if (!$response->successful()) {
-                session()->flash('notifAPI', 'Halaman Data User');
-                return view('user.api_error');
-            }
+        // Ambil parameter filter dari request
+        $filters = [
+            'query' => $request->query('nama', ''),
+            'salary' => $request->query('gaji', ''),
+            'location' => $request->query('lokasi', ''),            
+            'categories' => $request->query('pekerjaan', ''),
+        ];
 
-            // Dapatkan data dari response
-            $users = $response->json()['data'];
-            // Pass the data to the view
-            return view('user.user', compact('users'));
-        } catch (\Exception $e) {
+        // Ambil data dari service
+        $response = $this->userService->getUsers($token, $filters, $page);
+
+        if (!$response['success']) {
             session()->flash('notifAPI', 'Halaman Data User');
             return view('user.api_error');
         }
+
+        $data = $response['data'];
+        $users = $data['findQuery'] ?? [];
+        $totalPages = $data['totalPages'] ?? 1;
+        $currentPage = min($page, $totalPages); // Pastikan tidak melebihi total halaman
+
+        return view('user.user', compact('users', 'currentPage', 'totalPages', 'filters'));
     }
+
+
+
 
     function indexMessage()
     {
         $token = session('api_token');
         try {
             // Ambil data pesan dari API
-            $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message', [
-                'limit' => 100,
-            ]);
+            $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message');
             if (!$responseMessages->successful()) {
                 session()->flash('notifAPI', 'Halaman Message');
                 return view('user.api_error');
@@ -398,8 +415,8 @@ class User extends Controller
                     'sender_avatar' => $sender['avatar'] ?? '../public/upload/avatar/default.jpg',
                 ];
             })
-            ->sortByDesc('createdAt') // Mengurutkan dari yang terbaru ke lama
-            ->groupBy('from');
+                ->sortByDesc('createdAt') // Mengurutkan dari yang terbaru ke lama
+                ->groupBy('from');
 
             // Kirim data terkelompok ke view
             return view('user.message', compact('groupedMessages'));
@@ -444,12 +461,12 @@ class User extends Controller
                     'sender_avatar' => $sender['avatar'],
                 ];
             })
-            ->sortByDesc('createdAt') // Mengurutkan dari yang terbaru ke lama
-            ->groupBy('from');
+                ->sortByDesc('createdAt') // Mengurutkan dari yang terbaru ke lama
+                ->groupBy('from');
 
             $rUser = $users->firstWhere('_id', $id);
             // Kirim data terkelompok ke view
-            return view('user.message_read', compact('groupedMessages','rUser'));
+            return view('user.message_read', compact('groupedMessages', 'rUser'));
         } catch (\Exception $e) {
             session()->flash('notifAPI', 'Terjadi kesalahan saat memuat data pesan');
             return view('user.api_error');

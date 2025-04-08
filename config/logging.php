@@ -126,6 +126,40 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        // Company-specific logs
+        'company_login' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/company_login.log'),
+            'level' => 'debug', // <- penting untuk log info/warning/error muncul
+        ],
+        'company_user' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/company_user.log'),
+            'level' => 'debug', // <- penting untuk log info/warning/error muncul
+        ],
+        'company_message' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/company_message.log'),
+            'level' => 'info',
+        ],
+        'company_user_detail' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/company_userDetail.log'),
+            'level' => 'info',
+        ],
+        'company_job' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/company_job.log'),
+            'level' => 'info',
+        ],
+        'company_pelamar' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/company_pelamar.log'),
+            'level' => 'info',
+        ],
     ],
+
+    
 
 ];

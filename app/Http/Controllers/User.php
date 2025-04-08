@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 use App\Mail\OtpMail;
 use App\Mail\ResetPasswordMail;
@@ -19,20 +20,22 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Collection;
 
 use Livewire\Component;
-use App\Services\UserService;
+use App\Services\CompanyService;
 
 
 class User extends Controller
 {
-    protected $userService;
+    protected $companyService;
 
-    public function __construct(UserService $userService)
+    public function __construct(CompanyService $companyService)
     {
-        $this->userService = $userService;
+        $this->companyService = $companyService;
     }
 
     public function index()
     {
+        Log::channel('company_user')->debug('Mengambil data user...');
+
         return view('user.home');
     }
 
@@ -353,31 +356,44 @@ class User extends Controller
     public function indexUser(Request $request)
     {
         $token = session('api_token');
-        $page = filter_var($request->query('page', 1), FILTER_VALIDATE_INT) ?: 1;
+        $requestedPage = filter_var($request->query('page', 1), FILTER_VALIDATE_INT) ?: 1;
 
-        // Ambil parameter filter dari request
         $filters = [
             'query' => $request->query('nama', ''),
-            'salary' => $request->query('gaji', ''),
-            'location' => $request->query('lokasi', ''),            
-            'categories' => $request->query('pekerjaan', ''),
+            'salary' => str_replace('.', '', $request->query('gaji', '')),
+            'location' => $request->query('lokasi', ''),
+            'categories' => $request->query('kategori', ''),
         ];
+        
 
-        // Ambil data dari service
-        $response = $this->userService->getUsers($token, $filters, $page);
+        // Ambil halaman 1 untuk cek totalPages
+        $initialResponse = $this->companyService->getUsers($token, $filters, 1);
+        $subcategories = $this->companyService->getSubCategories($token);
+        $provinces = $this->companyService->getProvinces($token);
 
-        if (!$response['success']) {
+        if (!$initialResponse['success'] || !$subcategories['success'] || !$provinces['success']) {
             session()->flash('notifAPI', 'Halaman Data User');
             return view('user.api_error');
         }
 
-        $data = $response['data'];
-        $users = $data['findQuery'] ?? [];
-        $totalPages = $data['totalPages'] ?? 1;
-        $currentPage = min($page, $totalPages); // Pastikan tidak melebihi total halaman
+        $totalPages = $initialResponse['data']['totalPages'] ?? 1;
 
-        return view('user.user', compact('users', 'currentPage', 'totalPages', 'filters'));
+        // Pilih halaman yang valid
+        $page = min($requestedPage, $totalPages);
+
+        // Ambil data hanya 1 kali, langsung dari halaman valid
+        $response = ($page == 1)
+            ? $initialResponse
+            : $this->companyService->getUsers($token, $filters, $page);
+
+        $data = $response['data'];
+        $users = $data ?? [];
+        $currentPage = $page;
+        $subcategories = $subcategories['data'];
+        $provinces = $provinces['data'];
+        return view('user.user', compact('users', 'subcategories', 'provinces', 'currentPage', 'totalPages', 'filters'));
     }
+
 
 
 

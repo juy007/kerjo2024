@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Mail;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 use App\Mail\OtpMail;
 use App\Mail\ResetPasswordMail;
@@ -32,6 +33,11 @@ class Account extends Controller
         ]);
 
         try {
+            Log::channel('company_login')->info('Memulai proses login', [
+                'email' => $request->email,
+                'ip' => $request->ip(),
+            ]);
+
             $response = Http::post('https://api.carikerjo.id/auth/login', [
                 'email' => $request->email,
                 'password' => $request->password,
@@ -40,21 +46,20 @@ class Account extends Controller
             if ($response->successful()) {
                 $data = $response->json();
 
-                /*
-                if (isset($data['data']['_id'])) {
-                $otpResponse = Http::post('https://api.carikerjo.id/auth/requestOtp', ['userId' => $data['data']['_id'],]);
-                // Periksa respons OTP
-                if ($otpResponse->json()['statusCode'] == 201) {return redirect()->route('otp');}}
-                */
-
                 Session::put('api_token',  $data['data']);
                 $token = Session::get('api_token');
-                $response = Http::withToken($token)->get('https://api.carikerjo.id/auth/my-company-profile');
-                $profileData = $response->json();
 
-                Session::put('user_id', $profileData['data']['_id']);
-                Session::put('company_id', $profileData['data']['company']['_id']);
-                Session::put('company_name', $profileData['data']['company']['name']);
+                $profileResponse = Http::withToken($token)->get('https://api.carikerjo.id/auth/my-company-profile');
+                $profileData = $profileResponse->json();
+
+                $userId = $profileData['data']['_id'] ?? null;
+                $companyId = $profileData['data']['company']['_id'] ?? null;
+                $companyName = $profileData['data']['company']['name'] ?? null;
+
+                // Simpan data ke session
+                Session::put('user_id', $userId);
+                Session::put('company_id', $companyId);
+                Session::put('company_name', $companyName);
                 Session::put('company_brand', $profileData['data']['company']['brand']);
                 Session::put('company_logo', $profileData['data']['company']['logo']);
                 Session::put('company_email', $profileData['data']['company']['email']);
@@ -63,26 +68,83 @@ class Account extends Controller
                 Session::put('company_industries', $profileData['data']['company']['industries']);
                 Session::put('company_galleries', $profileData['data']['company']['galleries']);
                 Session::put('company_active', $profileData['data']['company']['active']);
-                //Session::put('company_established', $profileData['data']['company']['established']);
                 Session::put('company_location', $profileData['data']['company']['location']);
 
+                // Logging sukses login
+                Log::channel('company_login')->info('Login berhasil', [
+                    'user_id' => $userId,
+                    'company_id' => $companyId,
+                    'company_name' => $companyName,
+                    'ip' => $request->ip(),
+                ]);
 
                 if ($request->remember) {
-                    return redirect()->route('dashboard_user')->withCookie(cookie('api_token', $token, 60 * 24 * 30)); // 30 hari
+                    return redirect()->route('dashboard_user')
+                        ->withCookie(cookie('api_token', $token, 60 * 24 * 30)); // 30 hari
                 }
+
                 return redirect()->route('dashboard_user');
             }
+
+            // Login gagal
+            Log::channel('company_login')->warning('Login gagal - kredensial salah', [
+                'email' => $request->email,
+                'ip' => $request->ip(),
+            ]);
+
             return redirect()->route('login')->with('notifLogin', 'Please check your email and password and try again.');
+
         } catch (\Exception $e) {
+            Log::channel('company_login')->error('Login error - exception terdeteksi', [
+                'email' => $request->email,
+                'ip' => $request->ip(),
+                'error_message' => $e->getMessage(),
+            ]);
+
             return redirect()->route('db_error');
         }
     }
 
+
     public function logout(Request $request)
     {
-        Auth::logout();
-        Session::flush();
-        return redirect()->route('login');
+        $userId = Session::get('user_id');
+        $companyId = Session::get('company_id');
+        $companyName = Session::get('company_name');
+    
+        // 🔐 Logging proses logout dimulai
+        Log::channel('company_login')->info('Memulai proses logout', [
+            'user_id' => $userId,
+            'company_id' => $companyId,
+            'company_name' => $companyName,
+            'ip' => $request->ip(),
+        ]);
+    
+        try {
+            // Hapus semua session dan cookie
+            Session::flush();
+    
+            // Logging sukses logout
+            Log::channel('company_login')->info('Logout berhasil', [
+                'user_id' => $userId,
+                'company_id' => $companyId,
+                'company_name' => $companyName,
+                'ip' => $request->ip(),
+            ]);
+    
+            return redirect()->route('login')->with('notifLogout', 'Anda berhasil logout');
+        } catch (\Exception $e) {
+            // Logging error saat logout
+            Log::channel('company_login')->error('Logout gagal - exception terjadi', [
+                'user_id' => $userId,
+                'company_id' => $companyId,
+                'company_name' => $companyName,
+                'ip' => $request->ip(),
+                'error_message' => $e->getMessage(),
+            ]);
+    
+            return redirect()->route('dashboard_user')->with('notifLogout', 'Logout gagal, silakan coba lagi');
+        }
     }
 
     //========================Register

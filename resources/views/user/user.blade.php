@@ -1,10 +1,11 @@
 @include('user/header_start')
 <!-- DataTables -->
+<!--
 <link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
-
+-->
 <!-- Responsive datatable examples -->
-<link href="{{ asset('assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+<!--<link href="{{ asset('assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />-->
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@5.2.2/dist/emoji-button.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@5.2.2/dist/emoji-button.min.js"></script>
@@ -60,14 +61,36 @@
                                 <div class="col-md-3 mb-3">
                                     <input type="text" class="form-control" name="nama" placeholder="Nama" value="{{ request('nama') }}">
                                 </div>
-                                <div class="col-md-3 mb-3">
-                                    <input type="text" class="form-control" name="lokasi" placeholder="Lokasi" value="{{ request('lokasi') }}">
+                                <div class="col-md-3 mb-3">    
+                                    <select class="form-control" name="kategori">
+                                        <option value="">Kategori</option>
+                                        @foreach($subcategories as $subcategory)
+                                            <option value="{{ $subcategory['_id'] }}" {{ request('kategori') == $subcategory['_id'] ? 'selected' : '' }}>
+                                                {{ $subcategory['name'] }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                <div class="col-md-3 mb-3">
-                                    <input type="text" class="form-control" name="gaji" placeholder="Gaji" value="{{ request('gaji') }}">
+
+                                <div class="col-md-3 mb-3">    
+                                    <select class="form-control" name="lokasi">
+                                        <option value="">Lokasi</option>
+                                        @php
+                                            usort($provinces['list'], function ($a, $b) {
+                                                return strcmp($a['name'], $b['name']);
+                                            });
+                                        @endphp
+
+                                        @foreach($provinces['list'] as $province)
+                                            <option value="{{ $province['_id'] }}" {{ request('lokasi') == $province['_id'] ? 'selected' : '' }}>
+                                                {{ $province['name'] }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
+
                                 <div class="col-md-3 mb-3">
-                                    <input type="text" class="form-control" name="pekerjaan" placeholder="Pekerjaan" value="{{ request('pekerjaan') }}">
+                                    <input type="text" class="form-control" name="gaji" placeholder="Gaji" oninput="formatCurrency(this)" onkeypress="return number(event)" value="{{ request('gaji') }}">
                                 </div>
                                 <div class="col-md-12 d-flex justify-content-center">
                                     <button type="submit" class="btn btn-secondary me-1">
@@ -103,7 +126,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($users as $dataUser)
+                                    @foreach($users['list'] as $dataUser)
                                     <tr valign="middle">
                                         <td>{{ $loop->iteration }}</td>
                                         <td>
@@ -124,7 +147,7 @@
                                             <button type="button" class="btn btn-warning btn-sm openMessageModal"
                                                 data-id="{{ $dataUser['_id'] }}"
                                                 data-name="{{ $dataUser['name'] }}"
-                                                data-avatar="{{ url('proxy-image/avatar/'. str_replace('../public/upload/avatar/', '', $dataUser['avatar'] )) }}">
+                                                data-avatar="{{ url('proxy-image/avatar/'. str_replace(['../public/upload/avatar/', './public/upload/avatar/'], '', $dataUser['avatar'] )) }}">
                                                 Message
                                             </button>
                                         </td>
@@ -180,9 +203,12 @@
 
 @include('user/footer')
 <!-- Required datatable js -->
+<!--
 <script src="{{ asset('assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+-->
 <!-- Buttons examples -->
+<!--
 <script src="{{ asset('assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
 <script src="{{ asset('assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
 <script src="{{ asset('assets/libs/jszip/jszip.min.js') }}"></script>
@@ -191,13 +217,14 @@
 <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
+-->
 
 <!-- Responsive examples -->
-<script src="{{ asset('assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
+<!--<script src="{{ asset('assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
 <script src="{{ asset('assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
-
+-->
 <!-- Datatable init js -->
-<script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script>
+<!--<script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script>-->
 <script src="{{ asset('assets/js/formCurrency.js') }}"></script>
 <script src="{{ asset('assets/js/app.js') }}"></script>
 <script>

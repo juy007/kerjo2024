@@ -12,3 +12,13 @@ function formatCurrency(input) {
     // Tampilkan hasil format di dalam input
     input.value = value;
 }
+
+function number(evt) {
+    const charCode = evt.which ? evt.which : evt.keyCode;
+    // Izinkan hanya angka (0-9)
+    if (charCode < 48 || charCode > 57) {
+        evt.preventDefault();
+        return false;
+    }
+    return true;
+}

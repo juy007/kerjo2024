@@ -49,7 +49,7 @@
                                                 <div class="modal-body">
                                                     <div class="mb-4">
                                                         <label class="form-label" for="job-statuses"></label>
-                                                        <input class="form-control" type="text" id="job-statuses" name="job-statuses" placeholder="Job Statuses">
+                                                        <input class="form-control" type="text" id="job-statuses" name="job-statuses" placeholder="Job Statuses" required>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -81,7 +81,7 @@
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach(collect($jobStatuses['findQuery'])->sortBy('name') as $jobStatus)
+                                        @foreach(collect($jobStatuses['list'])->sortBy('name') as $jobStatus)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $jobStatus['name'] }}</td>
@@ -99,7 +99,7 @@
                                                             <div class="modal-body">
                                                                 <div class="mb-4">
                                                                     <label class="form-label" for=" job statuses"></label>
-                                                                    <input class="form-control" type="text" id="job-statuses" name="job-statuses" value="{{ $jobStatus['name'] }}" placeholder="job statuses">
+                                                                    <input class="form-control" type="text" id="job-statuses" name="job-statuses" value="{{ $jobStatus['name'] }}" placeholder="job statuses" required>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">

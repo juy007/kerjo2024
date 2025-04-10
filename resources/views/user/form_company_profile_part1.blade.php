@@ -30,9 +30,9 @@
                         <div class="col-sm-12">
                             <form method="POST" action="{{ route('submit_company_profile_part1') }}" class="col-sm-7" style="margin-left:auto;margin-right:auto;" id="industryForm" enctype="multipart/form-data">@csrf
                                 <div class="flex-wrap gap-3 mb-3">
-                                    @if($industries && count($industries) > 0)
+                                    @if($industries['list'] && count($industries) > 0)
                                     <div class="" role="group" aria-label="Basic checkbox toggle button group">
-                                        @foreach($industries as $industry)
+                                        @foreach($industries['list'] as $industry)
                                             <input type="checkbox" class="btn-check" id="btncheck{{ $industry['_id'] }}" name="industries[]" value="{{ $industry['_id'] }}" autocomplete="off">
                                             <label class="btn btn-outline-primary" for="btncheck{{ $industry['_id'] }}">{{ $industry['name'] }}</label>
                                         @endforeach

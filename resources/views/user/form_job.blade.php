@@ -68,7 +68,7 @@
                                                 <label for="mata-uang" class="form-label font-size-13">Mata Uang</label>
                                                 <select class="form-control" data-trigger name="mata_uang" id="mata-uang">
                                                     <option value="">Pilih Mata Uang</option>
-                                                    @foreach($currencies as $currencies)
+                                                    @foreach($currencies['list'] as $currencies)
                                                     <option value="{{ $currencies['_id'] }}">{{ $currencies['name'] }}</option>
                                                     @endforeach
                                                 </select>
@@ -86,7 +86,7 @@
                                                 <label for="form-lokasi" class="form-label font-size-13">Lokasi</label>
                                                 <select class="form-control" data-trigger name="lokasi" id="form-lokasi">
                                                     <option value="">Pilih Lokasi</option>
-                                                    @foreach($provinces as $province)
+                                                    @foreach($provinces['list'] as $province)
                                                     <option value="{{ $province['_id'] }}">{{ $province['name'] }}</option>
                                                     @endforeach
                                                 </select>
@@ -95,7 +95,7 @@
                                                 <label for="form-tipe-pekerjaan" class="form-label font-size-13">Tipe Pekerjaan</label>
                                                 <select class="form-control" data-trigger name="tipe_pekerjaan" id="form-tipe-pekerjaan">
                                                     <option value="">Pilih Tipe Pekerjaan</option>
-                                                    @foreach($jobTypes as $jobTypes)
+                                                    @foreach($jobTypes['list'] as $jobTypes)
                                                     <option value="{{ $jobTypes['_id'] }}">{{ $jobTypes['name'] }}</option>
                                                     @endforeach
                                                 </select>
@@ -104,7 +104,7 @@
                                                 <label for="form-tipe-status-karyawan" class="form-label font-size-13">Status Karyawan</label>
                                                 <select class="form-control" data-trigger name="status_karyawan" id="form-tipe-status-karyawan">
                                                     <option value="">Pilih Status Karyawan</option>
-                                                    @foreach($jobStatuses as $jobStatuses)
+                                                    @foreach($jobStatuses['list'] as $jobStatuses)
                                                     <option value="{{ $jobStatuses['_id'] }}">{{ $jobStatuses['name'] }}</option>
                                                     @endforeach
                                                 </select>
@@ -122,7 +122,7 @@
                                                 <label for="form-posisi-level" class="form-label font-size-13">Posisi Level</label>
                                                 <select class="form-control" data-trigger name="posisi_level" id="form-posisi-level">
                                                     <option value="">Pilih Posisi Level</option>
-                                                    @foreach($jobLevels as $jobLevels)
+                                                    @foreach($jobLevels['list'] as $jobLevels)
                                                     <option value="{{ $jobLevels['_id'] }}">{{ $jobLevels['name'] }}</option>
                                                     @endforeach
                                                 </select>
@@ -270,7 +270,7 @@
                                                             <div class="divider"></div><br>
                                                             <div class="job-header">
 
-                                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/logo/'. str_replace('public/upload/logo/', '', session('company_logo') )) }}" width="50" />
+                                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/logo/'. str_replace(['../public/upload/logo/', './public/upload/avatar/'], '', session('company_logo') )) }}" width="50" />
                                                                 <div>
                                                                     <div id="job_title_pre" class="job-title">
                                                                         Data Analyst
@@ -375,7 +375,6 @@
 <script src="{{ asset('assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
 <script src="{{ asset('assets/js/pages/form-editor.init.js') }}"></script>
 <script src="{{ asset('assets/js/previewPhone.js') }}"></script>
-
 <!--<br data-cke-filler="true">-->
 </body>
 

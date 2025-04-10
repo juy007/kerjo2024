@@ -48,7 +48,7 @@
                                                 <div class="modal-body">
                                                     <div class="mb-4">
                                                         <label class="form-label" for="categories"></label>
-                                                        <input class="form-control" type="text" id="categories" name="categories" placeholder="Categories">
+                                                        <input class="form-control" type="text" id="categories" name="categories" placeholder="Categories" required>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -81,7 +81,7 @@
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach(collect($categories['findQuery'])->sortBy('name') as $category)
+                                        @foreach(collect($categories['list'])->sortBy('name') as $category)
                                         <tr>
                                             <td align="center">{{ $loop->iteration }}</td>
                                             <td>{{ $category['name'] }}</td>
@@ -101,7 +101,7 @@
                                                             <div class="modal-body">
                                                                 <div class="mb-4">
                                                                     <label class="form-label" for="Categories"></label>
-                                                                    <input class="form-control" type="text" id="categories" name="categories" value="{{ $category['name'] }}" placeholder="Categories">
+                                                                    <input class="form-control" type="text" id="categories" name="categories" value="{{ $category['name'] }}" placeholder="Categories" required>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
@@ -138,9 +138,7 @@
         <!-- Buttons examples -->
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
         <script src="{{ asset('assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/jszip/jszip.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/pdfmake/build/pdfmake.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/pdfmake/build/vfs_fonts.js') }}"></script>
+       
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>

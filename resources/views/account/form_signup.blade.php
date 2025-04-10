@@ -6,10 +6,25 @@
     <meta charset="utf-8" />
     <title>Kerjo | Register</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
-    <meta content="Themesbrand" name="author" />
+    <meta name="description" content="Kerjo - Aplikasi pencari kerja terpercaya yang menghubungkan pencari kerja dengan perusahaan terbaik. Temukan lowongan pekerjaan impian dan bangun karir cemerlang bersama Kerjo. Download sekarang!">
+    <meta name="keywords" content="kerjo, rekrutmen, lowongan kerja, perusahaan, karir, pekerjaan, job portal">
+    <meta name="author" content="Kerjo / CariKerjo.id">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://company.carikerjo.id">
+    <meta property="og:title" content="Kerjo - Platform Rekrutmen untuk Perusahaan Terbaik">
+    <meta property="og:description" content="Kerjo - Aplikasi pencari kerja terpercaya yang menghubungkan pencari kerja dengan perusahaan terbaik. Temukan lowongan pekerjaan impian dan bangun karir cemerlang bersama Kerjo. Download sekarang!">
+    <meta property="og:image" content="https://company.carikerjo.id/proxy-image/src/Kerjo%20sm.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://company.carikerjo.id">
+    <meta name="twitter:title" content="Kerjo - Platform Rekrutmen untuk Perusahaan Terbaik">
+    <meta name="twitter:description" content="Kerjo - Aplikasi pencari kerja terpercaya yang menghubungkan pencari kerja dengan perusahaan terbaik. Temukan lowongan pekerjaan impian dan bangun karir cemerlang bersama Kerjo. Download sekarang!">
+    <meta name="twitter:image" content="https://company.carikerjo.id/proxy-image/src/Kerjo%20sm.png">
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/images/logo/fav.png') }}">
 
     <!-- preloader css -->
     <link rel="stylesheet" href="{{ asset('assets/css/preloader.min.css') }}" type="text/css" />
@@ -36,7 +51,7 @@
                                 <div class="mb-4 mb-md-5 auth-content my-auto">
                                     <div class="text-center">
                                         <a href="index.html" class="d-block auth-logo mt-5">
-                                            <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="60"> <span class="logo-txt"></span>
+                                            <img src="{{ url('proxy-image/src/Kerjo B2 1.png') }}" alt="" height="60"> <span class="logo-txt"></span>
                                         </a>
                                         <h3 class="mb-0">Register</h3>
                                         <p class="text-muted mt-2"></p>
@@ -245,7 +260,7 @@
 
     use Illuminate\Support\Facades\Hash;
 
-    echo Hash::make('12345678'); ?>
+    ?>
 
     <!-- Right bar overlay-->
     <div class="rightbar-overlay"></div>

@@ -130,33 +130,41 @@ return [
         // Company-specific logs
         'company_login' => [
             'driver' => 'single',
-            'path' => storage_path('logs/company_login.log'),
+            'path' => storage_path('logs/' . date('Y') . '/company/company_login_'.date('Y').'.log'),
             'level' => 'debug', // <- penting untuk log info/warning/error muncul
         ],
         'company_user' => [
             'driver' => 'single',
-            'path' => storage_path('logs/company_user.log'),
+            'path' => storage_path('logs/' . date('Y') . '/company/company_user_'.date('Y').'.log'),
             'level' => 'debug', // <- penting untuk log info/warning/error muncul
         ],
         'company_message' => [
             'driver' => 'single',
-            'path' => storage_path('logs/company_message.log'),
+            'path' => storage_path('logs/' . date('Y') . '/company/company_message_'.date('Y').'.log'),
             'level' => 'info',
         ],
         'company_user_detail' => [
             'driver' => 'single',
-            'path' => storage_path('logs/company_userDetail.log'),
+            'path' => storage_path('logs/' . date('Y') . '/company/company_userDetail_'.date('Y').'.log'),
             'level' => 'info',
         ],
         'company_job' => [
             'driver' => 'single',
-            'path' => storage_path('logs/company_job.log'),
+            'path' => storage_path('logs/' . date('Y') . '/company/company_job_'.date('Y').'.log'),
             'level' => 'info',
         ],
         'company_pelamar' => [
             'driver' => 'single',
-            'path' => storage_path('logs/company_pelamar.log'),
+            'path' => storage_path('logs/' . date('Y') . '/company/company_pelamar_'.date('Y').'.log'),
             'level' => 'info',
+        ],
+
+
+        //Admin
+        'admin_login' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/' . date('Y') . '/admin/admin_login_'.date('Y').'.log'),
+            'level' => 'debug', // <- penting untuk log info/warning/error muncul
         ],
     ],
 

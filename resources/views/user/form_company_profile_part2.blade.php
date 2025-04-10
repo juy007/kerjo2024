@@ -61,7 +61,7 @@
                                                 <label class="form-label" for="lokasi_perusahaan">Lokasi Perusahaan</label>
                                                 <select class="form-control" data-trigger name="lokasi_perusahaan" id="lokasi_perusahaan" required>
                                                     <option value="">Lokasi Perusahaan</option>
-                                                    @foreach($provinces as $province)
+                                                    @foreach($provinces['list'] as $province)
                                                     <option value="{{ $province['_id'] }}">{{ $province['name'] }}</option>
                                                     @endforeach
                                                 </select>

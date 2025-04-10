@@ -49,7 +49,7 @@
                                                 <div class="modal-body">
                                                     <div class="mb-4">
                                                         <label class="form-label" for="job-types"></label>
-                                                        <input class="form-control" type="text" id="job-types" name="job-types" placeholder="Job Types">
+                                                        <input class="form-control" type="text" id="job-types" name="job-types" placeholder="Job Types" required>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -81,7 +81,7 @@
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach(collect($jobTypes['findQuery'])->sortBy('name') as $jobType)
+                                        @foreach(collect($jobTypes['list'])->sortBy('name') as $jobType)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $jobType['name'] }}</td>
@@ -99,7 +99,7 @@
                                                             <div class="modal-body">
                                                                 <div class="mb-4">
                                                                     <label class="form-label" for="job-types"></label>
-                                                                    <input class="form-control" type="text" id="job-types" name="job-types" value="{{ $jobType['name'] }}" placeholder="job statuses">
+                                                                    <input class="form-control" type="text" id="job-types" name="job-types" value="{{ $jobType['name'] }}" placeholder="job statuses" required>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
@@ -137,12 +137,14 @@
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
         <script src="{{ asset('assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
         <script src="{{ asset('assets/libs/jszip/jszip.min.js') }}"></script>
+        <!--
         <script src="{{ asset('assets/libs/pdfmake/build/pdfmake.min.js') }}"></script>
         <script src="{{ asset('assets/libs/pdfmake/build/vfs_fonts.js') }}"></script>
+        -->
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
-
+        
         <!-- Responsive examples -->
         <script src="{{ asset('assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
         <script src="{{ asset('assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>

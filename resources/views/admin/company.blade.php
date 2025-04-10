@@ -80,10 +80,10 @@
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach($company['findQuery'] as $company)
+                                        @foreach($company['list'] as $company)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td><img class="rounded-circle header-profile-user" src="{{ url('proxy-image/logo/' . str_replace(['../public/upload/avatar/', './public/upload/avatar/'], '', $company['logo'])) }}" alt="Header Avatar">&nbsp; {{ $company['name'] }}</td>
+                                            <td><img class="rounded-circle header-profile-user" src="{{ url('proxy-image-admin/logo/'. str_replace(['../public/upload/logo/', './public/upload/logo/'], '', $company['logo'])) }}" alt="Header Avatar">&nbsp; {{ $company['name'] }}</td>
                                             <td>
                                                 <a href="{{ route('admin.companies.show', $company['_id']) }}" class="btn btn-soft-success btn-sm waves-effect waves-light"><i data-feather="eye"></i> View</a>
                                                 <a href="#" class="btn btn-soft-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#formUpdate{{ $company['_id'] }}"><i data-feather="edit"></i> Edit</a>

@@ -50,8 +50,8 @@
                                                 <div class="modal-body">
                                                     <div class="mb-4">
                                                         <label class="form-label" for="sub-categories"></label>
-                                                        <input class="form-control" type="hidden" id="id" name="id" value="{{ $id }}">
-                                                        <input class="form-control" type="text" id="sub-categories" name="sub-categories" placeholder="Sub Categories">
+                                                        <input class="form-control" type="hidden" id="id" name="id" value="{{ $idcategory }}">
+                                                        <input class="form-control" type="text" id="sub-categories" name="sub-categories" placeholder="Sub Categories" required>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -102,8 +102,8 @@
                                                             <div class="modal-body">
                                                                 <div class="mb-4">
                                                                     <label class="form-label" for="sub-categories"></label>
-                                                                    <input class="form-control" type="hidden" id="id" name="id" value="{{ $id }}">
-                                                                    <input class="form-control" type="text" id="sub-categories" name="sub-categories" value="{{ $category['name'] }}" placeholder="Sub Categories">
+                                                                    <input class="form-control" type="hidden" id="id" name="id" value="{{ $idcategory }}">
+                                                                    <input class="form-control" type="text" id="sub-categories" name="sub-categories" value="{{ $category['name'] }}" placeholder="Sub Categories" required>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
@@ -116,7 +116,7 @@
                                                 <form action="{{ route('admin.sub-categories.destroy', $category['_id']) }}" method="POST" style="display:inline-block;">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <input class="form-control" type="hidden" id="id" name="id" value="{{ $id }}">
+                                                    <input class="form-control" type="hidden" id="id" name="idcategory" value="{{ $idcategory }}">
                                                     <button type="submit" class="btn btn-soft-danger btn-sm waves-effect waves-light"><i data-feather="trash-2"></i> Delete</button>
                                                 </form>
                                             </td>
@@ -141,9 +141,7 @@
         <!-- Buttons examples -->
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
         <script src="{{ asset('assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/jszip/jszip.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/pdfmake/build/pdfmake.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/pdfmake/build/vfs_fonts.js') }}"></script>
+      
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>

@@ -34,41 +34,44 @@ class User extends Controller
 
     public function index()
     {
-        Log::channel('company_user')->debug('Mengambil data user...');
-
         return view('user.home');
     }
 
-    public function formJob()
+    public function formJob(CompanyService $companyService)
     {
         $token = Session::get('api_token');
-        try {
-            $responses = Http::pool(fn($pool) => [
-                $pool->withToken($token)->get('https://api.carikerjo.id/provinces'),
-                $pool->withToken($token)->get('https://api.carikerjo.id/currencies'),
-                $pool->withToken($token)->get('https://api.carikerjo.id/sub-categories'),
-                $pool->withToken($token)->get('https://api.carikerjo.id/job-statuses'),
-                $pool->withToken($token)->get('https://api.carikerjo.id/job-types'),
-                $pool->withToken($token)->get('https://api.carikerjo.id/job-levels'),
-            ]);
 
-            if (!$responses[0]->successful() || !$responses[1]->successful() || !$responses[2]->successful() || !$responses[3]->successful() || !$responses[4]->successful() || !$responses[5]->successful()) {
+        try {
+            $provinces = $companyService->getProvinces($token);
+            $currencies = $companyService->getCurrencies($token);
+            $subCategories = $companyService->getSubCategories($token);
+            $jobStatuses = $companyService->getJobStatuses($token);
+            $jobTypes = $companyService->getJobTypes($token);
+            $jobLevels = $companyService->getJobLevels($token);
+
+            // Cek apakah semua request sukses
+            if (
+                !$provinces['success'] || !$currencies['success'] || !$subCategories['success'] ||
+                !$jobStatuses['success'] || !$jobTypes['success'] || !$jobLevels['success']
+            ) {
                 session()->flash('notifAPI', 'Halaman Form Job');
                 return view('user.api_error');
             }
 
-            $provinces = $responses[0]->json('data');
-            $currencies = $responses[1]->json('data');
-            $subCategories = $responses[2]->json('data');
-            $jobStatuses = $responses[3]->json('data');
-            $jobTypes = $responses[4]->json('data');
-            $jobLevels = $responses[5]->json('data');
-            return view('user.form_job', compact('provinces', 'currencies', 'subCategories', 'jobStatuses', 'jobTypes', 'jobLevels'));
+            return view('user.form_job', [
+                'provinces'     => $provinces['data'],
+                'currencies'    => $currencies['data'],
+                'subCategories' => $subCategories['data'],
+                'jobStatuses'   => $jobStatuses['data'],
+                'jobTypes'      => $jobTypes['data'],
+                'jobLevels'     => $jobLevels['data'],
+            ]);
         } catch (\Exception $e) {
             session()->flash('notifAPI', 'Halaman Form Job');
             return view('user.api_error');
         }
     }
+
 
     public function saveJob(Request $request)
     {
@@ -134,23 +137,46 @@ class User extends Controller
         }
     }
 
-    public function indexJob()
+
+    public function indexJob(Request $request)
     {
         $token = session('api_token');
-        try {
-            $response = Http::withToken($token)->get('https://api.carikerjo.id/jobs');
+        $requestedPage = filter_var($request->query('page', 1), FILTER_VALIDATE_INT) ?: 1;
 
-            if ($response->successful()) {
-                $jobs = $response->json();
-                return view('user.posting_job', compact('jobs'));
-            }
+        $filters = [
+            'query' => $request->query('nama', ''),
+            'salary' => str_replace('.', '', $request->query('gaji', '')),
+            'location' => $request->query('lokasi', ''),
+            'categories' => $request->query('kategori', ''),
+        ];
 
-            session()->flash('notifAPI', 'Halaman Postingan Pekerjaan');
-            return view('user.api_error');
-        } catch (\Exception $e) {
-            session()->flash('notifAPI', 'Halaman Postingan Pekerjaan');
+
+        // Ambil halaman 1 untuk cek totalPages
+        $initialResponse = $this->companyService->getJob($token, $filters, 1);
+        $subcategories = $this->companyService->getSubCategories($token);
+        $provinces = $this->companyService->getProvinces($token);
+
+        if (!$initialResponse['success'] || !$subcategories['success'] || !$provinces['success']) {
+            session()->flash('notifAPI', 'Halaman Data Lowongan');
             return view('user.api_error');
         }
+
+        $totalPages = $initialResponse['data']['totalPages'] ?? 1;
+
+        // Pilih halaman yang valid
+        $page = min($requestedPage, $totalPages);
+
+        // Ambil data hanya 1 kali, langsung dari halaman valid
+        $response = ($page == 1)
+            ? $initialResponse
+            : $this->companyService->getUsers($token, $filters, $page);
+
+        $data = $response['data'];
+        $dataJob = $data ?? [];
+        $currentPage = $page;
+        $subcategories = $subcategories['data'];
+        $provinces = $provinces['data'];
+        return view('user.posting_job', compact('dataJob', 'subcategories', 'provinces', 'currentPage', 'totalPages', 'filters'));
     }
 
     public function editJob($id)
@@ -353,6 +379,7 @@ class User extends Controller
         }
     }
 
+    //User
     public function indexUser(Request $request)
     {
         $token = session('api_token');
@@ -364,7 +391,7 @@ class User extends Controller
             'location' => $request->query('lokasi', ''),
             'categories' => $request->query('kategori', ''),
         ];
-        
+
 
         // Ambil halaman 1 untuk cek totalPages
         $initialResponse = $this->companyService->getUsers($token, $filters, 1);
@@ -389,15 +416,42 @@ class User extends Controller
         $data = $response['data'];
         $users = $data ?? [];
         $currentPage = $page;
-        $subcategories = $subcategories['data'];
+        $subcategories = $subcategories = collect($subcategories['data'])->sortBy('name')->values()->all();
+        $groupedSubCategories = collect($subcategories)->groupBy(fn($item) => $item['category']['name']);
         $provinces = $provinces['data'];
-        return view('user.user', compact('users', 'subcategories', 'provinces', 'currentPage', 'totalPages', 'filters'));
+        return view('user.user', compact('users', 'groupedSubCategories', 'subcategories', 'provinces', 'currentPage', 'totalPages', 'filters'));
+    }
+
+    public function user_show($id)
+    {
+        $token = session('api_token');
+
+        try {
+            $response = Http::withToken($token)->retry(3, 100)->get("https://api.carikerjo.id/users/{$id}");
+
+            if (!$response->successful()) {
+                session()->flash('notifAPI', 'Halaman Detail User');
+                return view('user.api_error');
+            }
+
+            $userData = $response->json('data');
+
+            // Jika tidak ada data user
+            if (empty($userData)) {
+                return redirect()->back()->with('error', 'Data user tidak ditemukan.');
+            }
+
+            return view('user.user_show', compact('userData'));
+        } catch (\Exception $e) {
+            session()->flash('notifAPI', 'Halaman Detail User');
+            return view('user.api_error');
+        }
     }
 
 
 
 
-
+    //Message
     function indexMessage()
     {
         $token = session('api_token');
@@ -408,7 +462,7 @@ class User extends Controller
                 session()->flash('notifAPI', 'Halaman Message');
                 return view('user.api_error');
             }
-            $messages = collect($responseMessages->json()['data']); // Ubah menjadi Collection untuk kemudahan manipulasi
+            $messages = collect($responseMessages->json()['data']['list']); // Ubah menjadi Collection untuk kemudahan manipulasi
 
             // Ambil data pengguna dari API
             $responseUsers = Http::withToken($token)->get('https://api.carikerjo.id/users');
@@ -454,7 +508,7 @@ class User extends Controller
                 session()->flash('notifAPI', 'Halaman Message');
                 return view('user.api_error');
             }
-            $messages = collect($responseMessages->json()['data']); // Ubah menjadi Collection untuk kemudahan manipulasi
+            $messages = collect($responseMessages->json()['data']['list']); // Ubah menjadi Collection untuk kemudahan manipulasi
 
             // Ambil data pengguna dari API
             $responseUsers = Http::withToken($token)->get('https://api.carikerjo.id/users');
@@ -462,7 +516,7 @@ class User extends Controller
                 session()->flash('notifAPI', 'Gagal mengambil data pengguna');
                 return view('user.api_error');
             }
-            $users = collect($responseUsers->json()['data']);
+            $users = collect($responseUsers->json()['data']['list']);
 
             // Gabungkan data pesan dengan nama pengirim dan avatar, kemudian kelompokkan berdasarkan 'from'
             $groupedMessages = $messages->map(function ($message) use ($users) {
@@ -602,11 +656,10 @@ class User extends Controller
         }
     }
 
-
-    function message_send(Request $request)
+    public function message_send(Request $request)
     {
         $token = session('api_token');
-        // Kirim request POST ke API
+
         // Validasi input
         $validated = $request->validate([
             'userId' => 'required',
@@ -622,22 +675,42 @@ class User extends Controller
         ];
 
         try {
-            $response = Http::withToken($token)->post('https://api.carikerjo.id/messages/send-message', $data);
+            $response = Http::withToken($token)->retry(3, 100)->post('https://api.carikerjo.id/messages/send-message', $data);
 
-            // Cek jika API mengembalikan response sukses
             if ($response->successful()) {
+                Log::channel('company_message')->info('Pesan berhasil dikirim.', [
+                    'from_id' => $data['fromId'],
+                    'to_id' => $data['userId'],
+                    'content' => $data['content'],
+                    'status_code' => $response->status(),
+                ]);
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Pesan berhasil dikirim!',
                 ]);
             } else {
+                Log::channel('company_message')->warning('Gagal mengirim pesan.', [
+                    'from_id' => $data['fromId'],
+                    'to_id' => $data['userId'],
+                    'content' => $data['content'],
+                    'status_code' => $response->status(),
+                    'response_body' => $response->body(),
+                ]);
+
                 return response()->json([
                     'success' => false,
                     'message' => 'Gagal mengirim pesan. Coba lagi nanti.',
                 ], 500);
             }
         } catch (\Exception $e) {
-            // Tangani error jika request ke API gagal
+            Log::channel('company_message')->error('Kesalahan saat mengirim pesan ke API.', [
+                'from_id' => $data['fromId'],
+                'to_id' => $data['userId'],
+                'content' => $data['content'],
+                'error_message' => $e->getMessage(),
+            ]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan jaringan. Coba lagi nanti.',

@@ -73,7 +73,7 @@ Route::middleware('admin.token')->group(function () {
     Route::get('/sub-categories/{id}', [Admin::class, 'subCategoryIndex'])->name('admin.sub-categories.show');
     Route::post('/sub-categories', [Admin::class, 'subCategoryStore'])->name('admin.sub-categories.store');  // Menyimpan subcategory baru
     Route::put('/sub-categories/{id}', [Admin::class, 'subCategoryUpdate'])->name('admin.sub-categories.update');  // Update subcategory
-    Route::delete('/sub-categories/{id}', [Admin::class, 'subCategoryDestroy'])->name('admin.sub-categories.destroy');  // Hapus subcategory
+    Route::delete('/sub-categories/{idcategory}/{idsubcategory]', [Admin::class, 'subCategoryDestroy'])->name('admin.sub-categories.destroy');  // Hapus subcategory
 
     //provinces
     Route::get('/provinces', [Admin::class, 'provinceIndex'])->name('admin.provinces.index');
@@ -87,7 +87,7 @@ Route::middleware('admin.token')->group(function () {
     Route::post('/regencies', [Admin::class, 'regencyStore'])->name('admin.regencies.store');
     Route::get('/regencies/{id}', [Admin::class, 'regencyShow'])->name('admin.regencies.show');
     Route::put('/regencies/{id}', [Admin::class, 'regencyUpdate'])->name('admin.regencies.update');
-    Route::delete('/regencies/{id}/{province_id}', [Admin::class, 'regencyDestroy'])->name('admin.regencies.destroy');
+    Route::delete('/regencies/{idregencies}', [Admin::class, 'regencyDestroy'])->name('admin.regencies.destroy');
 
     //industries
     Route::get('/industries', [Admin::class, 'industryIndex'])->name('admin.industries.index');
@@ -116,6 +116,20 @@ Route::middleware('admin.token')->group(function () {
         }
 
         return response()->file($filePath);
+    });
+    Route::get('/proxy-image-admin/logo/{path}', function ($path) {
+        $url = "https://api.carikerjo.id/upload/logo/" . $path;
+        $client = new Client();
+
+        try {
+            // Ambil gambar dari API
+            $response = $client->get($url);
+
+            return response($response->getBody(), 200)
+                ->header('Content-Type', $response->getHeader('Content-Type')[0]);
+        } catch (RequestException $e) {
+            return redirect('/kerjo-img');
+        }
     });
 });
 Route::get('/ok', [Admin::class, 'ok'])->name('ok');
@@ -153,6 +167,7 @@ Route::middleware('auth.token')->group(function () {
         Route::get('/detail-pelamar/{id}/{jobId}', [User::class, 'detail_pelamar'])->name('detail_pelamar');
 
         Route::get('/user', [User::class, 'indexUser'])->name('index_user');
+        Route::get('/user_show/{id}', [User::class, 'user_show'])->name('show_user');
 
         Route::get('/message', [User::class, 'indexMessage'])->name('index_message');
         Route::get('/read/{id}', [User::class, 'detailMessage'])->name('detail_message');
@@ -246,7 +261,7 @@ Route::middleware('auth.token')->group(function () {
 
 
     Route::get('/proxy-cv/{path}', function ($path) {
-        $url = "https://api.carikerjo.id/upload/cv/" . $path;
+        $url = "https://api.carikerjo.id/public/upload/cv/" . $path;
 
         // Gunakan Guzzle HTTP Client untuk mengambil gambar dari URL asli
         $client = new \GuzzleHttp\Client();

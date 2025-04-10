@@ -48,7 +48,7 @@
                                                 <div class="modal-body">
                                                     <div class="mb-4">
                                                         <label class="form-label" for="regencies"></label>
-                                                        <input class="form-control" type="text" id="regencies" name="regencies" placeholder="Regencies">
+                                                        <input class="form-control" type="text" id="regencies" name="regencies" placeholder="Regencies" required>
                                                         <input type="hidden" name="province_id" value="{{ $regencies['data']['_id'] }}">
                                                     </div>
                                                 </div>
@@ -100,7 +100,7 @@
                                                             <div class="modal-body">
                                                                 <div class="mb-4">
                                                                     <label class="form-label" for="regencies_update"></label>
-                                                                    <input class="form-control" type="text" id="regencies_update" name="regencies" value="{{ $regencies['name'] }}" placeholder="Regencies">
+                                                                    <input class="form-control" type="text" id="regencies_update" name="regencies" value="{{ $regencies['name'] }}" placeholder="Regencies" required>
                                                                     <input type="hidden" name="province_id" value="{{ $province_id }}">
                                                                 </div>
                                                             </div>
@@ -111,9 +111,10 @@
                                                         </form><!-- /.modal-content -->
                                                     </div>
                                                 </div><!-- end col-->
-                                                <form action="{{ route('admin.regencies.destroy', ['id'=>$regencies['_id'],'province_id'=>$province_id]) }}" method="POST" style="display:inline-block;">
+                                                <form action="{{ route('admin.regencies.destroy', $regencies['_id']) }}" method="POST" style="display:inline-block;">
                                                     @csrf
                                                     @method('DELETE')
+                                                    <input class="form-control" type="hidden" id="id" name="idprovince" value="{{ $id }}">
                                                     <button type="submit" class="btn btn-soft-danger btn-sm waves-effect waves-light"><i data-feather="trash-2"></i> Delete</button>
                                                 </form>
                                             </td>
@@ -138,9 +139,7 @@
         <!-- Buttons examples -->
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
         <script src="{{ asset('assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/jszip/jszip.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/pdfmake/build/pdfmake.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/pdfmake/build/vfs_fonts.js') }}"></script>
+       
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>

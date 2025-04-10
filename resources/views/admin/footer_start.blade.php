@@ -188,11 +188,11 @@
         <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
         <script src="{{ asset('assets/libs/feather-icons/feather.min.js') }}"></script>
         <!-- pace js -->
-        <script src="{{ asset('assets/libs/pace-js/pace.min.jss') }}"></script>
+        <script src="{{ asset('assets/libs/pace-js/pace.min.js') }}"></script>
 
         
         <!-- apexcharts -->
-        <script src="{{ asset('assets/libs/apexcharts/apexcharts.min.js') }}"></script>
+        <!--<script src="{{ asset('assets/libs/apexcharts/apexcharts.min.js') }}"></script>-->
 
         <!-- Plugins js-->
         <script src="{{ asset('assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js') }}"></script>
@@ -203,3 +203,4 @@
         <script src="{{ asset('assets/js/pages/dashboard.init.js') }}"></script>
 
         <script src="{{ asset('assets/js/app.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

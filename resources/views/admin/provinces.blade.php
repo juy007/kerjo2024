@@ -48,7 +48,7 @@
                                                 <div class="modal-body">
                                                     <div class="mb-4">
                                                         <label class="form-label" for=" Provinces"></label>
-                                                        <input class="form-control" type="text" id="provinces" name="provinces" placeholder="Provinces">
+                                                        <input class="form-control" type="text" id="provinces" name="provinces" placeholder="Provinces" required>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -80,7 +80,7 @@
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach(collect($provinces['findQuery'])->sortBy('name') as $province)
+                                        @foreach(collect($provinces['list'])->sortBy('name') as $province)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $province['name'] }}</td>
@@ -99,7 +99,7 @@
                                                             <div class="modal-body">
                                                                 <div class="mb-4">
                                                                     <label class="form-label" for="Provinces"></label>
-                                                                    <input class="form-control" type="text" id="provinces" name="provinces" value="{{ $province['name'] }}" placeholder="Provinces">
+                                                                    <input class="form-control" type="text" id="provinces" name="provinces" value="{{ $province['name'] }}" placeholder="Provinces" required>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">

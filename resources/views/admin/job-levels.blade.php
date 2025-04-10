@@ -49,7 +49,7 @@
                                                 <div class="modal-body">
                                                     <div class="mb-4">
                                                         <label class="form-label" for="job-levels"></label>
-                                                        <input class="form-control" type="text" id="job-levels" name="job-levels" placeholder="Job Levels">
+                                                        <input class="form-control" type="text" id="job-levels" name="job-levels" placeholder="Job Levels" required>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -81,7 +81,7 @@
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach(collect($jobLevels['findQuery'])->sortBy('name') as $jobLevel)
+                                        @foreach(collect($jobLevels['list'])->sortBy('name') as $jobLevel)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $jobLevel['name'] }}</td>
@@ -99,7 +99,7 @@
                                                             <div class="modal-body">
                                                                 <div class="mb-4">
                                                                     <label class="form-label" for="job-levels"></label>
-                                                                    <input class="form-control" type="text" id="job-levels" name="job-levels" value="{{ $jobLevel['name'] }}" placeholder="job statuses">
+                                                                    <input class="form-control" type="text" id="job-levels" name="job-levels" value="{{ $jobLevel['name'] }}" placeholder="job statuses" required>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">

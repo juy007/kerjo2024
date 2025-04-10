@@ -7,8 +7,9 @@
 <!-- Responsive datatable examples -->
 <!--<link href="{{ asset('assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />-->
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@5.2.2/dist/emoji-button.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@5.2.2/dist/emoji-button.min.js"></script>
+<link href="{{ asset('assets/libs/choices.js/public/assets/styles/choices.min.css') }}" rel="stylesheet" type="text/css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+<link href="{{ asset('assets/css/emojiPicker.css') }}" rel="stylesheet" type="text/css" />
 
 @include('user/header_end')
 <style>
@@ -39,7 +40,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <div class="row">
+                        <div class="">
                             @if (session('success'))
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 {{ session('success') }}
@@ -52,48 +53,75 @@
                             </div>
                             @endif
 
-
-
-                            <h3 class="mb-sm-0 font-size-18"><i class="mdi mdi-filter"></i> Filter</h3>
+                            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                <i class="mdi mdi-filter"></i> Filter
+                            </button>
                             <hr>
+                            @php
+                            $collapse = ''; // default: tidak muncul
+                            if (request('nama') || request('kategori') || request('lokasi') || request('gaji')) {
+                            $collapse = 'show'; // aktifkan collapse
+                            }
+                            @endphp
 
-                            <form action="{{ route('index_user') }}" method="GET" class="row">
+                            <form action="{{ route('index_user') }}" method="GET" class="row collapse {{ $collapse }}" id="collapseExample">
+
                                 <div class="col-md-3 mb-3">
                                     <input type="text" class="form-control" name="nama" placeholder="Nama" value="{{ request('nama') }}">
                                 </div>
-                                <div class="col-md-3 mb-3">    
-                                    <select class="form-control" name="kategori">
+                                <!--
+                                <div class="col-md-3 mb-3">
+                                    <select class="form-control" data-trigger name="kategori">
                                         <option value="">Kategori</option>
-                                        @foreach($subcategories as $subcategory)
-                                            <option value="{{ $subcategory['_id'] }}" {{ request('kategori') == $subcategory['_id'] ? 'selected' : '' }}>
-                                                {{ $subcategory['name'] }}
-                                            </option>
+
+                                        @foreach ($groupedSubCategories as $categoryName => $items)
+                                            <optgroup label="{{ $categoryName }}">
+                                                @foreach ($items as $item)
+                                                    <option value="{{ $item['_id'] }}" {{ request('kategori') == $item['_id'] ? 'selected' : '' }}>
+                                                        {{ $item['name'] }}
+                                                    </option>
+                                                @endforeach
+                                            </optgroup>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                -->
+                                <div class="col-md-3 mb-3">
+                                    <select class="form-control" data-trigger name="kategori">
+                                        <option value="">Kategori</option>
+
+                                        @foreach ($subcategories as $item)
+                                        <option value="{{ $item['_id'] }}" {{ request('kategori') == $item['_id'] ? 'selected' : '' }}>
+                                            {{ $item['name'] }}
+                                        </option>
                                         @endforeach
                                     </select>
                                 </div>
 
-                                <div class="col-md-3 mb-3">    
-                                    <select class="form-control" name="lokasi">
+
+                                <div class="col-md-3 mb-3">
+                                    <select class="form-control" data-trigger name="lokasi">
                                         <option value="">Lokasi</option>
                                         @php
-                                            usort($provinces['list'], function ($a, $b) {
-                                                return strcmp($a['name'], $b['name']);
-                                            });
+                                        usort($provinces['list'], function ($a, $b) {
+                                        return strcmp($a['name'], $b['name']);
+                                        });
                                         @endphp
 
                                         @foreach($provinces['list'] as $province)
-                                            <option value="{{ $province['_id'] }}" {{ request('lokasi') == $province['_id'] ? 'selected' : '' }}>
-                                                {{ $province['name'] }}
-                                            </option>
+                                        <option value="{{ $province['_id'] }}" {{ request('lokasi') == $province['_id'] ? 'selected' : '' }}>
+                                            {{ $province['name'] }}
+                                        </option>
                                         @endforeach
                                     </select>
                                 </div>
 
                                 <div class="col-md-3 mb-3">
-                                    <input type="text" class="form-control" name="gaji" placeholder="Gaji" oninput="formatCurrency(this)" onkeypress="return number(event)" value="{{ request('gaji') }}">
+                                    <input type="text" class="form-control" name="gaji_view" placeholder="Gaji" oninput="formatCurrency(this)" onkeypress="return number(event)" id="gaji_view" value="{{ number_format(request('gaji'), 0, ',', '.') }}">
+                                    <input type="hidden" name="gaji" id="gaji" value="{{ request('gaji') }}">
                                 </div>
                                 <div class="col-md-12 d-flex justify-content-center">
-                                    <button type="submit" class="btn btn-secondary me-1">
+                                    <button type="submit" class="btn btn-primary me-1">
                                         <i class="fa fas fa-search"></i> Cari
                                     </button>
                                     <a href="{{ route('index_user') }}" class="btn btn-danger">
@@ -102,18 +130,13 @@
                                 </div>
                             </form>
 
-
-
-
-                            <div id="show_data" class="col-md-6">
-
-                            </div>
+                            <!--<div id="show_data" class="col-md-6"> </div>-->
 
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive mb-3">
-                            <table class="table table-bordered border-primary mb-0">
+                            <table class="table table-bordered table-striped border-primary mb-0">
 
                                 <thead>
                                     <tr>
@@ -133,7 +156,7 @@
                                             <div class="d-flex">
                                                 <img src="{{ url('proxy-image/avatar/'. str_replace(['../public/upload/avatar/', './public/upload/avatar/'], '', $dataUser['avatar'] )) }}" class="avatar-md rounded-circle" alt="img" />
                                                 <div class="flex-1 ms-4">
-                                                    <h5 class="mb-2 font-size-15 text-primary"><a href="">{{ $dataUser['name'] }}</a></h5>
+                                                    <h5 class="mb-2 font-size-15 text-dark">{{ $dataUser['name'] }}</h5>
                                                     <p class="text-muted">{{ $dataUser['email'] }} | {{ $dataUser['phone'] ?? 'N/A' }}</p>
                                                 </div>
                                             </div>
@@ -142,7 +165,7 @@
                                         <td></td>
                                         <td>{{ $dataUser['title'] ?? '-' }}</td>
                                         <td>
-                                            <a href="#" class="btn btn-primary btn-sm">Detail</a>
+                                            <a href="{{ route('show_user', ['id' => $dataUser['_id']]) }}" class="btn btn-primary btn-sm">Detail</a>
 
                                             <button type="button" class="btn btn-warning btn-sm openMessageModal"
                                                 data-id="{{ $dataUser['_id'] }}"
@@ -177,13 +200,13 @@
                                         <!-- Form -->
                                         <form id="messageForm">
                                             <input type="hidden" id="modalUserId" name="userId" value="">
-                                            <div class="mb-3">
+                                            <div class="mb-3" id="emoji-container">
                                                 <textarea class="form-control mb-3" name="content" id="chatContent" rows="5" placeholder="Type your message..."></textarea>
                                             </div>
 
-                                            <!-- Emoji Button & Submit Button -->
                                             <div class="d-flex gap-2 justify-content-end">
-                                                <!--<button type="button" id="emojiPickerButton" class="btn btn-secondary">😀</button>-->
+                                                <button class="btn btn-soft-warning waves-effect waves-light" type="button" id="emoji-btn">😊</button>
+                                                <emoji-picker id="picker"></emoji-picker>
                                                 <button type="submit" class="btn btn-primary">Kirim</button>
                                             </div>
                                         </form>
@@ -225,6 +248,8 @@
 -->
 <!-- Datatable init js -->
 <!--<script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script>-->
+<!-- choices js -->
+<script src="{{ asset('assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
 <script src="{{ asset('assets/js/formCurrency.js') }}"></script>
 <script src="{{ asset('assets/js/app.js') }}"></script>
 <script>
@@ -318,6 +343,8 @@
         }
     });
 </script>
+
+<script src="{{ asset('assets/js/emojiPicker.js') }}"></script>
 </body>
 
 </html>

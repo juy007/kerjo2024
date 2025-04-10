@@ -1,4 +1,5 @@
-@include('account/header')
+@include('account/header_start')
+@include('account/header_end')
 
 <div class="page-content" style="padding-bottom: 15%;">
     <div class="container-fluid">
@@ -54,4 +55,5 @@
     </div> <!-- container-fluid -->
 </div>
 <!-- End Page-content -->
-@include('account/footer')
+@include('account/footer_start')
+@include('account/footer_end')

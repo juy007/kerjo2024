@@ -134,6 +134,15 @@
                                     <span data-key="t-chat">Currencies</span>
                                 </a>
                             </li>
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow">
+                                    <i data-feather="credit-card"></i>
+                                    <span data-key="t-ecommerce">PPOB</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a href="#" key="t-products">Pulsa</a></li>
+                                </ul>
+                            </li>
                         </ul>
                     </div>
                     <!-- Sidebar -->

@@ -48,7 +48,7 @@
                                                 <div class="modal-body">
                                                     <div class="mb-4">
                                                         <label class="form-label" for="Industries"></label>
-                                                        <input class="form-control" type="text" id="industries" name="industries" placeholder="Industries">
+                                                        <input class="form-control" type="text" id="industries" name="industries" placeholder="Industries" required>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -80,7 +80,7 @@
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach(collect($industries['findQuery'])->sortBy('name') as $industrie)
+                                        @foreach(collect($industries['list'])->sortBy('name') as $industrie)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $industrie['name'] }}</td>
@@ -98,7 +98,7 @@
                                                             <div class="modal-body">
                                                                 <div class="mb-4">
                                                                     <label class="form-label" for="industries"></label>
-                                                                    <input class="form-control" type="text" id="industries" name="industries" value="{{ $industrie['name'] }}" placeholder="industries">
+                                                                    <input class="form-control" type="text" id="industries" name="industries" value="{{ $industrie['name'] }}" placeholder="industries" required>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
@@ -135,9 +135,7 @@
         <!-- Buttons examples -->
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
         <script src="{{ asset('assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/jszip/jszip.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/pdfmake/build/pdfmake.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/pdfmake/build/vfs_fonts.js') }}"></script>
+        
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>

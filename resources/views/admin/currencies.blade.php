@@ -48,11 +48,11 @@
                                                 <div class="modal-body">
                                                     <div>
                                                         <label class="form-label" for="currencies"></label>
-                                                        <input class="form-control" type="text" id="currencies" name="currencies" placeholder="Currencies">
+                                                        <input class="form-control" type="text" id="currencies" name="currencies" placeholder="Currencies" required>
                                                     </div>
                                                     <div>
                                                         <label class="form-label" for="symbol1"></label>
-                                                        <input class="form-control" type="text" id="symbol1" name="symbol" placeholder="Symbol">
+                                                        <input class="form-control" type="text" id="symbol1" name="symbol" placeholder="Symbol" required>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -85,7 +85,7 @@
                                             <th>Action</th>
                                     </thead>
                                     <tbody>
-                                        @foreach($currencies['findQuery'] as $currencies)
+                                        @foreach($currencies['list'] as $currencies)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $currencies['name'] }}</td>
@@ -104,11 +104,11 @@
                                                             <div class="modal-body">
                                                                 <div class="mb-4">
                                                                     <label class="form-label" for="currencies"></label>
-                                                                    <input class="form-control" type="text" id="currencies" name="currencies" value="{{ $currencies['name'] }}" placeholder="Currencies">
+                                                                    <input class="form-control" type="text" id="currencies" name="currencies" value="{{ $currencies['name'] }}" placeholder="Currencies" required>
                                                                 </div>
                                                                 <div class="mb-4">
                                                                     <label class="form-label" for="symbol"></label>
-                                                                    <input class="form-control" type="text" id="symbol" name="symbol" value="{{ $currencies['symbol'] }}" placeholder="Currencies">
+                                                                    <input class="form-control" type="text" id="symbol" name="symbol" value="{{ $currencies['symbol'] }}" placeholder="Currencies" required>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
@@ -145,9 +145,7 @@
         <!-- Buttons examples -->
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
         <script src="{{ asset('assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/jszip/jszip.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/pdfmake/build/pdfmake.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/pdfmake/build/vfs_fonts.js') }}"></script>
+      
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
         <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>

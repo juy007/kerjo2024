@@ -32,13 +32,13 @@ class Account extends Controller
             'password' => 'required',
         ]);
 
-        try {
+        //try {
             Log::channel('company_login')->info('Memulai proses login', [
                 'email' => $request->email,
                 'ip' => $request->ip(),
             ]);
 
-            $response = Http::post('https://api.carikerjo.id/auth/login', [
+            $response = Http::retry(3, 100)->post('https://api.carikerjo.id/auth/login', [
                 'email' => $request->email,
                 'password' => $request->password,
             ]);
@@ -51,6 +51,15 @@ class Account extends Controller
 
                 $profileResponse = Http::withToken($token)->get('https://api.carikerjo.id/auth/my-company-profile');
                 $profileData = $profileResponse->json();
+
+                $statusCode = $profileData['statusCode'] ?? null;
+                if ($statusCode === 403) {
+                    Log::channel('company_login')->warning('Login gagal - role ADMIN tidak diizinkan', [
+                        'email' => $request->email,
+                        'ip' => $request->ip(),
+                    ]);
+                    return redirect()->route('login')->with('notifLogin', 'Please check your email and password and try again.');
+                }
 
                 $userId = $profileData['data']['_id'] ?? null;
                 $companyId = $profileData['data']['company']['_id'] ?? null;
@@ -94,7 +103,7 @@ class Account extends Controller
 
             return redirect()->route('login')->with('notifLogin', 'Please check your email and password and try again.');
 
-        } catch (\Exception $e) {
+        /*} catch (\Exception $e) {
             Log::channel('company_login')->error('Login error - exception terdeteksi', [
                 'email' => $request->email,
                 'ip' => $request->ip(),
@@ -102,7 +111,7 @@ class Account extends Controller
             ]);
 
             return redirect()->route('db_error');
-        }
+        }*/
     }
 
 

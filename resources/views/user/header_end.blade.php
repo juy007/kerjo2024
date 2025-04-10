@@ -10,18 +10,18 @@
                         <div class="navbar-brand-box">
                             <a href="{{ route('dashboard_user') }}" class="logo logo-dark">
                                 <span class="logo-sm">
-                                    <img src="{{ asset('assets/images/logo/Kerjo sm.png') }}" alt="" height="27"><span class="logo-txt">ok</span>
+                                    <img src="{{ url('proxy-image/src/Kerjo sm.png') }}" alt="" height="27"><span class="logo-txt">ok</span>
                                 </span>
                                 <span class="logo-lg">
-                                    <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="27"> <span class="logo-txt"></span>
+                                    <img src="{{ url('proxy-image/src/Kerjo B2 1.png') }}" alt="" height="27"> <span class="logo-txt"></span>
                                 </span>
                             </a>
                             <a href="{{ route('dashboard_user') }}" class="logo logo-light">
                                 <span class="logo-sm">
-                                    <img src="{{ asset('assets/images/logo/Kerjo sm.png') }}" alt="" height="27"><span class="logo-txt">ok</span>
+                                    <img src="{{ url('proxy-image/src/Kerjo sm.png') }}" alt="" height="27"><span class="logo-txt">ok</span>
                                 </span>
                                 <span class="logo-lg">
-                                    <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="27"> <span class="logo-txt"></span>
+                                    <img src="{{ url('proxy-image/src/Kerjo B2 1.png') }}" alt="" height="27"> <span class="logo-txt"></span>
                                 </span>
                             </a>
                         </div>

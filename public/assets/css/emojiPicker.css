@@ -1,0 +1,14 @@
+  .emoji-container {
+    position: relative;
+    display: inline-block;
+  }
+  emoji-picker {
+    position: absolute;
+    bottom: 40px;
+    right: 0;
+    z-index: 100;
+    display: none;
+  }
+  .show-picker emoji-picker {
+    display: block;
+  }

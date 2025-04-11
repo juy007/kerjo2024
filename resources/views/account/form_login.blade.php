@@ -47,7 +47,7 @@
                 <div class="col-xxl-6 col-lg-6 col-md-6">
                     <div class="auth-full-page-content d-flex p-sm-6 p-4">
                         <div class="w-100">
-                            <div class="d-flex flex-column h-100">
+                            <div class="d-flex flex-column h-90">
                                 <div class="mb-4 mb-md-5 auth-content my-auto">
                                     <div class="text-center">
                                         <a href="{{ url('/') }}" class="d-block auth-logo mt-5">

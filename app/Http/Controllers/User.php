@@ -67,6 +67,7 @@ class User extends Controller
                 'jobLevels'     => $jobLevels['data'],
             ]);
         } catch (\Exception $e) {
+            Log::channel('company_api_error')->info('Form Job.', ['error_api' =>  $e->getMessage(),]);
             session()->flash('notifAPI', 'Halaman Form Job');
             return view('user.api_error');
         }
@@ -457,20 +458,22 @@ class User extends Controller
         $token = session('api_token');
         try {
             // Ambil data pesan dari API
-            $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message');
+            $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message', ['limit' => 100, ] );
             if (!$responseMessages->successful()) {
+                Log::channel('company_api_error')->info('Get Message.', ['user_id' => session('user_id'), 'error_api' => $responseMessages->body(),]);
                 session()->flash('notifAPI', 'Halaman Message');
                 return view('user.api_error');
             }
             $messages = collect($responseMessages->json()['data']['list']); // Ubah menjadi Collection untuk kemudahan manipulasi
 
             // Ambil data pengguna dari API
-            $responseUsers = Http::withToken($token)->get('https://api.carikerjo.id/users');
+            $responseUsers = Http::withToken($token)->get('https://api.carikerjo.id/users', ['limit' => 100, ] );
             if (!$responseUsers->successful()) {
+                Log::channel('company_api_error')->info('Get Message.', ['user_id' => session('user_id'), 'error_api' => $responseUsers->body(),]);
                 session()->flash('notifAPI', 'Gagal mengambil data pengguna');
                 return view('user.api_error');
             }
-            $users = collect($responseUsers->json()['data']);
+            $users = collect($responseUsers->json()['data']['list']);
 
             // Gabungkan data pesan dengan nama pengirim dan avatar, kemudian kelompokkan berdasarkan 'from'
             $groupedMessages = $messages->map(function ($message) use ($users) {
@@ -491,6 +494,7 @@ class User extends Controller
             // Kirim data terkelompok ke view
             return view('user.message', compact('groupedMessages'));
         } catch (\Exception $e) {
+            Log::channel('company_api_error')->info('Get Message', ['user_id' => session('user_id'), 'error_api' =>  $e->getMessage(),]);
             session()->flash('notifAPI', 'Terjadi kesalahan saat memuat data pesan');
             return view('user.api_error');
         }
@@ -505,6 +509,7 @@ class User extends Controller
                 'limit' => 100,
             ]);
             if (!$responseMessages->successful()) {
+                Log::channel('company_api_error')->info('Detail Message.', ['user_id' => session('user_id'), 'error_api' => $responseMessages->body(),]);
                 session()->flash('notifAPI', 'Halaman Message');
                 return view('user.api_error');
             }
@@ -513,6 +518,7 @@ class User extends Controller
             // Ambil data pengguna dari API
             $responseUsers = Http::withToken($token)->get('https://api.carikerjo.id/users');
             if (!$responseUsers->successful()) {
+                Log::channel('company_api_error')->info('Detail Message.', ['user_id' => session('user_id'), 'error_api' => $responseUsers->body(),]);
                 session()->flash('notifAPI', 'Gagal mengambil data pengguna');
                 return view('user.api_error');
             }
@@ -538,6 +544,7 @@ class User extends Controller
             // Kirim data terkelompok ke view
             return view('user.message_read', compact('groupedMessages', 'rUser'));
         } catch (\Exception $e) {
+            Log::channel('company_api_error')->info('Get Message', ['user_id' => session('user_id'), 'error_api' =>  $e->getMessage(),]);
             session()->flash('notifAPI', 'Terjadi kesalahan saat memuat data pesan');
             return view('user.api_error');
         }
@@ -662,7 +669,7 @@ class User extends Controller
 
         // Validasi input
         $validated = $request->validate([
-            'userId' => 'required',
+            'toId' => 'required',
             'content' => 'required|string',
         ]);
 
@@ -671,7 +678,7 @@ class User extends Controller
             'fromId' => session('user_id'),
             'content' => $validated['content'],
             'status' => 'unread',
-            'userId' => $validated['userId'],
+            'userId' => $validated['toId'],
         ];
 
         try {

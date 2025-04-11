@@ -168,7 +168,7 @@
                                             <a href="{{ route('show_user', ['id' => $dataUser['_id']]) }}" class="btn btn-primary btn-sm">Detail</a>
 
                                             <button type="button" class="btn btn-warning btn-sm openMessageModal"
-                                                data-id="{{ $dataUser['_id'] }}"
+                                                data-toId="{{ $dataUser['_id'] }}"
                                                 data-name="{{ $dataUser['name'] }}"
                                                 data-avatar="{{ url('proxy-image/avatar/'. str_replace(['../public/upload/avatar/', './public/upload/avatar/'], '', $dataUser['avatar'] )) }}">
                                                 Message
@@ -184,7 +184,7 @@
                         @include('user.pagination', ['currentPage' => $currentPage, 'totalPages' => $totalPages, 'route' => 'index_user'])
 
                         <div id="messageModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-                            <div class="modal-dialog">
+                            <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title">
@@ -199,7 +199,7 @@
 
                                         <!-- Form -->
                                         <form id="messageForm">
-                                            <input type="hidden" id="modalUserId" name="userId" value="">
+                                            <input type="hidden" id="modalToId" name="toId" value="">
                                             <div class="mb-3" id="emoji-container">
                                                 <textarea class="form-control mb-3" name="content" id="chatContent" rows="5" placeholder="Type your message..."></textarea>
                                             </div>
@@ -255,7 +255,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
-        const modalUserId = document.getElementById('modalUserId');
+        const modalToId = document.getElementById('modalToId');
         const modalName = document.getElementById('modalName');
         const modalAvatar = document.getElementById('modalAvatar');
         const chatContent = document.getElementById('chatContent');
@@ -264,11 +264,11 @@
         // Event listener untuk tombol membuka modal
         document.querySelectorAll('.openMessageModal').forEach(button => {
             button.addEventListener('click', function() {
-                const userId = this.getAttribute('data-id');
+                const toId = this.getAttribute('data-toId');
                 const userName = this.getAttribute('data-name');
                 const userAvatar = this.getAttribute('data-avatar');
 
-                modalUserId.value = userId;
+                modalToId.value = toId;
                 modalName.textContent = userName;
                 modalAvatar.src = userAvatar;
 
@@ -307,7 +307,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        userId: modalUserId.value,
+                        toId: modalToId.value,
                         content: chatMessage
                     })
                 })

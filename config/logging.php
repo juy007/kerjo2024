@@ -131,12 +131,17 @@ return [
         'company_login' => [
             'driver' => 'single',
             'path' => storage_path('logs/' . date('Y') . '/company/company_login_'.date('Y').'.log'),
-            'level' => 'debug', // <- penting untuk log info/warning/error muncul
+            'level' => 'debug', 
+        ],
+        'company_api_error' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/' . date('Y') . '/company/company_api_error_'.date('Y').'.log'),
+            'level' => 'debug', 
         ],
         'company_user' => [
             'driver' => 'single',
             'path' => storage_path('logs/' . date('Y') . '/company/company_user_'.date('Y').'.log'),
-            'level' => 'debug', // <- penting untuk log info/warning/error muncul
+            'level' => 'debug', 
         ],
         'company_message' => [
             'driver' => 'single',
@@ -159,12 +164,18 @@ return [
             'level' => 'info',
         ],
 
-
+        
         //Admin
         'admin_login' => [
             'driver' => 'single',
             'path' => storage_path('logs/' . date('Y') . '/admin/admin_login_'.date('Y').'.log'),
-            'level' => 'debug', // <- penting untuk log info/warning/error muncul
+            'level' => 'debug', 
+        ],
+
+        'admin_log' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/' . date('Y') . '/admin/admin_log_'.date('Y').'.log'),
+            'level' => 'debug', 
         ],
     ],
 

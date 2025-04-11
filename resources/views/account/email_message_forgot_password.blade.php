@@ -90,7 +90,7 @@
                             <a href="{{ $url }}" class="reset-button">Reset Password</a>
                         </p>
 
-                        <p>Jika kamu tidak meminta reset password, abaikan email ini. Link ini akan kadaluarsa dalam beberapa jam.</p>
+                        <p>Jika kamu tidak meminta reset password, abaikan email ini.</p>
                     </div>
 
                     <!-- Footer Section -->

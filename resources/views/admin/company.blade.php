@@ -36,7 +36,7 @@
                             </div>
                             <div class="col-sm-8">
                                 <div class="text-sm-end">
-                                    <button class="btn btn-primary waves-effect waves-light me-2" data-bs-toggle="modal" data-bs-target="#formTambah">Tambah Company</button>
+                                    <!--<button class="btn btn-primary waves-effect waves-light me-2" data-bs-toggle="modal" data-bs-target="#formTambah">Tambah Company</button>-->
                                     <div id="formTambah" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">
                                         <div class="modal-dialog">
                                             <form class="modal-content" method="POST" action="{{ route('admin.companies.store') }}">
@@ -85,7 +85,8 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td><img class="rounded-circle header-profile-user" src="{{ url('proxy-image-admin/logo/'. str_replace(['../public/upload/logo/', './public/upload/logo/'], '', $company['logo'])) }}" alt="Header Avatar">&nbsp; {{ $company['name'] }}</td>
                                             <td>
-                                                <a href="{{ route('admin.companies.show', $company['_id']) }}" class="btn btn-soft-success btn-sm waves-effect waves-light"><i data-feather="eye"></i> View</a>
+                                                <a href="#{{-- route('admin.companies.show', $company['_id']) --}}" class="btn btn-soft-success btn-sm waves-effect waves-light"><i data-feather="eye"></i> View</a>
+                                                <!--
                                                 <a href="#" class="btn btn-soft-primary btn-sm waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#formUpdate{{ $company['_id'] }}"><i data-feather="edit"></i> Edit</a>
                                                 <div id="formUpdate{{ $company['_id'] }}" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-scroll="true">
                                                     <div class="modal-dialog">
@@ -106,14 +107,15 @@
                                                                 <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Batal</button>
                                                                 <button type="submit" class="btn btn-primary waves-effect waves-light">Simpan</button>
                                                             </div>
-                                                        </form><!-- /.modal-content -->
+                                                        </form>
                                                     </div>
-                                                </div><!-- end col-->
+                                                </div>
                                                 <form action="{{ route('admin.companies.destroy', $company['_id']) }}" method="POST" style="display:inline-block;">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-soft-danger btn-sm waves-effect waves-light"><i data-feather="trash-2"></i> Delete</button>
                                                 </form>
+                                                -->
                                             </td>
                                         </tr>
                                         @endforeach

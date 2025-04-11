@@ -87,7 +87,8 @@ Route::middleware('admin.token')->group(function () {
     Route::post('/regencies', [Admin::class, 'regencyStore'])->name('admin.regencies.store');
     Route::get('/regencies/{id}', [Admin::class, 'regencyShow'])->name('admin.regencies.show');
     Route::put('/regencies/{id}', [Admin::class, 'regencyUpdate'])->name('admin.regencies.update');
-    Route::delete('/regencies/{idregencies}', [Admin::class, 'regencyDestroy'])->name('admin.regencies.destroy');
+    Route::delete('/regencies/{id}', [Admin::class, 'regencyDestroy'])->name('admin.regencies.destroy');
+    Route::delete('/del/{id}', [Admin::class, 'del'])->name('admin.del');
 
     //industries
     Route::get('/industries', [Admin::class, 'industryIndex'])->name('admin.industries.index');

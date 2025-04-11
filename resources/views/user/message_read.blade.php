@@ -1,10 +1,12 @@
 @include('user/header_start')
+<script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+<link href="{{ asset('assets/css/emojiPicker.css') }}" rel="stylesheet" type="text/css" />
 @include('user/header_end')
 
 <div class="page-content" style="background-color:#F4F7FE !important;">
     <div class="container-fluid">
 
-        <div class="d-lg-flex" style="background-color: red;height:800px;">
+        <div class="d-lg-flex">
             <div class="chat-leftsidebar card">
                 <div class="p-3 px-4 border-bottom">
                     <div class="d-flex align-items-start ">
@@ -17,7 +19,7 @@
                 <div class="chat-leftsidebar-nav">
                     <div class="tab-content">
                         <div class="tab-pane show active" id="chat">
-                            <div class="chat-message-list" data-simplebar style="max-height: 900px;">
+                            <div class="chat-message-list" data-simplebar style="max-height: 500px;">
                                 <ul class="list-unstyled chat-list">
                                     @foreach ($groupedMessages as $fromId => $messages)
                                     @php
@@ -332,10 +334,14 @@
                     </div>
 
                     <div class="p-3 border-top">
-                        <div class="row">
+                        <div class="row" id="messageForm">
+                            <div class="col-auto">
+                                <button class="btn btn-warning waves-effect waves-light" type="button" id="emoji-btn">😊</button>
+                                <emoji-picker id="picker"></emoji-picker>
+                            </div>
                             <div class="col">
-                                <div class="position-relative">
-                                    <input type="text" class="form-control border bg-light-subtle" placeholder="Enter Message...">
+                                <div class="position-relative" id="emoji-container">
+                                    <textarea class="form-control border bg-light-subtle" id="chatContent" placeholder="Enter Message..."></textarea>
                                 </div>
                             </div>
                             <div class="col-auto">
@@ -355,6 +361,7 @@
 <!-- End Page-content -->
 
 @include('user/footer')
+<script src="{{ asset('assets/js/emojiPicker.js') }}"></script>
 </body>
 
 </html>

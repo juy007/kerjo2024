@@ -18,8 +18,17 @@ use App\Mail\ResetPasswordMail;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\URL;
 
+use App\Services\AdminLog;
+
 class Admin extends Controller
 {
+    protected $adminLog;
+
+    public function __construct(AdminLog $adminLog)
+    {
+        $this->adminLog = $adminLog;
+    }
+
     public function index()
     {
         return view('admin.form_login');
@@ -105,7 +114,7 @@ class Admin extends Controller
     {
         $token = session('api_token_admin');
         try {
-            $response = Http::withToken($token)->retry(3, 100)->get('https://api.carikerjo.id/companies', ['limit' => 200,]);
+            $response = Http::withToken($token)->retry(3, 100)->get('https://api.carikerjo.id/companies', ['limit' => 200]);
 
             if ($response->successful()) {
                 $data = $response->json();
@@ -172,11 +181,13 @@ class Admin extends Controller
             $response = Http::withToken($token)->retry(3, 100)->post('https://api.carikerjo.id/job-statuses', $data);
 
             if ($response->successful()) {
+                $this->adminLog->createLog('Berhasil tambah job statuses');
                 return redirect()->route('admin.job-statuses.index')->with('success', 'Job Status berhasil ditambahkan');
             }
-
+            $this->adminLog->createLog('Gagal tambah job statuses');
             return redirect()->back()->with('error', 'Gagal menambahkan Job Status');
         } catch (\Exception $e) {
+            $this->adminLog->createLog('Error');
             return redirect()->route('db_error');
         }
     }
@@ -569,7 +580,7 @@ class Admin extends Controller
         }
     }
 
-    public function regencyDestroy(Request $request, $idregencies)
+    public function regencyDestroy(Request $request, $id)
     {
         $token = session('api_token_admin');
         $validated = $request->validate([
@@ -577,10 +588,10 @@ class Admin extends Controller
         ]);
         
         try {
-            $response = Http::withToken($token)->delete("https://api.carikerjo.id/regencies/{$idregencies}");
+            $response = Http::withToken($token)->delete("https://api.carikerjo.id/regencies/{$id}");
 
             if ($response->successful()) {
-                return redirect()->route('admin.province.show', $validated['idprovince'])->with('success', 'Regency berhasil dihapus');
+                return redirect()->route('admin.provinces.show', $validated['idprovince'])->with('success', 'Regency berhasil dihapus');
             }
 
             return redirect()->back()->with('error', 'Gagal menghapus Regency');

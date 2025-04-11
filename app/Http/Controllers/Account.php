@@ -459,12 +459,13 @@ class Account extends Controller
                 parse_str($query, $params);
 
                 $token = $params['token'];
-                $url = "http://127.0.0.1:8000/passwordReset/" . $token;
-                //$url = $linkToken;
+                $url = config('kerjo.url')."/passwordReset/" . $token;
+                //$url = "http://127.0.0.1:8000/passwordReset/" . $token;
+                
 
                 Mail::to($request->email)->send(new ResetPasswordMail($url));
 
-                return back()->with('status', 'Reset link sent to your email.   token = ' . $url);
+                return back()->with('status', 'Reset link sent to your email');
             }
 
             return back()->with(['email' => 'Failed to send reset link.']);

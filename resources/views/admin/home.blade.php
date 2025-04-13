@@ -29,12 +29,12 @@
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
                                             <div class="flex-grow-1">
-                                                <span class="text-muted mb-3 lh-1 d-block text-truncate">Total Sales</span>
+                                                <span class="text-muted mb-3 lh-1 d-block text-truncate">Total User</span>
                                                 <h4 class="mb-3">
-                                                    $<span class="counter-value" data-target="354.5">0</span>k
+                                                    <span class="counter-value" data-target="354.5">0</span>k
                                                 </h4>
                                                 <div class="text-nowrap">
-                                                    <span class="badge bg-success-subtle text-success">+$20.9k</span>
+                                                    <span class="badge bg-success-subtle text-success">20.9k</span>
                                                     <span class="ms-1 text-muted font-size-13">Since last week</span>
                                                 </div>
                                             </div>
@@ -54,7 +54,7 @@
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
                                             <div class="flex-grow-1">
-                                                <span class="text-muted mb-3 lh-1 d-block text-truncate">Total Items</span>
+                                                <span class="text-muted mb-3 lh-1 d-block text-truncate">Total Company</span>
                                                 <h4 class="mb-3">
                                                     <span class="counter-value" data-target="1256">0</span>
                                                 </h4>
@@ -78,12 +78,12 @@
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
                                             <div class="flex-grow-1">
-                                                <span class="text-muted mb-3 lh-1 d-block text-truncate">Average Sales</span>
+                                                <span class="text-muted mb-3 lh-1 d-block text-truncate">Total Job</span>
                                                 <h4 class="mb-3">
-                                                    $<span class="counter-value" data-target="7.54">0</span>M
+                                                    <span class="counter-value" data-target="7.54">0</span>
                                                 </h4>
                                                 <div class="text-nowrap">
-                                                    <span class="badge bg-success-subtle text-success">+ $2.8k</span>
+                                                    <span class="badge bg-success-subtle text-success">2.8k</span>
                                                     <span class="ms-1 text-muted font-size-13">Since last week</span>
                                                 </div>
                                             </div>
@@ -102,12 +102,12 @@
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
                                             <div class="flex-grow-1">
-                                                <span class="text-muted mb-3 lh-1 d-block text-truncate">Order Delivery</span>
+                                                <span class="text-muted mb-3 lh-1 d-block text-truncate">Total Pelamar</span>
                                                 <h4 class="mb-3">
-                                                    <span class="counter-value" data-target="18.34">0</span>%
+                                                    <span class="counter-value" data-target="18.34">0</span>
                                                 </h4>
                                                 <div class="text-nowrap">
-                                                    <span class="badge bg-success-subtle text-success">+5.32%</span>
+                                                    <span class="badge bg-success-subtle text-success">5.32</span>
                                                     <span class="ms-1 text-muted font-size-13">Since last week</span>
                                                 </div>
                                             </div>

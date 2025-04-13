@@ -49,7 +49,7 @@
 
         <div class="row">
             @if(count($dataJob['list']) > 0)
-                @foreach($dataJobob['list'] as $jobs)
+                @foreach($dataJob['list'] as $jobs)
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">

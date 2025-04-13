@@ -316,8 +316,9 @@ class User extends Controller
             // Ambil semua hasil request sekaligus
             $jobs = $responses[0]->json('data');
             $subCategories = $responses[1]->json('data');
-            $applications = $responses[2]->json('data');
-            $experiences = $responses[2]['data'][0]['user']['experiences'];
+            $applications = $responses[2]->json('data') ?? [];
+            $experiences = $applications[0]['user']['experiences'] ?? [];
+
 
 
             // Sub-kategori yang sesuai dengan job
@@ -326,6 +327,7 @@ class User extends Controller
         } catch (\Exception $e) {
             session()->flash('notifAPI', 'Halaman Detail Job');
             return view('user.api_error');
+            //echo $e->getMessage();
         }
     }
 

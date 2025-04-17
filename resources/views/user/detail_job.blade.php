@@ -110,10 +110,11 @@
                                 <select id="statusFilter" class="form-select">
                                     <option value="">Status</option>
                                     <option value="">Semua</option>
+                                    <option value="Rejected">Rejected</option>
                                     <option value="Submitted">Submitted</option>
                                     <option value="Reviewed">Reviewed</option>
                                     <option value="Interview">Interview</option>
-                                    <option value="Rejected">Rejected</option>
+                                    <option value="Accepted">Accepted</option>                                    
                                 </select>
                             </div>
                             <div id="show_data" class="col-md-6 mb-3">
@@ -187,10 +188,11 @@
                                                         <input type="hidden" name="jobId" value="{{ $applications['job'] }}">
                                                             <select id="statusFilter" class="form-select" name="status" required>
                                                                 <option value="">Pilih Status</option>
+                                                                <option value="Rejected">Rejected</option>
                                                                 <option value="Submitted">Submitted</option>
                                                                 <option value="Reviewed">Reviewed</option>
                                                                 <option value="Interview">Interview</option>
-                                                                <option value="Rejected">Rejected</option>
+                                                                <option value="Accepted">Accepted</option>  
                                                             </select>
                                                         </div>
                                                     </div>

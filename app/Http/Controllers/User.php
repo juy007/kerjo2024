@@ -79,8 +79,8 @@ class User extends Controller
         $request->merge([
             'gaji_min' => str_replace('.', '', $request->input('gaji_min')),
             'gaji_max' => str_replace('.', '', $request->input('gaji_max')),
-            'date_start' => date('Y-m-d\TH:i:s.v\Z', strtotime($request->input('date_start'))),
-            'date_end' => date('Y-m-d\TH:i:s.v\Z', strtotime($request->input('date_end'))),
+            'date_start' => Carbon::parse($request->input('date_start'))->startOfDay()->toIso8601ZuluString(),
+            'date_end' => Carbon::parse($request->input('date_end'))->startOfDay()->toIso8601ZuluString(),
         ]);
 
         $validated = $request->validate([
@@ -101,9 +101,6 @@ class User extends Controller
             'status' => 'required|string|max:255',
         ]);
 
-        /*foreach ($validated as $key => $value) {
-            echo "$key: $value<br>";
-        }*/
         // Ambil token dari session
         $token = session('api_token');
         try {
@@ -180,40 +177,31 @@ class User extends Controller
         return view('user.posting_job', compact('dataJob', 'subcategories', 'provinces', 'currentPage', 'totalPages', 'filters'));
     }
 
-    public function editJob($id)
+    public function editJob(CompanyService $companyService, $id)
     {
         $token = Session::get('api_token');
         try {
-            $responses = Http::pool(fn($pool) => [
-                $pool->withToken($token)->get('https://api.carikerjo.id/provinces'),
-                $pool->withToken($token)->get('https://api.carikerjo.id/currencies'),
-                $pool->withToken($token)->get('https://api.carikerjo.id/sub-categories'),
-                $pool->withToken($token)->get('https://api.carikerjo.id/job-statuses'),
-                $pool->withToken($token)->get('https://api.carikerjo.id/job-types'),
-                $pool->withToken($token)->get('https://api.carikerjo.id/job-levels'),
-                $pool->withToken($token)->get("https://api.carikerjo.id/jobs/{$id}"),
-            ]);
 
-            // Jika salah satu request gagal, handle di sini
-            $failedResponse = array_filter($responses, fn($response) => !$response->successful());
-            if (count($failedResponse) > 0) {
+            $provinces = $companyService->getProvinces($token);
+            $currencies = $companyService->getCurrencies($token);
+            $subCategories = $companyService->getSubCategories($token);
+            $jobStatuses = $companyService->getJobStatuses($token);
+            $jobTypes = $companyService->getJobTypes($token);
+            $jobLevels = $companyService->getJobLevels($token);
+            $jobs = $companyService->getJobs($token, $id);
+
+            if (
+                !$provinces['success'] || !$currencies['success'] || !$subCategories['success'] ||
+                !$jobStatuses['success'] || !$jobTypes['success'] || !$jobLevels['success'] || !$jobs['success']
+            ) {
                 session()->flash('notifAPI', 'Halaman Form Job');
                 return view('user.api_error');
             }
-
-            // Ambil semua hasil request sekaligus
-            $provinces = $responses[0]->json('data');
-            $currencies = $responses[1]->json('data');
-            $subCategories = $responses[2]->json('data');
-            $jobStatuses = $responses[3]->json('data');
-            $jobTypes = $responses[4]->json('data');
-            $jobLevels = $responses[5]->json('data');
-            $jobs = $responses[6]->json('data');
-
+          
             // Sub-kategori yang sesuai dengan job
-            $subCategoriesShow = collect($subCategories)->firstWhere('_id', $jobs['subCategory']);
-
-            return view('user.form_edit_job', compact('subCategoriesShow', 'provinces', 'currencies', 'subCategories', 'jobStatuses', 'jobTypes', 'jobLevels', 'jobs'));
+           $subCategoriesShow = collect($subCategories['data'])->firstWhere('_id', $jobs['data']['subCategory'] ?? null);
+            
+           return view('user.form_edit_job', compact('subCategoriesShow', 'provinces', 'currencies', 'subCategories', 'jobStatuses', 'jobTypes', 'jobLevels', 'jobs'));
         } catch (\Exception $e) {
             session()->flash('notifAPI', 'Halaman Form Job');
             return view('user.api_error');
@@ -225,8 +213,8 @@ class User extends Controller
         $request->merge([
             'gaji_min' => str_replace('.', '', $request->input('gaji_min')),
             'gaji_max' => str_replace('.', '', $request->input('gaji_max')),
-            'date_start' => date('Y-m-d\TH:i:s.v\Z', strtotime($request->input('date_start'))),
-            'date_end' => date('Y-m-d\TH:i:s.v\Z', strtotime($request->input('date_end'))),
+            'date_start' => Carbon::parse($request->input('date_start'))->startOfDay()->toIso8601ZuluString(),
+            'date_end' => Carbon::parse($request->input('date_end'))->startOfDay()->toIso8601ZuluString(),
         ]);
 
         $validated = $request->validate([
@@ -246,12 +234,14 @@ class User extends Controller
             'kualifikasi' => 'required|string',
             'status' => 'required|string|max:255',
         ]);
-
+        /*echo '<pre>';
+        print_r($validated);
+        echo '</pre>';*/
+        
         // Ambil token dari session
         $token = session('api_token');
         try {
-            // Kirim request POST ke API
-            $response = Http::withToken($token)->put("https://api.carikerjo.id/jobs/{$id}", [
+            $response = Http::withToken($token)->retry(3, 100)->put("https://api.carikerjo.id/jobs/{$id}", [
                 'title' => $validated['lowongan'],
                 'subCategoryId' => $validated['kategori'],
                 'companyId' => Session::get('company_id'),
@@ -388,16 +378,17 @@ class User extends Controller
         $token = session('api_token');
         $requestedPage = filter_var($request->query('page', 1), FILTER_VALIDATE_INT) ?: 1;
 
-        $filters = [
-            'query' => $request->query('nama', ''),
-            'salary' => str_replace('.', '', $request->query('gaji', '')),
-            'location' => $request->query('lokasi', ''),
+        $filter_user = [
+            'query'      => $request->query('title', ''),
+            'salary'     => ($gaji = str_replace('.', '', $request->query('gaji', ''))) == 0 ? '' : $gaji,
+            'location'   => $request->query('lokasi', ''),
             'categories' => $request->query('kategori', ''),
         ];
-
-
+        
+        //dd($filter_user);
+        
         // Ambil halaman 1 untuk cek totalPages
-        $initialResponse = $this->companyService->getUsers($token, $filters, 1);
+        $initialResponse = $this->companyService->getUsers($token, $filter_user, 1);
         $subcategories = $this->companyService->getSubCategories($token);
         $provinces = $this->companyService->getProvinces($token);
 
@@ -414,7 +405,7 @@ class User extends Controller
         // Ambil data hanya 1 kali, langsung dari halaman valid
         $response = ($page == 1)
             ? $initialResponse
-            : $this->companyService->getUsers($token, $filters, $page);
+            : $this->companyService->getUsers($token, $filter_user, $page);
 
         $data = $response['data'];
         $users = $data ?? [];
@@ -422,7 +413,7 @@ class User extends Controller
         $subcategories = $subcategories = collect($subcategories['data'])->sortBy('name')->values()->all();
         $groupedSubCategories = collect($subcategories)->groupBy(fn($item) => $item['category']['name']);
         $provinces = $provinces['data'];
-        return view('user.user', compact('users', 'groupedSubCategories', 'subcategories', 'provinces', 'currentPage', 'totalPages', 'filters'));
+        return view('user.user', compact('users', 'groupedSubCategories', 'subcategories', 'provinces', 'currentPage', 'totalPages', 'filter_user'));
     }
 
     public function user_show($id)

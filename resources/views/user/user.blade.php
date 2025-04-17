@@ -59,7 +59,7 @@
                             <hr>
                             @php
                             $collapse = ''; // default: tidak muncul
-                            if (request('nama') || request('kategori') || request('lokasi') || request('gaji')) {
+                            if (request('title') || request('kategori') || request('lokasi') || request('gaji')) {
                             $collapse = 'show'; // aktifkan collapse
                             }
                             @endphp
@@ -67,7 +67,7 @@
                             <form action="{{ route('index_user') }}" method="GET" class="row collapse {{ $collapse }}" id="collapseExample">
 
                                 <div class="col-md-3 mb-3">
-                                    <input type="text" class="form-control" name="nama" placeholder="Nama" value="{{ request('nama') }}">
+                                    <input type="text" class="form-control" name="title" placeholder="Pekerjaan" value="{{ request('title') }}">
                                 </div>
                                 <!--
                                 <div class="col-md-3 mb-3">

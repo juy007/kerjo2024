@@ -177,6 +177,12 @@ return [
             'path' => storage_path('logs/' . date('Y') . '/admin/admin_log_'.date('Y').'.log'),
             'level' => 'debug', 
         ],
+
+        'admin_api_error' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/' . date('Y') . '/admin/admin_error_'.date('Y').'.log'),
+            'level' => 'debug', 
+        ],
     ],
 
     

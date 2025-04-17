@@ -43,7 +43,7 @@
                             {{ session('error') }}
                         </div>
                         @endif
-                        <form method="POST" action="{{ route('save_update_job', $jobs['_id']) }}" class="row" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('save_update_job', $jobs['data']['_id']) }}" class="row" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="col-xl-4 col-md-4 ps-4">
@@ -55,13 +55,13 @@
                                         <div>
                                             <div class="mb-3">
                                                 <label for="form-lowongan" class="form-label">Nama Lowongan</label>
-                                                <input class="form-control" type="text" value="{{ $jobs['title'] }}" placeholder="Nama Lowongan" id="form-lowongan" name="lowongan">
+                                                <input class="form-control" type="text" value="{{ $jobs['data']['title'] }}" placeholder="Nama Lowongan" id="form-lowongan" name="lowongan">
                                             </div>
                                             <div class="mb-3">
                                                 <label for="kategori" class="form-label font-size-13">Kategori</label>
                                                 <select class="form-control" data-trigger name="kategori" id="kategori">
-                                                    <option selected value="{{ $jobs['subCategory']['name'] }}">{{ $jobs['subCategory']['name'] }}</option>
-                                                    @foreach($subCategories as $subCategories)
+                                                    <option selected value="{{ $jobs['data']['subCategory']['_id'] }}">{{ $jobs['data']['subCategory']['name'] }}</option>
+                                                    @foreach($subCategories['data'] as $subCategories)
                                                     <option value="{{ $subCategories['_id'] }}">{{ $subCategories['name'] }}</option>
                                                     @endforeach
                                                 </select>
@@ -69,8 +69,9 @@
                                             <div class="mb-3">
                                                 <label for="mata-uang" class="form-label font-size-13">Mata Uang</label>
                                                 <select class="form-control" data-trigger name="mata_uang" id="mata-uang">
-                                                    <option selected value="{{ $jobs['currency']['_id'] }}">{{ $jobs['currency']['name'] }}</option>
-                                                    @foreach($currencies as $currencies)
+                                                <option selected value="{{ $jobs['data']['currency']['_id'] ?? '' }}">{{ $jobs['data']['currency']['name'] ?? 'Pilih Currency' }}</option>
+
+                                                    @foreach($currencies['data']['list'] as $currencies)
                                                     <option value="{{ $currencies['_id'] }}">{{ $currencies['name'] }}</option>
                                                     @endforeach
                                                 </select>
@@ -78,17 +79,17 @@
                                             <div class="row mb-3">
                                                 <label class="form-label" for="gaji-min">Gaji</label>
                                                 <div class="col-md-6">
-                                                    <input type="text" class="form-control" oninput="formatCurrency(this)" id="gaji-min" name="gaji_min" value="{{ number_format($jobs['salaryStart'], 0, ',', '.') }}" placeholder="Gaji Min">
+                                                    <input type="text" class="form-control" oninput="formatCurrency(this)" id="gaji-min" name="gaji_min" value="{{ number_format($jobs['data']['salaryStart'], 0, ',', '.') }}" placeholder="Gaji Min">
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <input type="text" class="form-control" oninput="formatCurrency(this)" id="gaji-max" name="gaji_max" value="{{ number_format($jobs['salaryEnd'], 0, ',', '.') }}" placeholder="Gaji Max">
+                                                    <input type="text" class="form-control" oninput="formatCurrency(this)" id="gaji-max" name="gaji_max" value="{{ number_format($jobs['data']['salaryEnd'], 0, ',', '.') }}" placeholder="Gaji Max">
                                                 </div>
                                             </div>
                                             <div class="mb-3">
                                                 <label for="form-lokasi" class="form-label font-size-13">Lokasi</label>
                                                 <select class="form-control" data-trigger name="lokasi" id="form-lokasi">
-                                                    <option selected value="{{ $jobs['province']['_id'] }}">{{ $jobs['province']['name'] }}</option>
-                                                    @foreach($provinces as $province)
+                                                    <option selected value="{{ $jobs['data']['province']['_id'] ?? '' }}">{{ $jobs['data']['province']['name'] ?? 'Pilih Lokasi' }}</option>
+                                                    @foreach($provinces['data']['list'] as $province)
                                                     <option value="{{ $province['_id'] }}">{{ $province['name'] }}</option>
                                                     @endforeach
                                                 </select>
@@ -96,8 +97,8 @@
                                             <div class="mb-3">
                                                 <label for="form-tipe-pekerjaan" class="form-label font-size-13">Tipe Pekerjaan</label>
                                                 <select class="form-control" data-trigger name="tipe_pekerjaan" id="form-tipe-pekerjaan">
-                                                    <option selected value="{{ $jobs['jobType']['_id'] }}">{{ $jobs['jobType']['name'] }}</option>
-                                                    @foreach($jobTypes as $jobTypes)
+                                                    <option selected value="{{ $jobs['data']['jobType']['_id'] ?? '' }}">{{ $jobs['data']['jobType']['name'] ?? 'Pilih Tipe Pekerjaan'}}</option>
+                                                    @foreach($jobTypes['data']['list'] as $jobTypes)
                                                     <option value="{{ $jobTypes['_id'] }}">{{ $jobTypes['name'] }}</option>
                                                     @endforeach
                                                 </select>
@@ -105,8 +106,8 @@
                                             <div class="mb-3">
                                                 <label for="form-tipe-status-karyawan" class="form-label font-size-13">Status Karyawan</label>
                                                 <select class="form-control" data-trigger name="status_karyawan" id="form-tipe-status-karyawan">
-                                                    <option selected value="{{ $jobs['jobStatus']['_id'] }}">{{ $jobs['jobStatus']['name'] }}</option>
-                                                    @foreach($jobStatuses as $jobStatuses)
+                                                    <option selected value="{{ $jobs['data']['jobStatus']['_id'] ?? ''}}">{{ $jobs['data']['jobStatus']['name'] ?? 'Pilih Status Karyawan' }}</option>
+                                                    @foreach($jobStatuses['data']['list'] as $jobStatuses)
                                                     <option value="{{ $jobStatuses['_id'] }}">{{ $jobStatuses['name'] }}</option>
                                                     @endforeach
                                                 </select>
@@ -114,37 +115,37 @@
                                             <div class="row mb-3">
                                                 <label class="form-label" for="formrow-email-input1">Expired Date</label>
                                                 <div class="col-md-6">
-                                                    <input class="form-control" type="date" value="{{ \Carbon\Carbon::parse($jobs['startDate'])->format('Y-m-d') }}" name="date_start" id="form-expired-start">
+                                                    <input class="form-control" type="date" value="{{ \Carbon\Carbon::parse($jobs['data']['startDate'])->format('Y-m-d') }}" name="date_start" id="form-expired-start">
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <input class="form-control" type="date" value="{{ \Carbon\Carbon::parse($jobs['endDate'])->format('Y-m-d') }}" name="date_end" id="form-expired-end">
+                                                    <input class="form-control" type="date" value="{{ \Carbon\Carbon::parse($jobs['data']['endDate'])->format('Y-m-d') }}" name="date_end" id="form-expired-end">
                                                 </div>
                                             </div>
                                             <div class="mb-3">
                                                 <label for="form-posisi-level" class="form-label font-size-13">Posisi Level</label>
                                                 <select class="form-control" data-trigger name="posisi_level" id="form-posisi-level">
-                                                    <option selected value="{{ $jobs['jobLevel']['_id'] }}">{{ $jobs['jobLevel']['name'] }}</option>
-                                                    @foreach($jobLevels as $jobLevels)
+                                                    <option selected value="{{ $jobs['data']['jobLevel']['_id'] ?? '' }}">{{ $jobs['data']['jobLevel']['name'] ?? 'Pilih Posisi Level' }}</option>
+                                                    @foreach($jobLevels['data']['list'] as $jobLevels)
                                                     <option value="{{ $jobLevels['_id'] }}">{{ $jobLevels['name'] }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                             <div class="mb-3" id="editor1">
                                                 <label for="form-deskripsi-pekerjaan" class="form-label">Deskripsi Pekerjaan</label>
-                                                <textarea class="form-control" name="deskripsi" id="form-deskripsi-pekerjaan" rows="5">{{ $jobs['description'] }}</textarea>
+                                                <textarea class="form-control" name="deskripsi" id="form-deskripsi-pekerjaan" rows="5">{{ $jobs['data']['description'] }}</textarea>
                                             </div>
                                             <div class="mb-3" id="editor2">
                                                 <label for="form-detail" class="form-label">Detail</label>
-                                                <textarea class="form-control" name="detail" id="form-detail" rows="5">{{ $jobs['detail'] }}</textarea>
+                                                <textarea class="form-control" name="detail" id="form-detail" rows="5">{{ $jobs['data']['detail'] }}</textarea>
                                             </div>
                                             <div class="mb-3" id="editor3">
                                                 <label for="form-kualifikasi" class="form-label">Kualifikasi</label>
-                                                <textarea class="form-control" name="kualifikasi" id="form-kualifikasi" rows="5">{{ $jobs['qualification'] }}</textarea>
+                                                <textarea class="form-control" name="kualifikasi" id="form-kualifikasi" rows="5">{{ $jobs['data']['qualification'] }}</textarea>
                                             </div>
                                             <div class="mb-3">
                                                 <label for="form-status" class="form-label font-size-13">Status</label>
                                                 <select class="form-control" data-trigger name="status" id="form-status">
-                                                    <option selected value="{{ $jobs['status'] }}">{{ ucfirst($jobs['status']) }}</option>
+                                                    <option selected value="{{ $jobs['data']['status'] }}">{{ ucfirst($jobs['data']['status']) }}</option>
                                                     <option value="publish">Publish</option>
                                                     <option value="draft">Draft</option>
                                                 </select>
@@ -164,10 +165,10 @@
                                             <div class="divider"></div><br>
                                             <div class="job-header">
 
-                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/logo/'. str_replace('public/upload/logo/', '', session('company_logo') )) }}" width="50" />
+                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/logo/'. str_replace(['../public/upload/logo/', './public/upload/logo/'], '', $jobs['data']['company']['logo'] )) }}" width="50" />
                                                 <div>
                                                     <div class="job-title">
-                                                        Data Analyst
+                                                        {{ $jobs['data']['title'] }}
                                                     </div>
                                                     <div class="job-company">
                                                         <?php echo session('company_name'); ?>
@@ -180,38 +181,28 @@
                                             <div class="job-details">
                                                 <div class="row">
                                                     <div class="col-7">
-                                                        <div class="label">
-                                                            Lokasi
-                                                        </div>
-                                                        Sudirman, Jakarta Selatan
+                                                        <div class="label">Lokasi</div>
+                                                        {{ $jobs['data']['province']['name'] ?? '-' }}
                                                     </div>
                                                     <div class="col-5">
-                                                        <div class="label">
-                                                            Tipe Pekerjaan
-                                                        </div>
-                                                        Full time
+                                                        <div class="label">Tipe Pekerjaan</div>
+                                                        {{ $jobs['data']['jobType']['name'] ?? '-' }}
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-7">
-                                                        <div class="label">
-                                                            Status Karyawan
-                                                        </div>
-                                                        Karyawan Tetap
+                                                        <div class="label">Status Karyawan</div>
+                                                        {{ $jobs['data']['jobStatus']['name'] ?? '-' }}
                                                     </div>
                                                     <div class="col-5">
-                                                        <div class="label">
-                                                            Posisi Level
-                                                        </div>
-                                                        Staff
+                                                        <div class="label">Posisi Level</div>
+                                                        {{ $jobs['data']['jobLevel']['name'] ?? '-' }}
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-8">
-                                                        <div class="label">
-                                                            Kategori Pekerjaan
-                                                        </div>
-                                                        IT Komputer - Software
+                                                        <div class="label">Kategori Pekerjaan</div>
+                                                        {{ $jobs['data']['subCategory']['name'] ?? '-' }}
                                                     </div>
                                                 </div>
                                             </div>
@@ -219,32 +210,16 @@
                                                 <div class="section-title">
                                                     Deskripsi Pekerjaan
                                                 </div>
-                                                <p>
-                                                    Sebagai Data Analis di perusahaan kami, Anda akan menjadi bagian penting dalam tim yang bertanggung jawab untuk mengumpulkan, menganalisis, dan menginterpretasi data untuk mendukung pengambilan keputusan bisnis.
-                                                </p>
-                                                <div class="section-title">
-                                                    Tanggung Jawab Utama
-                                                </div>
-                                                <ul>
-                                                    <li>
-                                                        <strong>
-                                                            Pengumpulan Data:
-                                                        </strong>
-                                                        Mengumpulkan data dari berbagai sumber internal dan eksternal, termasuk basis data, spreadsheet, dan sumber data lainnya.
-                                                    </li>
-                                                    <li>
-                                                        <strong>
-                                                            Pembersihan dan Preprocessing Data:
-                                                        </strong>
-                                                        Membersihkan dan memproses data mentah untuk memastikan kualitas dan konsistensi data yang baik.
-                                                    </li>
-                                                    <li>
-                                                        <strong>
-                                                            Analisis Data:
-                                                        </strong>
-                                                        Menganalisis data untuk mengidentifikasi tren, pola, dan wawasan yang dapat digunakan untuk mendukung keputusan bisnis.
-                                                    </li>
-                                                </ul>
+                                                {!! $jobs['data']['description'] !!}
+
+                                            </div>
+                                            <div class="job-description">
+                                                <div class="section-title">Detail</div>
+                                                <p id="job_detail">{!! $jobs['data']['detail'] !!}</p>
+                                            </div>
+                                            <div class="job-description">
+                                                <div class="section-title">Kualifikasi</div>
+                                                <p id="job_kualifikasi">{!! $jobs['data']['qualification'] !!}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -272,7 +247,7 @@
                                                             <div class="divider"></div><br>
                                                             <div class="job-header">
 
-                                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/logo/'. str_replace('public/upload/logo/', '', session('company_logo') )) }}" width="50" />
+                                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/logo/'. str_replace(['../public/upload/logo/', './public/upload/logo/'], '', $jobs['data']['company']['logo'] )) }}" width="50" />
                                                                 <div>
                                                                     <div id="job_title_pre" class="job-title">
                                                                         Data Analyst
@@ -333,17 +308,13 @@
 
                                                             </div>
                                                             <div class="job-description">
-                                                                <div class="section-title">
-                                                                    Detail
-                                                                </div>
+                                                                <div class="section-title">Detail</div>
                                                                 <p id="job_detail_pre">
                                                                     Sebagai Data Analis di perusahaan kami, Anda akan menjadi bagian penting dalam tim yang bertanggung jawab untuk mengumpulkan, menganalisis, dan menginterpretasi data untuk mendukung pengambilan keputusan bisnis.
                                                                 </p>
                                                             </div>
                                                             <div class="job-description">
-                                                                <div class="section-title">
-                                                                    Kualifikasi
-                                                                </div>
+                                                                <div class="section-title">Kualifikasi</div>
                                                                 <p id="job_kualifikasi_pre">
                                                                     Sebagai Data Analis di perusahaan kami, Anda akan menjadi bagian penting dalam tim yang bertanggung jawab untuk mengumpulkan, menganalisis, dan menginterpretasi data untuk mendukung pengambilan keputusan bisnis.
                                                                 </p>

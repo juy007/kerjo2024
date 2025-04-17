@@ -6,64 +6,64 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 
-class CompanyService
+class AdminService
 {
     protected $apiUser = 'https://api.carikerjo.id/users';
-    protected $apiSubcategories = 'https://api.carikerjo.id/sub-categories';
-    protected $apiProvinces = 'https://api.carikerjo.id/provinces';
+    protected $apiCompanies = 'https://api.carikerjo.id/companies';
     protected $apiJobs = 'https://api.carikerjo.id/jobs';
 
-    public function getUsers($token, $filter_user = [], $page = 1)
+    protected $apiSubcateories = 'https://api.carikerjo.id/sub-categories';
+    protected $apiProvinces = 'https://api.carikerjo.id/provinces';
+    
+
+    public function getUsers($token, $filters = [], $page = 1)
     {
-        $userId = session('user_id') ?? 'guest';
-
-        // Log sebelum request dikirim
-        /*Log::channel('company_user')->info('Memulai request daftar user ke API', [
-            'user_id' => $userId,
-            'filters' => $filters,
-            'page' => $page,
-        ]);*/
-
-        $queryParams = array_merge($filter_user, [
-            'limit' => 50,
-            'page' => $page,
-        ]);
-
         try {
-            $response = Http::retry(3, 100)->withToken($token)->get($this->apiUser, $queryParams);
+            $response = Http::retry(3, 100)->withToken($token)->get($this->apiUser);
 
             if (!$response->successful()) {
-                Log::channel('company_api_error')->warning('Get User', [
-                    'user_id' => $userId,
-                    'status_code' => $response->status(),
-                    'response_body' => $response->body(),
-                ]);
-
                 return ['success' => false, 'message' => 'Gagal mengambil data dari API'];
             }
-
-            Log::channel('company_user')->info('Berhasil mendapatkan data user dari API', [
-                'user_id' => $userId,
-                'status_code' => $response->status(),
-            ]);
-
             return ['success' => true, 'data' => $response->json()['data']];
         } catch (\Exception $e) {
-            // Log jika terjadi error (timeout, DNS, dll)
-            Log::channel('company_api_error')->error('Get User', [
-                'user_id' => $userId,
-                'error' => $e->getMessage(),
-            ]);
-
             return ['success' => false, 'message' => 'Terjadi kesalahan saat mengambil data user'];
         }
     }
+
+    public function getCompanies($token, $filters = [], $page = 1)
+    {
+        try {
+            $response = Http::retry(3, 100)->withToken($token)->get($this->apiCompanies);
+
+            if (!$response->successful()) {
+                return ['success' => false, 'message' => 'Gagal mengambil data dari API'];
+            }
+            return ['success' => true, 'data' => $response->json()['data']];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => 'Terjadi kesalahan saat mengambil data user'];
+        }
+    }
+
+    public function getJob($token, $filters = [], $page = 1)
+    {
+        try {
+            $response = Http::retry(3, 100)->withToken($token)->get($this->apiJobs);
+            if (!$response->successful()) {
+                return ['success' => false, 'message' => 'Gagal mengambil data dari API'];
+            }
+            return ['success' => true, 'data' => $response->json()['data']];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => 'Terjadi kesalahan saat mengambil data Job'];
+        }
+    }
+
+    
 
     public function getSubCategories($token)
     {
         $userId = session('user_id') ?? 'guest';
         try {
-            $response = Http::retry(3, 100)->withToken($token)->get($this->apiSubcategories);
+            $response = Http::retry(3, 100)->withToken($token)->get($this->apiSubcateories);
 
             if (!$response->successful()) {
                 Log::channel('company_api_error')->warning('Get Categories', [
@@ -111,43 +111,7 @@ class CompanyService
         }
     }
 
-    public function getJob($token, $filters = [], $page = 1)
-    {
-        $userId = session('user_id') ?? 'guest';
-
-        $queryParams = array_merge($filters, [
-            'limit' => 20,
-            'page' => $page,
-        ]);
-
-        try {
-            $response = Http::retry(3, 100)->withToken($token)->get($this->apiJobs, $queryParams);
-
-            if (!$response->successful()) {
-                Log::channel('company_api_error')->warning('Get Job', [
-                    'user_id' => $userId,
-                    'status_code' => $response->status(),
-                    'response_body' => $response->body(),
-                ]);
-
-                return ['success' => false, 'message' => 'Gagal mengambil data dari API'];
-            }
-
-            Log::channel('company_user')->info('Berhasil mendapatkan data JOb dari API', [
-                'user_id' => $userId,
-                'status_code' => $response->status(),
-            ]);
-
-            return ['success' => true, 'data' => $response->json()['data']];
-        } catch (\Exception $e) {
-            Log::channel('company_api_error')->error('Get Job', [
-                'user_id' => $userId,
-                'error' => $e->getMessage(),
-            ]);
-
-            return ['success' => false, 'message' => 'Terjadi kesalahan saat mengambil data Job'];
-        }
-    }
+  
 
     public function getCurrencies($token)
     {
@@ -252,30 +216,6 @@ class CompanyService
                 'error' => $e->getMessage(),
             ]);
             return ['success' => false, 'message' => 'Terjadi kesalahan saat mengambil data level pekerjaan'];
-        }
-    }
-
-    public function getJobs($token, $id)
-    {
-        $userId = session('user_id') ?? 'guest';
-        try {
-            $response = Http::retry(3, 100)->withToken($token)->get($this->apiJobs."/{$id}");
-            if (!$response->successful()) {
-                Log::channel('company_api_error')->warning('Get Jobs', [
-                    'user_id' => $userId,
-                    'status_code' => $response->status(),
-                    'response_body' => $response->body(),
-                ]);
-                return ['success' => false, 'message' => 'Gagal mengambil data Jobs dari API'];
-            }
-
-            return ['success' => true, 'data' => $response->json()['data']];
-        } catch (\Exception $e) {
-            Log::channel('company_api_error')->error('Get Job Levels', [
-                'user_id' => $userId,
-                'error' => $e->getMessage(),
-            ]);
-            return ['success' => false, 'message' => 'Terjadi kesalahan saat mengambil data Job'];
         }
     }
 }

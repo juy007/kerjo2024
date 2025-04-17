@@ -109,6 +109,7 @@ Route::middleware('admin.token')->group(function () {
 
     Route::post('/adminlogout', [Admin::class, 'logout'])->name('admin_logout');
 
+
     Route::get('/proxy-image/admin/{path}', function ($path) {
         $filePath = public_path("assets/images/logo/" . $path);
 
@@ -179,6 +180,10 @@ Route::middleware('auth.token')->group(function () {
     Route::get('/part-2', [Account::class, 'company_profile_part2'])->name('company_profile_part2');
     Route::post('/submit-part-2', [Account::class, 'submitCompany_profile_part2'])->name('submit_company_profile_part2');
     Route::post('/logout', [Account::class, 'logout'])->name('user_logout');
+
+
+
+    Route::middleware(['admin.token', 'auth.token'])->group(function () {});
 
     Route::get('/proxy-image/logo/{path}', function ($path) {
         $url = "https://api.carikerjo.id/upload/logo/" . $path;

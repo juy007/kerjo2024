@@ -19,13 +19,16 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\URL;
 
 use App\Services\AdminLog;
+use App\Services\AdminService;
 
 class Admin extends Controller
 {
+    protected $adminService;
     protected $adminLog;
 
-    public function __construct(AdminLog $adminLog)
+    public function __construct(AdminService $adminService, AdminLog $adminLog)
     {
+        $this->adminService = $adminService;
         $this->adminLog = $adminLog;
     }
 
@@ -52,7 +55,7 @@ class Admin extends Controller
                 $token = $data['data'];
 
                 Session::put('api_token_admin', $token);
-                Session::put('admin_email', $request->email);
+                Session::put('admin_email', $request->email);              
 
                 Log::channel('admin_login')->info('Login berhasil', [
                     'email' => $request->email,
@@ -106,7 +109,15 @@ class Admin extends Controller
 
     public function dashboard()
     {
-       return view('admin.home');
+        $token = Session::get('api_token_admin');
+        $home = [
+            'totalUser'       => $this->adminService->getUsers($token, [], 1)['data']['totalItem'] ?? 0,
+            'totalCompanies'  => $this->adminService->getCompanies($token, [], 1)['data']['totalItem'] ?? 0,
+            'totalJob'        => $this->adminService->getJob($token, [], 1)['data']['totalItem'] ?? 0,
+            // 'totalPelamar' => $this->adminService->getApplication($token, [], 1)['data']['totalItem'] ?? 0,
+        ];
+        return view('admin.home', compact('home'));
+        
     }
 
     //Company
@@ -117,11 +128,14 @@ class Admin extends Controller
             $response = Http::withToken($token)->retry(3, 100)->get('https://api.carikerjo.id/companies', ['limit' => 200]);
 
             if ($response->successful()) {
+                $this->adminLog->createLog('Get Companies');
+
                 $data = $response->json();
                 $company = $data['data'];
 
                 return view('admin.company', compact('company'));
             }
+            $this->adminLog->createLogError('Get Companies');
             return redirect()->back()->with('error', 'Gagal mengambil data Company');
         } catch (\Exception $e) {
             return redirect()->route('db_error');

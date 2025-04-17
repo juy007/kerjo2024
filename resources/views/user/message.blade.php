@@ -24,7 +24,7 @@
         <div class="d-lg-flex">
             <div class="chat-leftsidebar card">             
                 <div class="p-3">
-                    <div class="search-box position-relative">
+                    <div class="search-box position-relative">{{-- session('user_id') --}}
                             <input
                                 type="text"
                                 class="form-control rounded border"
@@ -44,6 +44,7 @@
                                             // Ambil pesan terbaru dari setiap pengirim
                                             $latestMessage = $messages->sortByDesc('createdAt')->first();
                                             @endphp
+                                            
                                             <li class="{{ $latestMessage['status'] }}">
                                                 <a href="{{ route('detail_message', $latestMessage['from']) }}">
                                                     <div class="d-flex align-items-start">

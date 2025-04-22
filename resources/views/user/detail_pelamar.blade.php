@@ -88,7 +88,7 @@
                             height: 100%;
                         }
 
-                        .timeline-C {}
+                        /*.timeline-C {}*/
 
                         .timelineRounded {
                             background-color: #1B8CDD;

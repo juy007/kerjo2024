@@ -103,7 +103,7 @@
                 </div>
                 @endforeach
             @else
-                <img style="max-height: 500px; width:auto;" src="{{ url('proxy-image/src/nodata.png') }}" alt="" class="img-fluid mx-auto d-block">
+                <img style="max-height: 500px; width:auto;" src="{{ url('proxy-image/company/src/nodata.png') }}" alt="" class="img-fluid mx-auto d-block">
             @endif
         </div>
        

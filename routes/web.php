@@ -159,6 +159,8 @@ Route::middleware('auth.token')->group(function () {
 
         Route::get('/job', [User::class, 'indexJob'])->name('index_job');
         Route::get('/tambah-job', [User::class, 'formJob'])->name('form_job');
+        Route::post('/detail-categories-json', [User::class, 'categoriesDetailJson'])->name('categories_detail_json');
+        Route::post('/detail-provinces-json', [User::class, 'provincesDetailJson'])->name('provinces_detail_json');
         Route::post('/save-job', [User::class, 'saveJob'])->name('save_job');
         Route::get('/edit-job/{id}', [User::class, 'editJob'])->name('edit_job');
         Route::put('/save-update-job/{id}', [User::class, 'saveUpdateJob'])->name('save_update_job');
@@ -200,23 +202,19 @@ Route::middleware('auth.token')->group(function () {
         }
     });
 
-
-
-    Route::get('/proxy-image/src/{path}', function ($path) {
+    Route::get('/proxy-image/company/src/{path}', function ($path) {
         $filePath = public_path("assets/images/logo/" . $path);
-
-
+    
         if (!file_exists($filePath)) {
-            abort(404, 'Image not found');
+            return redirect('/kerjo-img');
         }
-
+    
         $mimeType = mime_content_type($filePath);
-
+    
         return response()->file($filePath, [
             'Content-Type' => $mimeType,
         ]);
     });
-
 
     Route::get('/proxy-img/{path}', function ($path) {
         $filePath = public_path("assets/images/" . $path);
@@ -246,7 +244,7 @@ Route::middleware('auth.token')->group(function () {
                 ->header('Content-Type', $response->getHeader('Content-Type')[0]);
         } catch (RequestException $e) {
             // Jika gagal, redirect ke route default-avatar
-            return redirect('/default-avatar');
+            return redirect('/kerjo-company-img');
         }
     });
 
@@ -261,7 +259,7 @@ Route::middleware('auth.token')->group(function () {
             return response($response->getBody(), 200)
                 ->header('Content-Type', $response->getHeader('Content-Type')[0]);
         } catch (RequestException $e) {
-            return redirect('/kerjo-img');
+            return redirect('/kerjo-company-img');
         }
     });
 
@@ -276,6 +274,27 @@ Route::middleware('auth.token')->group(function () {
         return response($response->getBody(), 200)
             ->header('Content-Type', $response->getHeader('Content-Type')[0]);
     });
+
+    Route::get('/kerjo-company-img', function () {
+        $defaultImagePath = public_path('assets/images/logo/noimg.png');
+        return response()->file($defaultImagePath);
+    });
+});
+
+
+//Tanpa Akses
+Route::get('/proxy-image/src/{path}', function ($path) {
+    $filePath = public_path("assets/images/logo/" . $path);
+
+    if (!file_exists($filePath)) {
+        return redirect('/kerjo-img');
+    }
+
+    $mimeType = mime_content_type($filePath);
+
+    return response()->file($filePath, [
+        'Content-Type' => $mimeType,
+    ]);
 });
 
 Route::get('/kerjo-img', function () {

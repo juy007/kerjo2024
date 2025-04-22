@@ -17,14 +17,14 @@
     <meta property="og:url" content="https://company.carikerjo.id">
     <meta property="og:title" content="Kerjo - Platform Rekrutmen untuk Perusahaan Terbaik">
     <meta property="og:description" content="Kerjo - Aplikasi pencari kerja terpercaya yang menghubungkan pencari kerja dengan perusahaan terbaik. Temukan lowongan pekerjaan impian dan bangun karir cemerlang bersama Kerjo. Download sekarang!">
-    <meta property="og:image" content="https://company.carikerjo.id/proxy-image/src/Kerjo%20sm.png">
+    <meta property="og:image" content="https://company.carikerjo.id/proxy-image/company/src/Kerjo%20sm.png">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://company.carikerjo.id">
     <meta name="twitter:title" content="Kerjo - Platform Rekrutmen untuk Perusahaan Terbaik">
     <meta name="twitter:description" content="Kerjo - Aplikasi pencari kerja terpercaya yang menghubungkan pencari kerja dengan perusahaan terbaik. Temukan lowongan pekerjaan impian dan bangun karir cemerlang bersama Kerjo. Download sekarang!">
-    <meta name="twitter:image" content="https://company.carikerjo.id/proxy-image/src/Kerjo%20sm.png">
+    <meta name="twitter:image" content="https://company.carikerjo.id/proxy-image/company/src/Kerjo%20sm.png">
 
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ asset('assets/images/logo/fav.png') }}">
@@ -46,9 +46,9 @@
     <link rel="stylesheet" href="{{ asset('assets/libs/flatpickr/flatpickr.min.css') }}">
 
     <!-- notifikasi -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <!--<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
-    <script src="{{ asset('assets/js/firebase-notifications.js') }}" defer></script>
+    <script src="{{ asset('assets/js/firebase-notifications.js') }}" defer></script>-->
 
     <style type="text/css">
         @font-face {

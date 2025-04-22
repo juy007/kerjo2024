@@ -9,7 +9,10 @@ function formatCurrency(input) {
     input.value = formatted;
 
     // Set nilai asli ke input hidden
-    document.getElementById('gaji').value = rawValue;
+    if (document.getElementById('gaji')) {
+        document.getElementById('gaji').value = rawValue;
+    }
+s    
 }
 
 function number(evt) {
@@ -24,7 +27,9 @@ function number(evt) {
 // Trigger format saat halaman load jika ada nilai
 document.addEventListener('DOMContentLoaded', function () {
     const viewInput = document.getElementById('gaji_view');
-    if (viewInput.value) {
+    if (viewInput?.value) {
         formatCurrency(viewInput);
     }
 });
+
+

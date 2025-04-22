@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Hash;
@@ -44,14 +46,14 @@ class User extends Controller
         try {
             $provinces = $companyService->getProvinces($token);
             $currencies = $companyService->getCurrencies($token);
-            $subCategories = $companyService->getSubCategories($token);
+            $categories = $companyService->getCategories($token);
             $jobStatuses = $companyService->getJobStatuses($token);
             $jobTypes = $companyService->getJobTypes($token);
             $jobLevels = $companyService->getJobLevels($token);
 
             // Cek apakah semua request sukses
             if (
-                !$provinces['success'] || !$currencies['success'] || !$subCategories['success'] ||
+                !$provinces['success'] || !$currencies['success'] || !$categories['success'] ||
                 !$jobStatuses['success'] || !$jobTypes['success'] || !$jobLevels['success']
             ) {
                 session()->flash('notifAPI', 'Halaman Form Job');
@@ -61,7 +63,7 @@ class User extends Controller
             return view('user.form_job', [
                 'provinces'     => $provinces['data'],
                 'currencies'    => $currencies['data'],
-                'subCategories' => $subCategories['data'],
+                'categories'    => $categories['data'],
                 'jobStatuses'   => $jobStatuses['data'],
                 'jobTypes'      => $jobTypes['data'],
                 'jobLevels'     => $jobLevels['data'],
@@ -70,6 +72,76 @@ class User extends Controller
             Log::channel('company_api_error')->info('Form Job.', ['error_api' =>  $e->getMessage(),]);
             session()->flash('notifAPI', 'Halaman Form Job');
             return view('user.api_error');
+        }
+    }
+
+    public function categoriesDetailJson(CompanyService $companyService, Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'id_categories' => 'required', 'string', 'max:255',
+        ]);
+    
+        $token = Session::get('api_token');
+        $categoryId = $validated['id_categories'];
+    
+        try {
+            $subCategories = /*Cache::remember("subcategories_{$categoryId}", now()->addMinutes(30), function () use ($companyService, $token, $categoryId) {
+                return */$companyService->getCategoriesDetail($token, $categoryId);
+            //});
+           return response()->json([
+                'success' => true,
+                'subCategories' => collect($subCategories['data']['subCategories'] ?? [])->map(function ($sub) {
+                    return [
+                        '_id' => $sub['_id'],
+                        'name' => $sub['name'],
+                    ];
+                })->values(),
+            ]);
+        } catch (\Throwable $e) {
+            Log::channel('company_api_error')->error('Gagal mengambil subkategori', [
+                'kategori_id' => $categoryId,
+                'error' => $e->getMessage(),
+            ]);
+    
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat mengambil subkategori.'
+            ], 500);
+        }
+    }
+
+    public function provincesDetailJson(CompanyService $companyService, Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'id_provinces' => 'required', 'string', 'max:255',
+        ]);
+    
+        $token = Session::get('api_token');
+        $provincesId = $validated['id_provinces'];
+    
+        try {
+            $provinces = /*Cache::remember("subcategories_{$categoryId}", now()->addMinutes(30), function () use ($companyService, $token, $categoryId) {
+                return */$companyService->getProvincesDetail($token, $provincesId);
+            //});
+           return response()->json([
+                'success' => true,
+                'regencies' => collect($provinces['data']['regencies'] ?? [])->map(function ($sub) {
+                    return [
+                        '_id' => $sub['_id'],
+                        'name' => $sub['name'],
+                    ];
+                })->values(),
+            ]);
+        } catch (\Throwable $e) {
+            Log::channel('company_api_error')->error('Gagal mengambil subkategori', [
+                'kategori_id' => $provincesId,
+                'error' => $e->getMessage(),
+            ]);
+    
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat mengambil subkategori.'
+            ], 500);
         }
     }
 
@@ -86,10 +158,12 @@ class User extends Controller
         $validated = $request->validate([
             'lowongan' => 'required|string|max:255',
             'kategori' => 'required|string|max:255',
+            'sub_kategori' => 'required|string|max:255',
             'mata_uang' => 'required|string|max:255',
             'gaji_min' => 'required|numeric',
             'gaji_max' => 'required|numeric',
-            'lokasi' => 'required|string|max:255',
+            'provinsi' => 'required|string|max:255',
+            'kota' => 'required|string|max:255',
             'tipe_pekerjaan' => 'required|string|max:255',
             'status_karyawan' => 'required|string|max:255',
             'date_start' => 'required|date',
@@ -107,9 +181,11 @@ class User extends Controller
             // Kirim request POST ke API
             $response = Http::withToken($token)->post('https://api.carikerjo.id/jobs', [
                 'title' => $validated['lowongan'],
-                'subCategoryId' => $validated['kategori'],
+                'categoryId' => $validated['kategori'],
+                'subCategoryId' => $validated['sub_kategori'],
                 'companyId' => Session::get('company_id'),
-                'provinceId' => $validated['lokasi'],
+                'provinceId' => $validated['provinsi'],
+                'regencyId' => $validated['kota'],
                 'jobTypeId' => $validated['tipe_pekerjaan'],
                 'jobStatusId' => $validated['status_karyawan'],
                 'currencyId' => $validated['mata_uang'],

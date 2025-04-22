@@ -7,12 +7,12 @@ function initCKEditor(elementId) {
                 '|',
                 'bold',
                 'italic',
-                'underline',
+                //'underline',
                 '|',
                 'bulletedList',
                 'numberedList',
                 '|',
-                'fontSize'
+                //'fontSize'
             ],
             fontSize: {
                 options: [
@@ -39,6 +39,6 @@ function initCKEditor(elementId) {
 }
 
 // Inisialisasi CKEditor pada semua form
-initCKEditor("form-deskripsi-pekerjaan");
-initCKEditor("form-detail");
-initCKEditor("form-kualifikasi");
+initCKEditor("form_deskripsi_pekerjaan");
+initCKEditor("form_detail");
+initCKEditor("form_kualifikasi");

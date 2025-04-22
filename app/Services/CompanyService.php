@@ -9,8 +9,11 @@ use Illuminate\Support\Facades\Log;
 class CompanyService
 {
     protected $apiUser = 'https://api.carikerjo.id/users';
+    protected $apicategories = 'https://api.carikerjo.id/categories';
+    protected $apicategoriesDetail = 'https://api.carikerjo.id/categories/';
     protected $apiSubcategories = 'https://api.carikerjo.id/sub-categories';
     protected $apiProvinces = 'https://api.carikerjo.id/provinces';
+    protected $apiProvincesDetail = 'https://api.carikerjo.id/provinces/';
     protected $apiJobs = 'https://api.carikerjo.id/jobs';
 
     public function getUsers($token, $filter_user = [], $page = 1)
@@ -59,6 +62,56 @@ class CompanyService
         }
     }
 
+    public function getCategories($token)
+    {
+        $userId = session('user_id') ?? 'guest';
+        try {
+            $response = Http::retry(3, 100)->withToken($token)->get($this->apicategories, ['limit' => 500]);
+
+            if (!$response->successful()) {
+                Log::channel('company_api_error')->warning('Get Categories', [
+                    'user_id' => $userId,
+                    'status_code' => $response->status(),
+                    'response_body' => $response->body(),
+                ]);
+                return ['success' => false, 'message' => 'Gagal mengambil data kategori dari API'];
+            }
+
+            return ['success' => true, 'data' => $response->json()['data']];
+        } catch (\Exception $e) {
+            Log::channel('company_api_error')->error('Get Categories', [
+                'user_id' => $userId,
+                'error' => $e->getMessage(),
+            ]);
+            return ['success' => false, 'message' => 'Terjadi kesalahan saat mengambil data kategori'];
+        }
+    }
+
+    public function getCategoriesDetail($token, $id_categories)
+    {
+        $userId = session('user_id') ?? 'guest';
+        try {
+            $response = Http::retry(3, 100)->withToken($token)->get($this->apicategoriesDetail . $id_categories);
+
+            if (!$response->successful()) {
+                Log::channel('company_api_error')->warning('Get Categories', [
+                    'user_id' => $userId,
+                    'status_code' => $response->status(),
+                    'response_body' => $response->body(),
+                ]);
+                return ['success' => false, 'message' => 'Gagal mengambil data detail kategori dari API'];
+            }
+
+            return ['success' => true, 'data' => $response->json()['data']];
+        } catch (\Exception $e) {
+            Log::channel('company_api_error')->error('Get Categories', [
+                'user_id' => $userId,
+                'error' => $e->getMessage(),
+            ]);
+            return ['success' => false, 'message' => 'Terjadi kesalahan saat mengambil data kategori'];
+        }
+    }
+
     public function getSubCategories($token)
     {
         $userId = session('user_id') ?? 'guest';
@@ -71,16 +124,16 @@ class CompanyService
                     'status_code' => $response->status(),
                     'response_body' => $response->body(),
                 ]);
-                return ['success' => false, 'message' => 'Gagal mengambil data subkategori dari API'];
+                return ['success' => false, 'message' => 'Gagal mengambil data sub kategori dari API'];
             }
 
             return ['success' => true, 'data' => $response->json()['data']];
         } catch (\Exception $e) {
-            Log::channel('company_api_error')->error('Get Categories', [
+            Log::channel('company_api_error')->error('Get Categories Detail', [
                 'user_id' => $userId,
                 'error' => $e->getMessage(),
             ]);
-            return ['success' => false, 'message' => 'Terjadi kesalahan saat mengambil data subkategori'];
+            return ['success' => false, 'message' => 'Terjadi kesalahan saat mengambil data sub kategori'];
         }
     }
 
@@ -108,6 +161,31 @@ class CompanyService
                 'error' => $e->getMessage(),
             ]);
             return ['success' => false, 'message' => 'Terjadi kesalahan saat mengambil data provinsi'];
+        }
+    }
+
+    public function getProvincesDetail($token, $id_provinces)
+    {
+        $userId = session('user_id') ?? 'guest';
+        try {
+            $response = Http::retry(3, 100)->withToken($token)->get($this->apiProvincesDetail . $id_provinces);
+
+            if (!$response->successful()) {
+                Log::channel('company_api_error')->warning('Get Provinces Detail', [
+                    'user_id' => $userId,
+                    'status_code' => $response->status(),
+                    'response_body' => $response->body(),
+                ]);
+                return ['success' => false, 'message' => 'Gagal mengambil data detail provinsi dari API'];
+            }
+
+            return ['success' => true, 'data' => $response->json()['data']];
+        } catch (\Exception $e) {
+            Log::channel('company_api_error')->error('Get Provinces Detail', [
+                'user_id' => $userId,
+                'error' => $e->getMessage(),
+            ]);
+            return ['success' => false, 'message' => 'Terjadi kesalahan saat mengambil detail provinsi'];
         }
     }
 

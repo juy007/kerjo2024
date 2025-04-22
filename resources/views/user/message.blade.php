@@ -256,7 +256,7 @@
                     <div class="card" id="zonaChat">
                         <div style="width:100%; height: 500px;">
                             <div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
-                                <img src="{{ url('proxy-image/src/ichat.png') }}" class="img-fluid w-50" alt="Responsive image">
+                                <img src="{{ url('proxy-image/company/src/ichat.png') }}" class="img-fluid w-50" alt="Responsive image">
                             </div>
                         </div>
                     </div>

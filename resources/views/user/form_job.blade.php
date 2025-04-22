@@ -52,16 +52,22 @@
                                     <div class="col-lg-12">
                                         <div>
                                             <div class="mb-3">
-                                                <label for="form-lowongan" class="form-label">Nama Lowongan</label>
-                                                <input class="form-control" type="text" value="" placeholder="Nama Lowongan" id="form-lowongan" name="lowongan">
+                                                <label for="form_lowongan" class="form-label">Nama Lowongan</label>
+                                                <input class="form-control" type="text" value="" placeholder="Nama Lowongan" id="form_lowongan" name="lowongan">
                                             </div>
                                             <div class="mb-3">
                                                 <label for="kategori" class="form-label font-size-13">Kategori</label>
                                                 <select class="form-control" data-trigger name="kategori" id="kategori">
-                                                    <option value="">Pilih Kategori</option>
-                                                    @foreach($subCategories as $subCategories)
-                                                    <option value="{{ $subCategories['_id'] }}">{{ $subCategories['name'] }}</option>
+                                                    <option selected value="">Pilih Kategori</option>
+                                                    @foreach(collect($categories['list'])->sortBy('name') as $category)
+                                                    <option value="{{ $category['_id'] }}">{{ $category['name'] }}</option>
                                                     @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="sub_kategori" class="form-label font-size-13">Sub Kategori</label>
+                                                <select class="form-select" name="sub_kategori" id="sub_kategori">
+                                                    <option selected value="">Pilih Sub Kategori</option>
                                                 </select>
                                             </div>
                                             <div class="mb-3">
@@ -83,8 +89,8 @@
                                                 </div>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="form-lokasi" class="form-label font-size-13">Lokasi</label>
-                                                <select class="form-control" data-trigger name="lokasi" id="form-lokasi">
+                                                <label for="form_provinsi" class="form-label font-size-13">Provinsi</label>
+                                                <select class="form-control" data-trigger name="provinsi" id="form_provinsi">
                                                     <option value="">Pilih Lokasi</option>
                                                     @foreach($provinces['list'] as $province)
                                                     <option value="{{ $province['_id'] }}">{{ $province['name'] }}</option>
@@ -92,8 +98,14 @@
                                                 </select>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="form-tipe-pekerjaan" class="form-label font-size-13">Tipe Pekerjaan</label>
-                                                <select class="form-control" data-trigger name="tipe_pekerjaan" id="form-tipe-pekerjaan">
+                                                <label for="form_kota" class="form-label font-size-13">Kota/Kabupaten</label>
+                                                <select class="form-select" name="kota" id="form_kota">
+                                                    <option select value="">Pilih Kota/Kabupaten</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="form_tipe-pekerjaan" class="form-label font-size-13">Tipe Pekerjaan</label>
+                                                <select class="form-control" data-trigger name="tipe_pekerjaan" id="form_tipe_pekerjaan">
                                                     <option value="">Pilih Tipe Pekerjaan</option>
                                                     @foreach($jobTypes['list'] as $jobTypes)
                                                     <option value="{{ $jobTypes['_id'] }}">{{ $jobTypes['name'] }}</option>
@@ -101,8 +113,8 @@
                                                 </select>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="form-tipe-status-karyawan" class="form-label font-size-13">Status Karyawan</label>
-                                                <select class="form-control" data-trigger name="status_karyawan" id="form-tipe-status-karyawan">
+                                                <label for="form_tipe-status-karyawan" class="form-label font-size-13">Status Karyawan</label>
+                                                <select class="form-control" data-trigger name="status_karyawan" id="form_tipe_status_karyawan">
                                                     <option value="">Pilih Status Karyawan</option>
                                                     @foreach($jobStatuses['list'] as $jobStatuses)
                                                     <option value="{{ $jobStatuses['_id'] }}">{{ $jobStatuses['name'] }}</option>
@@ -112,15 +124,15 @@
                                             <div class="row mb-3">
                                                 <label class="form-label" for="formrow-email-input1">Expired Date</label>
                                                 <div class="col-md-6">
-                                                    <input class="form-control" type="date" value="" name="date_start" id="form-expired-start">
+                                                    <input class="form-control" type="date" value="" name="date_start" id="form_expired_start">
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <input class="form-control" type="date" value="" name="date_end" id="form-expired-end">
+                                                    <input class="form-control" type="date" value="" name="date_end" id="form_expired_end">
                                                 </div>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="form-posisi-level" class="form-label font-size-13">Posisi Level</label>
-                                                <select class="form-control" data-trigger name="posisi_level" id="form-posisi-level">
+                                                <label for="form_posisi-level" class="form-label font-size-13">Posisi Level</label>
+                                                <select class="form-control" data-trigger name="posisi_level" id="form_posisi_level">
                                                     <option value="">Pilih Posisi Level</option>
                                                     @foreach($jobLevels['list'] as $jobLevels)
                                                     <option value="{{ $jobLevels['_id'] }}">{{ $jobLevels['name'] }}</option>
@@ -128,20 +140,20 @@
                                                 </select>
                                             </div>
                                             <div class="mb-3" id="editor1">
-                                                <label for="form-deskripsi-pekerjaan" class="form-label">Deskripsi Pekerjaan</label>
-                                                <textarea class="form-control" name="deskripsi" id="form-deskripsi-pekerjaan" rows="5"></textarea>
+                                                <label for="form_deskripsi-pekerjaan" class="form-label">Deskripsi Pekerjaan</label>
+                                                <textarea class="form-control" name="deskripsi" id="form_deskripsi_pekerjaan" rows="5"></textarea>
                                             </div>
                                             <div class="mb-3" id="editor2">
-                                                <label for="form-detail" class="form-label">Detail</label>
-                                                <textarea class="form-control" name="detail" id="form-detail" rows="5"></textarea>
+                                                <label for="form_detail" class="form-label">Detail</label>
+                                                <textarea class="form-control" name="detail" id="form_detail" rows="5"></textarea>
                                             </div>
                                             <div class="mb-3" id="editor3">
-                                                <label for="form-kualifikasi" class="form-label">Kualifikasi</label>
-                                                <textarea class="form-control" name="kualifikasi" id="form-kualifikasi" rows="5"></textarea>
+                                                <label for="form_kualifikasi" class="form-label">Kualifikasi</label>
+                                                <textarea class="form-control" name="kualifikasi" id="form_kualifikasi" rows="5"></textarea>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="form-status" class="form-label font-size-13">Status</label>
-                                                <select class="form-control" data-trigger name="status" id="form-status">
+                                                <label for="form_status" class="form-label font-size-13">Status</label>
+                                                <select class="form-control" data-trigger name="status" id="form_status">
                                                     <option value="">Pilih Status</option>
                                                     <option value="publish">Publish</option>
                                                     <option value="draft">Draft</option>
@@ -376,6 +388,44 @@
 <script src="{{ asset('assets/js/pages/form-editor.init.js') }}"></script>
 <script src="{{ asset('assets/js/previewPhone.js') }}"></script>
 <!--<br data-cke-filler="true">-->
+
+<script>
+        document.getElementById('kategori').addEventListener('change', function () {
+        const kategoriId = this.value;
+        const subkategori = document.getElementById('sub_kategori');
+
+        subkategori.innerHTML = '<option>Loading...</option>';
+
+        if (kategoriId) {
+            fetch("{{ route('categories_detail_json') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({
+                    id_categories: kategoriId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                subkategori.innerHTML = '<option selected value="">Pilih Sub Kategori</option>';
+                if (data.success && data.subCategories.length > 0) {
+                    data.subCategories.forEach(sub => {
+                        subkategori.innerHTML += `<option value="${sub._id}">${sub.name}</option>`;
+                    });
+                } else {
+                    subkategori.innerHTML = '<option value="">Sub kategori tidak ditemukan</option>';
+                }
+            })
+            .catch(error => {
+                subkategori.innerHTML = '<option value="">Gagal mengambil sub kategori</option>';
+            });
+        } else {
+            subkategori.innerHTML = '<option value="">Pilih Sub kategori</option>';
+        }
+    });
+</script>
 </body>
 
 </html>

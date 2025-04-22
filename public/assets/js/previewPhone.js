@@ -1,47 +1,46 @@
 function getSelectedText(selectId) {
     var selectElement = document.getElementById(selectId);
-    return selectElement.options[selectElement.selectedIndex].text;
+    return selectElement.options[selectElement.selectedIndex]?.text || '';
 }
 
 function previewPhone() {
-    // Daftar ID elemen yang perlu diambil nilainya atau teksnya
-    var fields = [
-        "form-lowongan",
-        "form-lokasi",
-        "form-tipe-pekerjaan",
-        "form-tipe-status-karyawan",
-        "form-posisi-level",
-        "kategori",
-    ];
-    // ID elemen preview yang sesuai dengan `fields`
-    var previews = [
-        "job_title_pre",
-        "lokasi_pre",
-        "tipe_pekerjaan_pre",
-        "status_karyawan_pre",
-        "posisi_level_pre",
-        "kategori_pekerjaan_pre",
-    ];
+    var isFieldEmpty = false;
 
-    var isFieldEmpty = false; // Flag untuk mengecek apakah ada field yang kosong
+    // Ambil value untuk posisi lowongan
+    var jobTitle = document.getElementById("form_lowongan").value.trim();
+    document.getElementById("job_title_pre").innerHTML = jobTitle;
+    if (!jobTitle) isFieldEmpty = true;
 
-    // Ambil elemen select untuk langsung mengambil selectedText dan value untuk selain select
-    fields.forEach(function (field, index) {
-        var fieldElement = document.getElementById(field);
-        if (fieldElement.tagName === "SELECT") {
-            // Jika elemen adalah select, ambil teks yang dipilih
-            var selectedText = getSelectedText(field);
-            document.getElementById(previews[index]).innerHTML = selectedText;
-            if (!selectedText) isFieldEmpty = true; // Tandai jika ada field yang kosong
-        } else {
-            // Jika bukan select, ambil value langsung
-            var fieldValue = fieldElement.value || "";
-            document.getElementById(previews[index]).innerHTML = fieldValue;
-            if (!fieldValue) isFieldEmpty = true; // Tandai jika ada field yang kosong
-        }
-    });
+    // Gabung lokasi: kota + provinsi
+    var kota = getSelectedText("form_kota");
+    var provinsi = getSelectedText("form_provinsi");
+    var lokasiGabungan = `${kota}${kota && provinsi ? ', ' : ''}${provinsi}`;
+    document.getElementById("lokasi_pre").innerHTML = lokasiGabungan;
+    if (!kota || !provinsi) isFieldEmpty = true;
 
-    // Ambil konten CKEditor hanya sekali
+    // Tipe pekerjaan
+    var tipePekerjaan = getSelectedText("form_tipe_pekerjaan");
+    document.getElementById("tipe_pekerjaan_pre").innerHTML = tipePekerjaan;
+    if (!tipePekerjaan) isFieldEmpty = true;
+
+    // Status karyawan
+    var statusKaryawan = getSelectedText("form_tipe_status_karyawan");
+    document.getElementById("status_karyawan_pre").innerHTML = statusKaryawan;
+    if (!statusKaryawan) isFieldEmpty = true;
+
+    // Posisi level
+    var posisiLevel = getSelectedText("form_posisi_level");
+    document.getElementById("posisi_level_pre").innerHTML = posisiLevel;
+    if (!posisiLevel) isFieldEmpty = true;
+
+    // Gabung kategori + sub kategori
+    var kategori = getSelectedText("kategori");
+    var subKategori = getSelectedText("sub_kategori");
+    var kategoriGabungan = `${kategori}${kategori && subKategori ? ' - ' : ''}${subKategori}`;
+    document.getElementById("kategori_pekerjaan_pre").innerHTML = kategoriGabungan;
+    if (!kategori || !subKategori) isFieldEmpty = true;
+
+    // CKEditor content
     var editor1Content = document
         .getElementById("editor1")
         .querySelector(".ck-editor__editable").innerHTML;
@@ -52,15 +51,16 @@ function previewPhone() {
         .getElementById("editor3")
         .querySelector(".ck-editor__editable").innerHTML;
 
-    // Set konten editor preview
     document.getElementById("job_description_pre").innerHTML = editor1Content;
     document.getElementById("job_detail_pre").innerHTML = editor2Content;
     document.getElementById("job_kualifikasi_pre").innerHTML = editor3Content;
 
+    const isCKEEmpty = content => content.trim() === '<p><br data-cke-filler="true"></p>';
+
     if (
-        editor1Content.trim() === '<p><br data-cke-filler="true"></p>' ||
-        editor2Content.trim() === '<p><br data-cke-filler="true"></p>' ||
-        editor3Content.trim() === '<p><br data-cke-filler="true"></p>' ||
+        isCKEEmpty(editor1Content) ||
+        isCKEEmpty(editor2Content) ||
+        isCKEEmpty(editor3Content) ||
         isFieldEmpty
     ) {
         Swal.fire({

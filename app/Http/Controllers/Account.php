@@ -509,39 +509,54 @@ class Account extends Controller
     }
     public function input()
     {
-        $provinces = [
-            'Nusa Tenggara Barat',
-            'Nusa Tenggara Timur',
-            'Papua',
-            'Papua Barat',
-            'Papua Pegunungan',
-            'Papua Selatan',
-            'Papua Tengah',
-            'Riau',
-            'Sulawesi Barat',
-            'Sulawesi Selatan',
-            'Sulawesi Tengah',
-            'Sulawesi Tenggara',
-            'Sulawesi Utara',
-            'Sumatra Barat',
-            'Sumatra Selatan',
-            'Sumatra Utara',
+        $data = [ 
+            [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kota Lhokseumawe" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kota Langsa" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kota Subulussalam" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Simeulue" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Singkil" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Selatan" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Tenggara" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Timur" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Tengah" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Barat" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Besar" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Pidie" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Bireuen" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Utara" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Barat Daya" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Gayo Lues" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Tamiang" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Nagan Raya" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Jaya" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Bener Meriah" ],
+    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Pidie Jaya" ],
+    [ "province_id" => "67d4e39db1f9532021a830a4", "name" => "Kota Denpasar" ],
+    [ "province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Jembrana" ],
+    [ "province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Tabanan" ],
+    [ "province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Badung" ],
+    [ "province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Gianyar" ],
+    [ "province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Klungkung" ],
+    [ "province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Bangli" ],
+    [ "province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Karangasem" ],
+    [ "province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Buleleng" ]
         ];
-
-        // Siapkan token API
-        $token = session('api_token_admin'); // Atau hardcode jika token sudah diketahui
-
-        // Looping untuk mengirim tiap provinsi satu per satu
-        foreach ($provinces as $province) {
-            $response = Http::withToken($token)->post('https://api.carikerjo.id/provinces', [
-                'name' => $province,
+        
+        // Ambil token dari session (atau langsung isi manual untuk testing)
+        $token = session('api_token_admin'); // Contoh: 'Bearer xyz123'
+        
+        foreach ($data as $item) {
+            $response = Http::withToken($token)->retry(3, 100)->post('https://api.carikerjo.id/regencies', [
+                'name' => $item['name'],
+                'provinceId' => $item['province_id'],
             ]);
-
+        
             if (!$response->successful()) {
-                echo "gagal = " . $province;
+                echo "Gagal input: " . $item['name'] . "<br>";
+            } else {
+                echo "Berhasil input: " . $item['name'] . "<br>";
             }
         }
-
-        echo 'berhasil';
+        
     }
 }

@@ -300,11 +300,11 @@
             submitButton.disabled = true;
 
             // Simulasi AJAX (ganti dengan endpoint API sebenarnya)
-            fetch('{{ route("message_send") }}', {
+            fetch('/send', {
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Content-Type': 'application/json',
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
                     },
                     body: JSON.stringify({
                         toId: modalToId.value,

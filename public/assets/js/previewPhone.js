@@ -1,67 +1,57 @@
 function getSelectedText(selectId) {
-    var selectElement = document.getElementById(selectId);
-    return selectElement.options[selectElement.selectedIndex]?.text || '';
+    const selectElement = document.getElementById(selectId);
+    return selectElement?.options[selectElement.selectedIndex]?.text || '';
+}
+
+function getSelectedValue(selectId) {
+    const selectElement = document.getElementById(selectId);
+    return selectElement?.value || '';
+}
+
+function isCKEEmpty(content) {
+    return content.trim() === '' || content.trim() === '<p><br data-cke-filler="true"></p>';
 }
 
 function previewPhone() {
-    var isFieldEmpty = false;
+    let isFieldEmpty = false;
 
-    // Ambil value untuk posisi lowongan
-    var jobTitle = document.getElementById("form_lowongan").value.trim();
+    const jobTitle = document.getElementById("form_lowongan")?.value.trim() || '';
+    const kotaValue = getSelectedValue("form_kota");
+    const provinsiValue = getSelectedValue("form_provinsi");
+    const kotaText = getSelectedText("form_kota");
+    const provinsiText = getSelectedText("form_provinsi");
+
+    const tipePekerjaanValue = getSelectedValue("form_tipe_pekerjaan");
+    const statusKaryawanValue = getSelectedValue("form_tipe_status_karyawan");
+    const posisiLevelValue = getSelectedValue("form_posisi_level");
+    const kategoriValue = getSelectedValue("kategori");
+    const subKategoriValue = getSelectedValue("sub_kategori");
+
+    const kategoriText = getSelectedText("kategori");
+    const subKategoriText = getSelectedText("sub_kategori");
+
+    const statusJobs = getSelectedText("form_status");
+
+    const editor1Content = document.getElementById("editor1")?.querySelector(".ck-editor__editable")?.innerHTML || '';
+    const editor2Content = document.getElementById("editor2")?.querySelector(".ck-editor__editable")?.innerHTML || '';
+    const editor3Content = document.getElementById("editor3")?.querySelector(".ck-editor__editable")?.innerHTML || '';
+
+    // Set ke preview
     document.getElementById("job_title_pre").innerHTML = jobTitle;
-    if (!jobTitle) isFieldEmpty = true;
-
-    // Gabung lokasi: kota + provinsi
-    var kota = getSelectedText("form_kota");
-    var provinsi = getSelectedText("form_provinsi");
-    var lokasiGabungan = `${kota}${kota && provinsi ? ', ' : ''}${provinsi}`;
-    document.getElementById("lokasi_pre").innerHTML = lokasiGabungan;
-    if (!kota || !provinsi) isFieldEmpty = true;
-
-    // Tipe pekerjaan
-    var tipePekerjaan = getSelectedText("form_tipe_pekerjaan");
-    document.getElementById("tipe_pekerjaan_pre").innerHTML = tipePekerjaan;
-    if (!tipePekerjaan) isFieldEmpty = true;
-
-    // Status karyawan
-    var statusKaryawan = getSelectedText("form_tipe_status_karyawan");
-    document.getElementById("status_karyawan_pre").innerHTML = statusKaryawan;
-    if (!statusKaryawan) isFieldEmpty = true;
-
-    // Posisi level
-    var posisiLevel = getSelectedText("form_posisi_level");
-    document.getElementById("posisi_level_pre").innerHTML = posisiLevel;
-    if (!posisiLevel) isFieldEmpty = true;
-
-    // Gabung kategori + sub kategori
-    var kategori = getSelectedText("kategori");
-    var subKategori = getSelectedText("sub_kategori");
-    var kategoriGabungan = `${kategori}${kategori && subKategori ? ' - ' : ''}${subKategori}`;
-    document.getElementById("kategori_pekerjaan_pre").innerHTML = kategoriGabungan;
-    if (!kategori || !subKategori) isFieldEmpty = true;
-
-    // CKEditor content
-    var editor1Content = document
-        .getElementById("editor1")
-        .querySelector(".ck-editor__editable").innerHTML;
-    var editor2Content = document
-        .getElementById("editor2")
-        .querySelector(".ck-editor__editable").innerHTML;
-    var editor3Content = document
-        .getElementById("editor3")
-        .querySelector(".ck-editor__editable").innerHTML;
-
+    document.getElementById("lokasi_pre").innerHTML = `${kotaText}${kotaValue && provinsiValue ? ', ' : ''}${provinsiText}`;
+    document.getElementById("tipe_pekerjaan_pre").innerHTML = getSelectedText("form_tipe_pekerjaan");
+    document.getElementById("status_karyawan_pre").innerHTML = getSelectedText("form_tipe_status_karyawan");
+    document.getElementById("posisi_level_pre").innerHTML = getSelectedText("form_posisi_level");
+    document.getElementById("kategori_pekerjaan_pre").innerHTML = `${kategoriText}${kategoriValue && subKategoriValue ? ' - ' : ''}${subKategoriText}`;
     document.getElementById("job_description_pre").innerHTML = editor1Content;
     document.getElementById("job_detail_pre").innerHTML = editor2Content;
     document.getElementById("job_kualifikasi_pre").innerHTML = editor3Content;
 
-    const isCKEEmpty = content => content.trim() === '<p><br data-cke-filler="true"></p>';
-
+    // Validasi semua field yang harus diisi
     if (
-        isCKEEmpty(editor1Content) ||
-        isCKEEmpty(editor2Content) ||
-        isCKEEmpty(editor3Content) ||
-        isFieldEmpty
+        !jobTitle || !kotaValue || !provinsiValue || !tipePekerjaanValue ||
+        !statusKaryawanValue || !posisiLevelValue || !kategoriValue || !subKategoriValue || !statusJobs ||
+        isCKEEmpty(editor1Content) || isCKEEmpty(editor2Content) || isCKEEmpty(editor3Content)
     ) {
         Swal.fire({
             icon: "warning",
@@ -70,9 +60,11 @@ function previewPhone() {
             confirmButtonText: "OK",
             confirmButtonColor: "#3085d6",
         });
-    } else {
-        new bootstrap.Modal(document.getElementById("modal-preview"), {
-            keyboard: false,
-        }).show();
+        return;
     }
+
+    // Jika semua valid, tampilkan modal
+    new bootstrap.Modal(document.getElementById("modal-preview"), {
+        keyboard: false,
+    }).show();
 }

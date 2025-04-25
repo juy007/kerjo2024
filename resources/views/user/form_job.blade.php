@@ -1,5 +1,7 @@
 @include('user/header_start')
-<!-- Select ====================================================================================== -->
+<meta name="route-categories-detail-json" content="{{ route('categories_detail_json') }}">
+<meta name="route-provinces-detail-json" content="{{ route('provinces_detail_json') }}">
+
 <!-- choices css -->
 <link href="{{ asset('assets/libs/choices.js/public/assets/styles/choices.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('assets/css/previewPhone.css') }}" rel="stylesheet" type="text/css" />
@@ -100,7 +102,7 @@
                                             <div class="mb-3">
                                                 <label for="form_kota" class="form-label font-size-13">Kota/Kabupaten</label>
                                                 <select class="form-select" name="kota" id="form_kota">
-                                                    <option select value="">Pilih Kota/Kabupaten</option>
+                                                    <option value="">Pilih Kota/Kabupaten</option>
                                                 </select>
                                             </div>
                                             <div class="mb-3">
@@ -387,45 +389,7 @@
 <script src="{{ asset('assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
 <script src="{{ asset('assets/js/pages/form-editor.init.js') }}"></script>
 <script src="{{ asset('assets/js/previewPhone.js') }}"></script>
-<!--<br data-cke-filler="true">-->
-
-<script>
-        document.getElementById('kategori').addEventListener('change', function () {
-        const kategoriId = this.value;
-        const subkategori = document.getElementById('sub_kategori');
-
-        subkategori.innerHTML = '<option>Loading...</option>';
-
-        if (kategoriId) {
-            fetch("{{ route('categories_detail_json') }}", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                },
-                body: JSON.stringify({
-                    id_categories: kategoriId
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                subkategori.innerHTML = '<option selected value="">Pilih Sub Kategori</option>';
-                if (data.success && data.subCategories.length > 0) {
-                    data.subCategories.forEach(sub => {
-                        subkategori.innerHTML += `<option value="${sub._id}">${sub.name}</option>`;
-                    });
-                } else {
-                    subkategori.innerHTML = '<option value="">Sub kategori tidak ditemukan</option>';
-                }
-            })
-            .catch(error => {
-                subkategori.innerHTML = '<option value="">Gagal mengambil sub kategori</option>';
-            });
-        } else {
-            subkategori.innerHTML = '<option value="">Pilih Sub kategori</option>';
-        }
-    });
-</script>
+<script src="{{ asset('assets/js/dynamic-select.js') }}"></script>
 </body>
 
 </html>

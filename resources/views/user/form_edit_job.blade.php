@@ -1,5 +1,6 @@
 @include('user/header_start')
-<!-- Select ====================================================================================== -->
+<meta name="route-categories-detail-json" content="{{ route('categories_detail_json') }}">
+<meta name="route-provinces-detail-json" content="{{ route('provinces_detail_json') }}">
 <!-- choices css -->
 <link href="{{ asset('assets/libs/choices.js/public/assets/styles/choices.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('assets/css/previewPhone.css') }}" rel="stylesheet" type="text/css" />
@@ -55,20 +56,30 @@
                                         <div>
                                             <div class="mb-3">
                                                 <label for="form-lowongan" class="form-label">Nama Lowongan</label>
-                                                <input class="form-control" type="text" value="{{ $jobs['data']['title'] }}" placeholder="Nama Lowongan" id="form-lowongan" name="lowongan">
+                                                <input class="form-control" type="text" value="{{ $jobs['data']['title'] }}" placeholder="Nama Lowongan" id="form_lowongan" name="lowongan">
                                             </div>
                                             <div class="mb-3">
                                                 <label for="kategori" class="form-label font-size-13">Kategori</label>
                                                 <select class="form-control" data-trigger name="kategori" id="kategori">
-                                                    <option selected value="{{ $jobs['data']['subCategory']['_id'] }}">{{ $jobs['data']['subCategory']['name'] }}</option>
-                                                    @foreach($subCategories['data'] as $subCategories)
-                                                    <option value="{{ $subCategories['_id'] }}">{{ $subCategories['name'] }}</option>
+                                                    <option selected value="{{ $jobs['data']['subCategory']['category']['_id'] }}">{{ $jobs['data']['subCategory']['category']['name'] }}</option>
+                                                    @foreach(collect($categories['list'])->sortBy('name') as $category)
+                                                    <option value="{{ $category['_id'] }}">{{ $category['name'] }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="mata-uang" class="form-label font-size-13">Mata Uang</label>
-                                                <select class="form-control" data-trigger name="mata_uang" id="mata-uang">
+                                                <label for="sub_kategori" class="form-label font-size-13">Sub Kategori</label>
+                                                <select class="form-select" name="sub_kategori" id="sub_kategori">
+                                                    <option selected value="{{ $jobs['data']['subCategory']['_id'] }}">{{ $jobs['data']['subCategory']['name'] }}</option>
+                                                    @foreach($categoriesDetail['data']['subCategories'] as $subCategory)
+                                                    <option value="{{ $subCategory['_id'] }}">{{ $subCategory['name'] }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>                                                  
+                                                   
+                                            <div class="mb-3">
+                                                <label for="mata_uang" class="form-label font-size-13">Mata Uang</label>
+                                                <select class="form-control" data-trigger name="mata_uang" id="mata_uang">
                                                 <option selected value="{{ $jobs['data']['currency']['_id'] ?? '' }}">{{ $jobs['data']['currency']['name'] ?? 'Pilih Currency' }}</option>
 
                                                     @foreach($currencies['data']['list'] as $currencies)
@@ -77,26 +88,34 @@
                                                 </select>
                                             </div>
                                             <div class="row mb-3">
-                                                <label class="form-label" for="gaji-min">Gaji</label>
+                                                <label class="form-label" for="gaji_min">Gaji</label>
                                                 <div class="col-md-6">
-                                                    <input type="text" class="form-control" oninput="formatCurrency(this)" id="gaji-min" name="gaji_min" value="{{ number_format($jobs['data']['salaryStart'], 0, ',', '.') }}" placeholder="Gaji Min">
+                                                    <input type="text" class="form-control" oninput="formatCurrency(this)" id="gaji_min" name="gaji_min" value="{{ number_format($jobs['data']['salaryStart'], 0, ',', '.') }}" placeholder="Gaji Min">
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <input type="text" class="form-control" oninput="formatCurrency(this)" id="gaji-max" name="gaji_max" value="{{ number_format($jobs['data']['salaryEnd'], 0, ',', '.') }}" placeholder="Gaji Max">
+                                                    <input type="text" class="form-control" oninput="formatCurrency(this)" id="gaji_max" name="gaji_max" value="{{ number_format($jobs['data']['salaryEnd'], 0, ',', '.') }}" placeholder="Gaji Max">
                                                 </div>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="form-lokasi" class="form-label font-size-13">Lokasi</label>
-                                                <select class="form-control" data-trigger name="lokasi" id="form-lokasi">
-                                                    <option selected value="{{ $jobs['data']['province']['_id'] ?? '' }}">{{ $jobs['data']['province']['name'] ?? 'Pilih Lokasi' }}</option>
+                                                <label for="form_provinsi" class="form-label font-size-13">Provinsi</label>
+                                                <select class="form-control" data-trigger name="provinsi" id="form_provinsi">
+                                                    <option selected value="{{ $jobs['data']['province']['_id'] ?? '' }}">{{ $jobs['data']['province']['name'] ?? 'Pilih Provinsi' }}</option>
                                                     @foreach($provinces['data']['list'] as $province)
                                                     <option value="{{ $province['_id'] }}">{{ $province['name'] }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="form-tipe-pekerjaan" class="form-label font-size-13">Tipe Pekerjaan</label>
-                                                <select class="form-control" data-trigger name="tipe_pekerjaan" id="form-tipe-pekerjaan">
+                                                <label for="form_kota" class="form-label font-size-13">Kota/Kabupaten</label>
+                                                <select class="form-select" name="kota" id="form_kota">
+                                                    @foreach($provinceDetail['data']['regencies'] as $regency)
+                                                    <option value="{{ $regency['_id'] }}">{{ $regency['name'] }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="form_tipe_pekerjaan" class="form-label font-size-13">Tipe Pekerjaan</label>
+                                                <select class="form-control" data-trigger name="tipe_pekerjaan" id="form_tipe_pekerjaan">
                                                     <option selected value="{{ $jobs['data']['jobType']['_id'] ?? '' }}">{{ $jobs['data']['jobType']['name'] ?? 'Pilih Tipe Pekerjaan'}}</option>
                                                     @foreach($jobTypes['data']['list'] as $jobTypes)
                                                     <option value="{{ $jobTypes['_id'] }}">{{ $jobTypes['name'] }}</option>
@@ -104,8 +123,8 @@
                                                 </select>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="form-tipe-status-karyawan" class="form-label font-size-13">Status Karyawan</label>
-                                                <select class="form-control" data-trigger name="status_karyawan" id="form-tipe-status-karyawan">
+                                                <label for="form_tipe_status_karyawan" class="form-label font-size-13">Status Karyawan</label>
+                                                <select class="form-control" data-trigger name="status_karyawan" id="form_tipe_status_karyawan">
                                                     <option selected value="{{ $jobs['data']['jobStatus']['_id'] ?? ''}}">{{ $jobs['data']['jobStatus']['name'] ?? 'Pilih Status Karyawan' }}</option>
                                                     @foreach($jobStatuses['data']['list'] as $jobStatuses)
                                                     <option value="{{ $jobStatuses['_id'] }}">{{ $jobStatuses['name'] }}</option>
@@ -113,17 +132,17 @@
                                                 </select>
                                             </div>
                                             <div class="row mb-3">
-                                                <label class="form-label" for="formrow-email-input1">Expired Date</label>
+                                                <label class="form-label" for="form_expired_start">Expired Date</label>
                                                 <div class="col-md-6">
-                                                    <input class="form-control" type="date" value="{{ \Carbon\Carbon::parse($jobs['data']['startDate'])->format('Y-m-d') }}" name="date_start" id="form-expired-start">
+                                                    <input class="form-control" type="date" value="{{ \Carbon\Carbon::parse($jobs['data']['startDate'])->format('Y-m-d') }}" name="date_start" id="form_expired_start">
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <input class="form-control" type="date" value="{{ \Carbon\Carbon::parse($jobs['data']['endDate'])->format('Y-m-d') }}" name="date_end" id="form-expired-end">
+                                                    <input class="form-control" type="date" value="{{ \Carbon\Carbon::parse($jobs['data']['endDate'])->format('Y-m-d') }}" name="date_end" id="form_expired_end">
                                                 </div>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="form-posisi-level" class="form-label font-size-13">Posisi Level</label>
-                                                <select class="form-control" data-trigger name="posisi_level" id="form-posisi-level">
+                                                <label for="form_posisi_level" class="form-label font-size-13">Posisi Level</label>
+                                                <select class="form-control" data-trigger name="posisi_level" id="form_posisi_level">
                                                     <option selected value="{{ $jobs['data']['jobLevel']['_id'] ?? '' }}">{{ $jobs['data']['jobLevel']['name'] ?? 'Pilih Posisi Level' }}</option>
                                                     @foreach($jobLevels['data']['list'] as $jobLevels)
                                                     <option value="{{ $jobLevels['_id'] }}">{{ $jobLevels['name'] }}</option>
@@ -131,20 +150,20 @@
                                                 </select>
                                             </div>
                                             <div class="mb-3" id="editor1">
-                                                <label for="form-deskripsi-pekerjaan" class="form-label">Deskripsi Pekerjaan</label>
-                                                <textarea class="form-control" name="deskripsi" id="form-deskripsi-pekerjaan" rows="5">{{ $jobs['data']['description'] }}</textarea>
+                                                <label for="form_deskripsi_pekerjaan" class="form-label">Deskripsi Pekerjaan</label>
+                                                <textarea class="form-control" name="deskripsi" id="form_deskripsi_pekerjaan" rows="5">{{ $jobs['data']['description'] }}</textarea>
                                             </div>
                                             <div class="mb-3" id="editor2">
-                                                <label for="form-detail" class="form-label">Detail</label>
-                                                <textarea class="form-control" name="detail" id="form-detail" rows="5">{{ $jobs['data']['detail'] }}</textarea>
+                                                <label for="form_detail" class="form-label">Detail</label>
+                                                <textarea class="form-control" name="detail" id="form_detail" rows="5">{{ $jobs['data']['detail'] }}</textarea>
                                             </div>
                                             <div class="mb-3" id="editor3">
-                                                <label for="form-kualifikasi" class="form-label">Kualifikasi</label>
-                                                <textarea class="form-control" name="kualifikasi" id="form-kualifikasi" rows="5">{{ $jobs['data']['qualification'] }}</textarea>
+                                                <label for="form_kualifikasi" class="form-label">Kualifikasi</label>
+                                                <textarea class="form-control" name="kualifikasi" id="form_kualifikasi" rows="5">{{ $jobs['data']['qualification'] }}</textarea>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="form-status" class="form-label font-size-13">Status</label>
-                                                <select class="form-control" data-trigger name="status" id="form-status">
+                                                <label for="form-_tatus" class="form-label font-size-13">Status</label>
+                                                <select class="form-control" data-trigger name="status" id="form_status">
                                                     <option selected value="{{ $jobs['data']['status'] }}">{{ ucfirst($jobs['data']['status']) }}</option>
                                                     <option value="publish">Publish</option>
                                                     <option value="draft">Draft</option>
@@ -342,12 +361,13 @@
 <!-- End Page-content -->
 
 @include('user/footer')
-<script src="{{ asset('assets/js/formCurrency.js') }}"></script>
-<!-- Select ============================================================================ -->
+
 <!-- choices js -->
 <script src="{{ asset('assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
 <script src="{{ asset('assets/js/pages/form-editor.init.js') }}"></script>
 <script src="{{ asset('assets/js/previewPhone.js') }}"></script>
+<script src="{{ asset('assets/js/formCurrency.js') }}"></script>
+<script src="{{ asset('assets/js/dynamic-select.js') }}"></script>
 
 </body>
 

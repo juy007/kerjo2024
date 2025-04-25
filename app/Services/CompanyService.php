@@ -8,29 +8,109 @@ use Illuminate\Support\Facades\Log;
 
 class CompanyService
 {
+   
     protected $apiUser = 'https://api.carikerjo.id/users';
-    protected $apicategories = 'https://api.carikerjo.id/categories';
-    protected $apicategoriesDetail = 'https://api.carikerjo.id/categories/';
-    protected $apiSubcategories = 'https://api.carikerjo.id/sub-categories';
-    protected $apiProvinces = 'https://api.carikerjo.id/provinces';
-    protected $apiProvincesDetail = 'https://api.carikerjo.id/provinces/';
-    protected $apiJobs = 'https://api.carikerjo.id/jobs';
+    protected $apiUserById = 'https://api.carikerjo.id/users/';
 
-    public function getUsers($token, $filter_user = [], $page = 1)
+    protected $apiAuthLogin = 'https://api.carikerjo.id/auth/login';
+    protected $apiAuthRegister = 'https://api.carikerjo.id/auth/register';
+    protected $apiAuthForPassword = 'https://api.carikerjo.id/auth/forPassword';
+    protected $apiAuthResetPassword = 'https://api.carikerjo.id/auth/resetPassword';
+    protected $apiAuthVerifyOtp = 'https://api.carikerjo.id/auth/verifyOtp';
+    protected $apiAuthRequestOtp = 'https://api.carikerjo.id/auth/requestOtp';
+    protected $apiAuthOAuth2 = 'https://api.carikerjo.id/auth/OAuth2';
+    protected $apiAuthGoogleCallback = 'https://api.carikerjo.id/auth/google/callback';
+    protected $apiAuthMyProfile = 'https://api.carikerjo.id/auth/my-profile';
+    protected $apiAuthMyProfileFilter = 'https://api.carikerjo.id/auth/my-profile-filter';
+    protected $apiAuthRegisterCompany = 'https://api.carikerjo.id/auth/register-company';
+    protected $apiAuthMyCompanyProfile = 'https://api.carikerjo.id/auth/my-company-profile';
+
+    protected $apiJobStatus = 'https://api.carikerjo.id/job-statuses';
+    protected $apiJobStatusById = 'https://api.carikerjo.id/job-statuses/';
+
+    protected $apiJobLevel = 'https://api.carikerjo.id/job-levels';
+    protected $apiJobLevelById = 'https://api.carikerjo.id/job-levels/';
+
+    protected $apiJobType = 'https://api.carikerjo.id/job-types';
+    protected $apiJobTypeById = 'https://api.carikerjo.id/job-types/';
+
+    protected $apiCurrency = 'https://api.carikerjo.id/currencies';
+    protected $apiCurrencyById = 'https://api.carikerjo.id/currencies/';
+
+    protected $apiRegency = 'https://api.carikerjo.id/regencies';
+    protected $apiRegencyById = 'https://api.carikerjo.id/regencies/';
+
+    protected $apiProvince = 'https://api.carikerjo.id/provinces';
+    protected $apiProvinceById = 'https://api.carikerjo.id/provinces/';
+
+    protected $apiCategory = 'https://api.carikerjo.id/categories';
+    protected $apiCategoryById = 'https://api.carikerjo.id/categories/';
+
+    protected $apiSubCategory = 'https://api.carikerjo.id/sub-categories';
+    protected $apiSubCategoryById = 'https://api.carikerjo.id/sub-categories/';
+
+    protected $apiDatabase = 'https://api.carikerjo.id/database';
+
+    protected $apiCv = 'https://api.carikerjo.id/cvs';
+    protected $apiCvById = 'https://api.carikerjo.id/cvs/';
+    protected $apiCvGenerateMy = 'https://api.carikerjo.id/cvs/generate-my-cv';
+    protected $apiCvDefault = 'https://api.carikerjo.id/cvs/default-cv/';
+
+    protected $apiEducation = 'https://api.carikerjo.id/educations';
+    protected $apiEducationById = 'https://api.carikerjo.id/educations/';
+
+    protected $apiExperience = 'https://api.carikerjo.id/experiences';
+    protected $apiExperienceById = 'https://api.carikerjo.id/experiences/';
+
+    protected $apiBookmarkMy = 'https://api.carikerjo.id/bookmarks/my-bookmarks';
+
+    protected $apiNotification = 'https://api.carikerjo.id/notifications';
+    protected $apiNotificationById = 'https://api.carikerjo.id/notifications/';
+    protected $apiNotificationAccept = 'https://api.carikerjo.id/notifications/accept-notification';
+    protected $apiNotificationDisable = 'https://api.carikerjo.id/notifications/disable-notification/';
+    protected $apiNotificationMy = 'https://api.carikerjo.id/notifications/my-notification';
+
+    protected $apiMediaUploadAvatar = 'https://api.carikerjo.id/medias/upload-avatar';
+    protected $apiMediaUploadAvatarMobile = 'https://api.carikerjo.id/medias/upload-avatar-mobile';
+    protected $apiMediaUploadLogo = 'https://api.carikerjo.id/medias/upload-logo';
+    protected $apiMediaUploadGallery = 'https://api.carikerjo.id/medias/upload-gallery';
+    protected $apiMediaUploadCv = 'https://api.carikerjo.id/medias/upload-cv';
+    protected $apiMediaUploadCvMobile = 'https://api.carikerjo.id/medias/upload-cv-mobile';
+    protected $apiMediaSlider = 'https://api.carikerjo.id/medias/slider';
+
+    protected $apiIndustry = 'https://api.carikerjo.id/industries';
+    protected $apiIndustryById = 'https://api.carikerjo.id/industries/';
+
+    protected $apiCompany = 'https://api.carikerjo.id/companies';
+    protected $apiCompanyById = 'https://api.carikerjo.id/companies/';
+
+    protected $apiJob = 'https://api.carikerjo.id/jobs';
+    protected $apiJobById = 'https://api.carikerjo.id/jobs/';
+
+    protected $apiApplicationMy = 'https://api.carikerjo.id/applications/my-application';
+    protected $apiApplicationByJob = 'https://api.carikerjo.id/applications/job/';
+    protected $apiApplication = 'https://api.carikerjo.id/applications';
+    protected $apiApplicationById = 'https://api.carikerjo.id/applications/';
+
+    protected $apiMessage = 'https://api.carikerjo.id/messages';
+    protected $apiMessageById = 'https://api.carikerjo.id/messages/';
+    protected $apiMessageMy = 'https://api.carikerjo.id/messages/my-message';
+    protected $apiMessageSend = 'https://api.carikerjo.id/messages/send-message';
+
+    protected $apiSlider = 'https://api.carikerjo.id/slider';
+    protected $apiSliderById = 'https://api.carikerjo.id/slider/';
+
+
+    public function getUsers($token, $queryParams = [])
     {
         $userId = session('user_id') ?? 'guest';
 
         // Log sebelum request dikirim
         /*Log::channel('company_user')->info('Memulai request daftar user ke API', [
             'user_id' => $userId,
-            'filters' => $filters,
+            'filters' => $queryParams,
             'page' => $page,
         ]);*/
-
-        $queryParams = array_merge($filter_user, [
-            'limit' => 50,
-            'page' => $page,
-        ]);
 
         try {
             $response = Http::retry(3, 100)->withToken($token)->get($this->apiUser, $queryParams);
@@ -62,11 +142,11 @@ class CompanyService
         }
     }
 
-    public function getCategories($token)
+    public function getCategories($token, $queryParams)
     {
         $userId = session('user_id') ?? 'guest';
         try {
-            $response = Http::retry(3, 100)->withToken($token)->get($this->apicategories, ['limit' => 500]);
+            $response = Http::retry(3, 100)->withToken($token)->get($this->apiCategory, $queryParams);
 
             if (!$response->successful()) {
                 Log::channel('company_api_error')->warning('Get Categories', [
@@ -91,7 +171,7 @@ class CompanyService
     {
         $userId = session('user_id') ?? 'guest';
         try {
-            $response = Http::retry(3, 100)->withToken($token)->get($this->apicategoriesDetail . $id_categories);
+            $response = Http::retry(3, 100)->withToken($token)->get($this->apiCategoryById . $id_categories);
 
             if (!$response->successful()) {
                 Log::channel('company_api_error')->warning('Get Categories', [
@@ -116,7 +196,7 @@ class CompanyService
     {
         $userId = session('user_id') ?? 'guest';
         try {
-            $response = Http::retry(3, 100)->withToken($token)->get($this->apiSubcategories);
+            $response = Http::retry(3, 100)->withToken($token)->get($this->apiSubCategory);
 
             if (!$response->successful()) {
                 Log::channel('company_api_error')->warning('Get Categories', [
@@ -141,7 +221,7 @@ class CompanyService
     {
         $userId = session('user_id') ?? 'guest';
         try {
-            $response = Http::retry(3, 100)->withToken($token)->get($this->apiProvinces, [
+            $response = Http::retry(3, 100)->withToken($token)->get($this->apiProvince, [
                 'limit' => 100,
             ]);
 
@@ -168,7 +248,7 @@ class CompanyService
     {
         $userId = session('user_id') ?? 'guest';
         try {
-            $response = Http::retry(3, 100)->withToken($token)->get($this->apiProvincesDetail . $id_provinces);
+            $response = Http::retry(3, 100)->withToken($token)->get($this->apiProvinceById . $id_provinces);
 
             if (!$response->successful()) {
                 Log::channel('company_api_error')->warning('Get Provinces Detail', [
@@ -189,17 +269,12 @@ class CompanyService
         }
     }
 
-    public function getJob($token, $filters = [], $page = 1)
+    public function getJob($token, $queryParams = [])
     {
         $userId = session('user_id') ?? 'guest';
 
-        $queryParams = array_merge($filters, [
-            'limit' => 20,
-            'page' => $page,
-        ]);
-
         try {
-            $response = Http::retry(3, 100)->withToken($token)->get($this->apiJobs, $queryParams);
+            $response = Http::retry(3, 100)->withToken($token)->get($this->apiJob, $queryParams);
 
             if (!$response->successful()) {
                 Log::channel('company_api_error')->warning('Get Job', [
@@ -337,7 +412,7 @@ class CompanyService
     {
         $userId = session('user_id') ?? 'guest';
         try {
-            $response = Http::retry(3, 100)->withToken($token)->get($this->apiJobs."/{$id}");
+            $response = Http::retry(3, 100)->withToken($token)->get($this->apiJobById . $id);
             if (!$response->successful()) {
                 Log::channel('company_api_error')->warning('Get Jobs', [
                     'user_id' => $userId,

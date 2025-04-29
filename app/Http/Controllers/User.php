@@ -270,7 +270,7 @@ class User extends Controller
             $jobStatuses = $companyService->getJobStatuses($token);
             $jobTypes = $companyService->getJobTypes($token);
             $jobLevels = $companyService->getJobLevels($token);
-            $jobs = $companyService->getJobs($token, $id);
+            $jobs = $companyService->getJobsById($token, $id);
             $categoriesDetail = $companyService->getCategoriesDetail($token, $jobs['data']['subCategory']['category']['_id']);
             $provinceDetail = $companyService->getProvincesDetail($token, $jobs['data']['province']['_id']);
 
@@ -283,7 +283,7 @@ class User extends Controller
 
             $categories = $categories['data'];
             //$jobSubCategories = collect($subCategories['data'])->firstWhere('_id', $jobs['data']['subCategory']['_id'] ?? null);
-            /*echo '<pre>';
+           /* echo '<pre>';
             print_r($jobs['data']);
             echo '</pre>';*/
             return view('user.form_edit_job', compact('categories', 'categoriesDetail', 'provinces', 'provinceDetail', 'currencies',  'jobStatuses', 'jobTypes', 'jobLevels', 'jobs'));
@@ -378,38 +378,39 @@ class User extends Controller
         }
     }
 
-    public function detailJob($id)
+    public function detailJob(CompanyService $companyService, $id)
     {
         $token = session('api_token');
         try {
-            $responses = Http::pool(fn($pool) => [
-                $pool->withToken($token)->get("https://api.carikerjo.id/jobs/{$id}"),
-                $pool->withToken($token)->get('https://api.carikerjo.id/sub-categories'),
-                $pool->withToken($token)->get("https://api.carikerjo.id/applications/job/{$id}"),
-            ]);
+            $jobs = $companyService->getJobsById($token, $id);
+            $regencies = $companyService->getRegenciesById($token, $jobs['data']['regency']);
+            $applications = $companyService->getApplicationsByJob($token, $id);
+            
 
-            // Jika salah satu request gagal, handle di sini
-            $failedResponse = array_filter($responses, fn($response) => !$response->successful());
-            if (count($failedResponse) > 0) {
+            if (!$jobs['success'] || !$regencies['success'] || !$applications['success']) {
                 session()->flash('notifAPI', 'Halaman Detail Job');
                 return view('user.api_error');
             }
 
             // Ambil semua hasil request sekaligus
-            $jobs = $responses[0]->json('data');
+           /* $jobs = $responses[0]->json('data');
             $subCategories = $responses[1]->json('data');
             $applications = $responses[2]->json('data') ?? [];
             $experiences = $applications[0]['user']['experiences'] ?? [];
 
 
+            $subCategoriesShow = collect($subCategories)->firstWhere('_id', $jobs['subCategory']);*/
+           /*echo '<pre>';
+            print_r($regencies['data']);
+            echo '</pre>';*/
 
-            // Sub-kategori yang sesuai dengan job
-            $subCategoriesShow = collect($subCategories)->firstWhere('_id', $jobs['subCategory']);
-            return view('user.detail_job', compact('jobs', 'applications', 'experiences', 'subCategoriesShow'));
+           return view('user.detail_job', compact('jobs', 'regencies', 'applications'/*, 'experiences', 'subCategoriesShow'*/));
         } catch (\Exception $e) {
+            /*echo "Terjadi error: " . $e->getMessage() . "<br>";
+            echo "Di file: " . $e->getFile() . " pada baris " . $e->getLine() . "<br>";
+            echo "<pre>" . $e->getTraceAsString() . "</pre>";*/
             session()->flash('notifAPI', 'Halaman Detail Job');
             return view('user.api_error');
-            //echo $e->getMessage();
         }
     }
 

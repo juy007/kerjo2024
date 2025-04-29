@@ -408,7 +408,7 @@ class CompanyService
         }
     }
 
-    public function getJobs($token, $id)
+    public function getJobsById($token, $id)
     {
         $userId = session('user_id') ?? 'guest';
         try {
@@ -429,6 +429,54 @@ class CompanyService
                 'error' => $e->getMessage(),
             ]);
             return ['success' => false, 'message' => 'Terjadi kesalahan saat mengambil data Job'];
+        }
+    }
+
+    public function getApplicationsByJob($token, $id)
+    {
+        $userId = session('user_id') ?? 'guest';
+        try {
+            $response = Http::retry(3, 100)->withToken($token)->get($this->apiApplicationByJob . $id);
+            if (!$response->successful()) {
+                Log::channel('company_api_error')->warning('Get Jobs', [
+                    'user_id' => $userId,
+                    'status_code' => $response->status(),
+                    'response_body' => $response->body(),
+                ]);
+                return ['success' => false, 'message' => 'Gagal mengambil data Jobs dari API'];
+            }
+
+            return ['success' => true, 'data' => $response->json()['data']];
+        } catch (\Exception $e) {
+            Log::channel('company_api_error')->error('Get Job Levels', [
+                'user_id' => $userId,
+                'error' => $e->getMessage(),
+            ]);
+            return ['success' => false, 'message' => 'Terjadi kesalahan saat mengambil data Job'];
+        }
+    }
+
+    public function getRegenciesById($token, $id)
+    {
+        $userId = session('user_id') ?? 'guest';
+        try {
+            $response = Http::retry(3, 100)->withToken($token)->get($this->apiRegencyById . $id);
+            if (!$response->successful()) {
+                Log::channel('company_api_error')->warning('Get Regencies By Id', [
+                    'user_id' => $userId,
+                    'status_code' => $response->status(),
+                    'response_body' => $response->body(),
+                ]);
+                return ['success' => false, 'message' => 'Gagal mengambil data Regencies dari API'];
+            }
+
+            return ['success' => true, 'data' => $response->json()['data']];
+        } catch (\Exception $e) {
+            Log::channel('company_api_error')->error('Get Regencies', [
+                'user_id' => $userId,
+                'error' => $e->getMessage(),
+            ]);
+            return ['success' => false, 'message' => 'Terjadi kesalahan saat mengambil data Regencies'];
         }
     }
 }

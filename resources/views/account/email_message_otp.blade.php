@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Reset Password</title>
+    <title>OTP</title>
 
     <style type="text/css">
         /* Inline CSS for Email Clients */
@@ -67,43 +67,44 @@
 </head>
 <body>
 
-    <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-        <tr>
-            <td>
+<table role="presentation" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td>
 
-                <!-- Email Container -->
-                <div class="email-container">
+            <!-- Email Container -->
+            <div class="email-container">
 
-                    <!-- Header Section with Logo -->
-                    <div class="email-header">
-                        <img src="{{ url('proxy-image/src/Kerjo B2 1.png') }}" alt="Kerjo Logo">
-                    </div>
-
-                    <!-- Email Body Section -->
-                    <div class="email-body">
-                        <h1>Reset Password Request</h1>
-                        <p>Halo,</p>
-                        <p>Kamu telah meminta untuk mereset password akun kamu. Klik link di bawah ini untuk melanjutkan proses reset password.</p>
-
-                        <!-- Reset Button -->
-                        <p style="text-align: center;">
-                            <a href="{{ $url }}" class="reset-button">Reset Password</a>
-                        </p>
-
-                        <p>Jika kamu tidak meminta reset password, abaikan email ini.</p>
-                    </div>
-
-                    <!-- Footer Section -->
-                    <div class="email-footer">
-                        <p>Copyright © {{ date('Y') }} Kerjo. All rights reserved.</p>
-                    </div>
-
+                <!-- Header Section with Logo -->
+                <div class="email-header">
+                    <img src="{{ url('proxy-image/src/Kerjo B2 1.png') }}" alt="Kerjo Logo">
                 </div>
-                <!-- End Email Container -->
 
-            </td>
-        </tr>
-    </table>
+                <!-- Email Body Section -->
+                <div class="email-body">
+                    <h1>Verifikasi Akun Kamu</h1>
+                    <p>Halo,</p>
+                    <p>Terima kasih telah mendaftar di Kerjo. Gunakan kode OTP di bawah ini untuk memverifikasi akun kamu.</p>
+
+                    <!-- OTP Display -->
+                    <p style="text-align: center; font-size: 24px; font-weight: bold; color: #333;">
+                        {{ $otp }}
+                    </p>
+
+                    <p>Kode OTP ini berlaku selama beberapa menit. Jangan berikan kode ini kepada siapa pun.</p>
+                </div>
+
+                <!-- Footer Section -->
+                <div class="email-footer">
+                    <p>Copyright © {{ date('Y') }} Kerjo. All rights reserved.</p>
+                </div>
+
+            </div>
+            <!-- End Email Container -->
+
+        </td>
+    </tr>
+</table>
+
 
 </body>
 </html>

@@ -2,10 +2,18 @@
     position: relative;
     display: inline-block;
   }
-  emoji-picker {
+ .emoji-msg {
     position: absolute;
     bottom: 40px;
     right: 0;
+    z-index: 100;
+    display: none;
+  }
+
+.emoji-msg-read {
+    position: absolute;
+    bottom: 70px;
+    right: 100;
     z-index: 100;
     display: none;
   }

@@ -24,7 +24,7 @@
     <meta name="twitter:description" content="Kerjo - Aplikasi pencari kerja terpercaya yang menghubungkan pencari kerja dengan perusahaan terbaik. Temukan lowongan pekerjaan impian dan bangun karir cemerlang bersama Kerjo. Download sekarang!">
     <meta name="twitter:image" content="https://company.carikerjo.id/proxy-image/src/Kerjo%20sm.png">
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/logo/fav.png') }}">
+    <link rel="shortcut icon" href="{{ url('proxy-image/src/fav.png') }}">
 
     <!-- preloader css -->
     <link rel="stylesheet" href="{{ asset('assets/css/preloader.min.css') }}" type="text/css" />
@@ -80,7 +80,7 @@
                                         </div>
 
                                         <div class="form-floating mb-4 auth-pass-inputgroup mb-1 d-flex align-items-center position-relative">
-                                            <input type="password" class="form-control" name="password2" id="password-input1" placeholder="Masukan Password" style="padding-right: 2.5rem;" required>
+                                            <input type="password" class="form-control" name="password_confirmation" id="password-input1" placeholder="Masukan Password" style="padding-right: 2.5rem;" required>
                                             <button type="button" class="btn btn-link position-absolute h-100 end-0 d-flex align-items-center" id="password-addon1" style="top: 0;">
                                                 <i class="mdi mdi-eye-outline font-size-18 text-muted"></i>
                                             </button>

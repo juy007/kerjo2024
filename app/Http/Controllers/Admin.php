@@ -967,46 +967,52 @@ class Admin extends Controller
         $token = session('api_token_admin');
 
         $vals = [
-            "Kota Bandung",
-            "Kota Bekasi",
-            "Kota Bogor",
-            "Kota Cimahi",
-            "Kota Cirebon",
-            "Kota Depok",
-            "Kota Sukabumi",
-            "Kota Tasikmalaya",
-            "Kota Banjar",
-            "Kabupaten Bandung",
-            "Kabupaten Bandung Barat",
-            "Kabupaten Bekasi",
-            "Kabupaten Bogor",
-            "Kabupaten Ciamis",
-            "Kabupaten Cianjur",
-            "Kabupaten Cirebon",
-            "Kabupaten Garut",
-            "Kabupaten Indramayu",
-            "Kabupaten Karawang",
-            "Kabupaten Kuningan",
-            "Kabupaten Majalengka",
-            "Kabupaten Pangandaran",
-            "Kabupaten Purwakarta",
-            "Kabupaten Subang",
-            "Kabupaten Sukabumi",
-            "Kabupaten Sumedang",
-            "Kabupaten Tasikmalaya"
+          // Provinsi Sumatera Utara
+            [ "name" => "Kota Medan", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kota Binjai", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kota Pematangsiantar", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kota Sibolga", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kota Tanjungbalai", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kota Tebing Tinggi", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kota Gunungsitoli", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Asahan", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Batu Bara", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Dairi", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Deli Serdang", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Humbang Hasundutan", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Karo", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Labuhanbatu", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Labuhanbatu Selatan", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Labuhanbatu Utara", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Langkat", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Mandailing Natal", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Nias", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Nias Barat", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Nias Selatan", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Nias Utara", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Padang Lawas", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Padang Lawas Utara", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Pakpak Bharat", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Samosir", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Serdang Bedagai", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Simalungun", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Tapanuli Selatan", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Tapanuli Tengah", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Tapanuli Utara", "provinceId" => "67d4e243b1f9532021a83095" ],
+            [ "name" => "Kabupaten Toba", "provinceId" => "67d4e243b1f9532021a83095" ],
         ];
 
         foreach ($vals as $val) {
             $response = Http::withToken($token)->retry(3, 100)->post('https://api.carikerjo.id/regencies', [
-                'name' => $val,
-                "provinceId" => "67d4e22fb1f9532021a83077"
+                'name' => $val['name'],
+                'provinceId' => $val['provinceId']
             ]);
 
             // Cek jika request gagal
             if (!$response->successful()) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => "Failed to input ID: $val",
+                    'message' => "Failed to input ID: {$val['name']}",
                     'response' => $response->json()
                 ], $response->status());
             }
@@ -1020,37 +1026,11 @@ class Admin extends Controller
     public function delete_all()
     {
         $token = session('api_token_admin');
-
-        $ids = [
-            "67d1be440c77957c950dc62d",
-            "67d1be440c77957c950dc62a",
-            "67d1be430c77957c950dc627",
-            "67d1be430c77957c950dc624",
-            "67d1be430c77957c950dc621",
-            "67d1be430c77957c950dc61e",
-            "67d1be430c77957c950dc61b",
-            "67d1be420c77957c950dc618",
-            "67d1be420c77957c950dc615",
-            "67d1be3f0c77957c950dc612",
-            "67d1be3e0c77957c950dc609",
-            "67d1be3e0c77957c950dc606",
-            "67d1be3e0c77957c950dc603",
-            "67d1be3e0c77957c950dc600",
-            "67d1be3e0c77957c950dc5fd",
-            "67d1be3e0c77957c950dc5fa",
-            "67d1be3e0c77957c950dc5f7",
-            "67d1be3d0c77957c950dc5f4",
-            "67d1be3d0c77957c950dc5f1",
-            "67d1be3d0c77957c950dc5ee",
-            "67d1be3d0c77957c950dc5eb",
-            "67d1be3d0c77957c950dc5e8",
-            "67d1be3d0c77957c950dc5e5",
-            "67d1be3d0c77957c950dc5e2",
-            "67d1be3c0c77957c950dc5df",
-        ];
-
-        foreach ($ids as $id) {
-            $response = Http::withToken($token)->retry(3, 100)->delete("https://api.carikerjo.id/provinces/{$id}");
+        $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages');
+        //echo '<pre>';print_r($responseMessages['data']);echo '</pre>';
+        
+        foreach ($responseMessages['data'] as $id) {
+            $response = Http::withToken($token)->retry(3, 100)->delete("https://api.carikerjo.id/messages/{$id['_id']}");
 
             // Cek jika request gagal
             if (!$response->successful()) {

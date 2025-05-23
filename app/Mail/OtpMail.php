@@ -16,9 +16,20 @@ class OtpMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public $otp;
+
+    public function __construct($otp)
     {
-        //
+        $this->otp = $otp;
+    }
+
+    public function build()
+    {
+        return $this->subject('One-Time Password')
+                    ->view('account.email_message_otp') // Pastikan file ini ada
+                    ->with([
+                        'otp' => $this->otp, // Mengirim variabel $otp ke view
+                    ]);
     }
 
     /**

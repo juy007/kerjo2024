@@ -18,11 +18,11 @@ class CheckCompanyIndustries
     public function handle(Request $request, Closure $next): Response
     {
         if (Session::get('company_industries') === null || empty(Session::get('company_industries'))) {
-            return redirect()->route('company_profile_part1');
+            return redirect()->route('company_profile_step1');
         }else{
             $nameIndustries = Session::get('company_name');
             if (is_null($nameIndustries) || empty($nameIndustries) || $nameIndustries === 'string') {
-                return redirect()->route('company_profile_part2');
+                return redirect()->route('company_profile_step2');
             }
         }
         return $next($request);

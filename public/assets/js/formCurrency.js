@@ -12,7 +12,7 @@ function formatCurrency(input) {
     if (document.getElementById('gaji')) {
         document.getElementById('gaji').value = rawValue;
     }
-s    
+
 }
 
 function number(evt) {

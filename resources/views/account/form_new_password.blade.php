@@ -28,7 +28,7 @@
                             <div class="col-sm-5" style="margin-left:auto;margin-right:auto;">
                                 <form id="formReset" action="{{ route('password.update') }}" method="POST">
                                     @csrf
-                                    <input type="hidden" id="email" name="email" value="{{ $email }}">
+                                    <input type="hidden" id="userId" name="userId" value="{{ $id }}">
                                     <input type="hidden" id="token" name="token" value="{{ $token }}">
 
                                     <div class="mb-4">

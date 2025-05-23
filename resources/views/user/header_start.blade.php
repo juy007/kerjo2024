@@ -27,7 +27,7 @@
     <meta name="twitter:image" content="https://company.carikerjo.id/proxy-image/company/src/Kerjo%20sm.png">
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/logo/fav.png') }}">
+    <link rel="shortcut icon" href="{{ url('proxy-image/company/src/fav.png') }}">
 
     <!-- plugin css -->
     <link href="{{ asset('assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet" type="text/css" />

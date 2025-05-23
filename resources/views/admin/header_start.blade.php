@@ -25,7 +25,7 @@
     <meta name="twitter:description" content="Kerjo - Aplikasi pencari kerja terpercaya yang menghubungkan pencari kerja dengan perusahaan terbaik. Temukan lowongan pekerjaan impian dan bangun karir cemerlang bersama Kerjo. Download sekarang!">
     <meta name="twitter:image" content="https://company.carikerjo.id/proxy-image/src/Kerjo%20sm.png">
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/logo/fav.png') }}">
+    <link rel="shortcut icon" href="{{ url('proxy-image/admin/fav.png') }}">
 
     <!-- plugin css -->
     <link href="{{ asset('assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet" type="text/css" />

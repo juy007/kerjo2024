@@ -15,19 +15,19 @@
                         <div class="navbar-brand-box">
                             <a href="index.html" class="logo logo-dark">
                                 <span class="logo-sm">
-                                    <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="30">
+                                    <img src="{{ url('proxy-image/admin/Kerjo B2 1.png') }}" alt="" height="30">
                                 </span>
                                 <span class="logo-lg">
-                                    <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="24"> <span class="logo-txt"></span>
+                                    <img src="{{ url('proxy-image/admin/Kerjo B2 1.png') }}" alt="" height="24"> <span class="logo-txt"></span>
                                 </span>
                             </a>
 
                             <a href="index.html" class="logo logo-light">
                                 <span class="logo-sm">
-                                    <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="30">
+                                    <img src="{{ url('proxy-image/admin/Kerjo B2 1.png') }}" alt="" height="30">
                                 </span>
                                 <span class="logo-lg">
-                                    <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="24"> <span class="logo-txt"></span>
+                                    <img src="{{ url('proxy-image/admin/Kerjo B2 1.png') }}" alt="" height="24"> <span class="logo-txt"></span>
                                 </span>
                             </a>
                         </div>

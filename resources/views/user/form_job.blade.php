@@ -156,7 +156,7 @@
                                             <div class="mb-3">
                                                 <label for="form_status" class="form-label font-size-13">Status</label>
                                                 <select class="form-control" data-trigger name="status" id="form_status">
-                                                    <option value="">Pilih Status</option>
+                                                    <option selected value="">Pilih Status</option>
                                                     <option value="publish">Publish</option>
                                                     <option value="draft">Draft</option>
                                                 </select>

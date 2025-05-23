@@ -150,8 +150,8 @@ Route::post('/verify_otp', [Account::class, 'verify_otp'])->name('verify_otp');
 //Forgot Password User
 Route::get('password/forgot', [Account::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('password/email', [Account::class, 'sendResetLinkEmail'])->name('password.email');
-Route::get('passwordReset/{token}', [Account::class, 'showResetForm'])->name('password.reset');
-Route::post('password/reset', [Account::class, 'reset'])->name('password.update');
+//Route::get('passwordReset', [Account::class, 'showResetForm'])->name('password.reset');
+//Route::post('password/reset', [Account::class, 'reset'])->name('password.update');
 
 Route::middleware('auth.token')->group(function () {
     Route::middleware(['check.company.industries'])->group(function () {
@@ -177,10 +177,10 @@ Route::middleware('auth.token')->group(function () {
         Route::get('/read/{id}', [User::class, 'detailMessage'])->name('detail_message');
         Route::post('/send', [User::class, 'message_send'])->name('message_send');
     });
-    Route::get('/part-1', [Account::class, 'company_profile_part1'])->name('company_profile_part1');
-    Route::post('/submit-part-1', [Account::class, 'submitCompany_profile_part1'])->name('submit_company_profile_part1');
-    Route::get('/part-2', [Account::class, 'company_profile_part2'])->name('company_profile_part2');
-    Route::post('/submit-part-2', [Account::class, 'submitCompany_profile_part2'])->name('submit_company_profile_part2');
+    Route::get('/part-1', [Account::class, 'company_profile_step1'])->name('company_profile_step1');
+    Route::post('/submit-part-1', [Account::class, 'submitCompany_profile_step1'])->name('submit_company_profile_step1');
+    Route::get('/part-2', [Account::class, 'company_profile_step2'])->name('company_profile_step2');
+    Route::post('/submit-part-2', [Account::class, 'submitCompany_profile_step2'])->name('submit_company_profile_step2');
     Route::post('/logout', [Account::class, 'logout'])->name('user_logout');
 
 

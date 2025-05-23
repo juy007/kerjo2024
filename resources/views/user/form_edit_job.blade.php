@@ -62,7 +62,7 @@
                                                 <label for="kategori" class="form-label font-size-13">Kategori</label>
                                                 <select class="form-control" data-trigger name="kategori" id="kategori">
                                                     <option selected value="{{ $jobs['data']['subCategory']['category']['_id'] }}">{{ $jobs['data']['subCategory']['category']['name'] }}</option>
-                                                    @foreach(collect($categories['list'])->sortBy('name') as $category)
+                                                    @foreach(collect($categories['data']['list'])->sortBy('name') as $category)
                                                     <option value="{{ $category['_id'] }}">{{ $category['name'] }}</option>
                                                     @endforeach
                                                 </select>
@@ -108,6 +108,7 @@
                                             <div class="mb-3">
                                                 <label for="form_kota" class="form-label font-size-13">Kota/Kabupaten</label>
                                                 <select class="form-select" name="kota" id="form_kota">
+                                                    <option value="{{ $regencies['data']['_id'] }}">{{ $regencies['data']['name'] }}</option>
                                                     @foreach($provinceDetail['data']['regencies'] as $regency)
                                                     <option value="{{ $regency['_id'] }}">{{ $regency['name'] }}</option>
                                                     @endforeach
@@ -177,7 +178,7 @@
 
                             <div class="col-xl-8 col-md-8">
                                 <div class="phonePreview">
-                                    <img class="img-fluid" style="max-width: 100%;" src="{{ asset('assets/images/logo/phone.png') }}" alt="">
+                                    <img class="img-fluid" style="max-width: 100%;" src="{{ url('proxy-image/company/src/phone.png') }}" alt="">
                                     <div class="screen">
                                         <div class="containerx">
                                             <h5><i class="mdi mdi-arrow-left"></i> Deskripsi Pekerjaan</h5>
@@ -201,7 +202,7 @@
                                                 <div class="row">
                                                     <div class="col-7">
                                                         <div class="label">Lokasi</div>
-                                                        {{ $jobs['data']['province']['name'] ?? '-' }}
+                                                        {{ str_replace(['Kota ', 'Kabupaten '], '', $regencies['data']['name'] ?? '-').', '.($jobs['data']['province']['name'] ?? '-') }}
                                                     </div>
                                                     <div class="col-5">
                                                         <div class="label">Tipe Pekerjaan</div>
@@ -221,7 +222,7 @@
                                                 <div class="row">
                                                     <div class="col-8">
                                                         <div class="label">Kategori Pekerjaan</div>
-                                                        {{ $jobs['data']['subCategory']['name'] ?? '-' }}
+                                                        {{ ($jobs['data']['subCategory']['category']['name'] ?? '-') . ' - ' . ($jobs['data']['subCategory']['name'] ?? '-') }}
                                                     </div>
                                                 </div>
                                             </div>
@@ -259,7 +260,7 @@
                                             </div>
                                             <div class="modal-body">
                                                 <div class="phonePreview2">
-                                                    <img class="img-fluid" style="max-width:100%;" src="{{ asset('assets/images/logo/phone.png') }}" alt="">
+                                                    <img class="img-fluid" style="max-width:100%;" src="{{ url('proxy-image/company/src/phone.png') }}" alt="">
                                                     <div class="screen1">
                                                         <div class="containerx">
                                                             <h5><i class="mdi mdi-arrow-left"></i> Deskripsi Pekerjaan</h5>

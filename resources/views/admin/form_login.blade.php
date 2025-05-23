@@ -9,7 +9,7 @@
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/logo/fav.png') }}">
+    <link rel="shortcut icon" href="{{ url('proxy-image/src/fav.png') }}">
 
     <!-- preloader css -->
     <link rel="stylesheet" href="{{ asset('assets/css/preloader.min.css') }}" type="text/css" />
@@ -36,7 +36,7 @@
                                 <div class="mb-4 mb-md-5 auth-content my-auto">
                                     <div class="text-center">
                                         <a href="{{ route('admin_login') }}" class="d-block auth-logo mt-5">
-                                            <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="60"> <span class="logo-txt"></span>
+                                            <img src="{{ url('proxy-image/src/Kerjo B2 1.png') }}" alt="" height="60"> <span class="logo-txt"></span>
                                         </a>
                                         <h3 class="mb-0">Administrator</h3>
                                         <p class="text-muted mt-2"></p>

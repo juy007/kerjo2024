@@ -12,7 +12,7 @@
                         <div class="" style="text-align:center;">
                             <a href="{{ route('dashboard_user') }}" class="">
                                 <span class="">
-                                    <img src="{{ asset('assets/images/logo/Kerjo B2 1.png') }}" alt="" height="40"> <span class="logo-txt"></span>
+                                    <img src="{{ url('proxy-image/src/Kerjo B2 1.png') }}" alt="" height="40"> <span class="logo-txt"></span>
                                 </span>
                             </a>
                         </div>

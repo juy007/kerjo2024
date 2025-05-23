@@ -105,8 +105,16 @@
             @else
                 <img style="max-height: 500px; width:auto;" src="{{ url('proxy-image/company/src/nodata.png') }}" alt="" class="img-fluid mx-auto d-block">
             @endif
+            @if(!empty($dataJob['list']) && count($dataJob['list']) > 0)
+                {{-- Pagination --}}
+                @include('user.pagination', [
+                    'currentPage' => $currentPage,
+                    'totalPages' => $totalPages,
+                    'route' => 'index_job'
+                ])
+            @endif
+            <br><br><br><br>
         </div>
-       
     </div> <!-- container-fluid -->
 </div>
 <!-- End Page-content -->

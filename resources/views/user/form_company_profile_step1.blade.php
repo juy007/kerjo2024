@@ -28,7 +28,7 @@
                 <div class="text-center">
                     <div class="row justify-content-center mb-5">
                         <div class="col-sm-12">
-                            <form method="POST" action="{{ route('submit_company_profile_part1') }}" class="col-sm-7" style="margin-left:auto;margin-right:auto;" id="industryForm" enctype="multipart/form-data">@csrf
+                            <form method="POST" action="{{ route('submit_company_profile_step1') }}" class="col-sm-7" style="margin-left:auto;margin-right:auto;" id="industryForm" enctype="multipart/form-data">@csrf
                                 <div class="flex-wrap gap-3 mb-3">
                                     @if($industries['list'] && count($industries) > 0)
                                     <div class="" role="group" aria-label="Basic checkbox toggle button group">

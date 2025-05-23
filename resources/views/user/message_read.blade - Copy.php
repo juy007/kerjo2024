@@ -7,7 +7,8 @@
     <div class="container-fluid">
 
 
- <style>
+
+        <style>
             .w-md-50 {
                 width: 100%;
                 /* Default untuk mobile (di bawah 768px) */
@@ -16,66 +17,10 @@
             @media (min-width: 768px) {
                 .w-md-50 {
                     width: 75%;
-                    margin-top: 1rem;
+                    margin-top: 1.5rem;
                     /* opsional, jika ingin seperti mt-4 */
                     padding-left: 1rem;
                     padding-right: 1rem;
-                }
-            }
-
-
-            .left {
-                display: flex;
-                justify-content: flex-start;
-                margin-bottom: 10px;
-            }
-
-            .left>div {
-                background-color: #f1f1f1;
-                color: #000;
-                padding: 10px 15px;
-                border-radius: 16px 16px 16px 0;
-                max-width: 75%;
-                word-wrap: break-word;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                font-size: 14px;
-                animation: fadeIn 0.2s ease-in;
-            }
-
-            .right {
-                display: flex;
-                justify-content: flex-end;
-                margin-bottom: 10px;
-            }
-
-            .right>div {
-                background-color: #007bff;
-                color: #fff;
-                padding: 10px 15px;
-                border-radius: 16px 16px 0 16px;
-                max-width: 75%;
-                word-wrap: break-word;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                font-size: 14px;
-                animation: fadeIn 0.2s ease-in;
-            }
-
-            .time {
-                font-size: 9px;
-                color: #999;
-                margin-bottom: 5px;
-            }
-
-            /* Efek transisi */
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(5px);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
                 }
             }
         </style>
@@ -148,15 +93,15 @@
                     </div>
                 </div>
 
-                <div id="chat-box" class="p-3" style="height: 350px; overflow-y: auto;">
+                <div id="chat-box" class="chat-conversation p-3" data-simplebar style="height: 130px">
                     <ul id="messages" class="list-unstyled mb-0">
-                         <li id="loader" class="chat-day-title  text-center">
-                            <span class="title">Memuat...</span>
+                        <li class="chat-day-title">
+                            <span class="title">Today</span>
                         </li>
 
-                        @foreach($filteredMessages as $msg)
-                        <li class="{{ $msg['from'] == session('user_id') ? 'left' : 'right' }}">
-                            <div class="">
+                        @foreach($filteredMessages->reverse() as $msg)
+                        <li class="{{ $msg['from'] == session('user_id') ? 'right' : 'left' }}">
+                            <div class="conversation-list">
                                 <div class="d-flex">
                                     <div class="flex-1">
                                         <div class="ctext-wrap">
@@ -173,7 +118,9 @@
                         </li>
 
                         @endforeach
-                       
+                        <li id="loader" class="chat-day-title">
+                            <span class="title">Memuat...</span>
+                        </li>
                     </ul>
                 </div>
 
@@ -242,14 +189,14 @@
 
                             data.messages.reverse().forEach(msg => {
                                 const li = document.createElement('li');
-                                li.className = (msg.from === currentUserId ? 'left' : 'right');
+                                li.className = (msg.from === currentUserId ? 'right' : 'left');
                                 li.innerHTML = `
-                        <div class="">
+                        <div class="conversation-list">
                             <div class="d-flex">
                                 <div class="flex-1">
                                     <div class="ctext-wrap">
                                         <div class="ctext-wrap-content">
-                                            <div class="">
+                                            <div class="conversation-name">
                                                 <span class="time">${new Date(msg.createdAt).toLocaleString('id-ID')}</span>
                                             </div>
                                             <p class="mb-0">${msg.content}</p>

@@ -206,7 +206,7 @@
 
                                             <div class="d-flex gap-2 justify-content-end">
                                                 <button class="btn btn-soft-warning waves-effect waves-light" type="button" id="emoji-btn">😊</button>
-                                                <emoji-picker id="picker"></emoji-picker>
+                                                <emoji-picker id="picker" class="emoji-msg"></emoji-picker>
                                                 <button type="submit" class="btn btn-primary">Kirim</button>
                                             </div>
                                         </form>

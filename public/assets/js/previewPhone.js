@@ -30,7 +30,7 @@ function previewPhone() {
     const kategoriText = getSelectedText("kategori");
     const subKategoriText = getSelectedText("sub_kategori");
 
-    const statusJobs = getSelectedText("form_status");
+    const statusJobs = document.getElementById("form_status").value;
 
     const editor1Content = document.getElementById("editor1")?.querySelector(".ck-editor__editable")?.innerHTML || '';
     const editor2Content = document.getElementById("editor2")?.querySelector(".ck-editor__editable")?.innerHTML || '';
@@ -38,7 +38,8 @@ function previewPhone() {
 
     // Set ke preview
     document.getElementById("job_title_pre").innerHTML = jobTitle;
-    document.getElementById("lokasi_pre").innerHTML = `${kotaText}${kotaValue && provinsiValue ? ', ' : ''}${provinsiText}`;
+    const cleanKotaText = kotaText.replace(/^(Kota|Kabupaten)\s*/i, '');
+    document.getElementById("lokasi_pre").innerHTML = `${cleanKotaText}${kotaValue && provinsiValue ? ', ' : ''}${provinsiText}`;
     document.getElementById("tipe_pekerjaan_pre").innerHTML = getSelectedText("form_tipe_pekerjaan");
     document.getElementById("status_karyawan_pre").innerHTML = getSelectedText("form_tipe_status_karyawan");
     document.getElementById("posisi_level_pre").innerHTML = getSelectedText("form_posisi_level");

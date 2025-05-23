@@ -46,7 +46,7 @@ class User extends Controller
         try {
             $provinces = $companyService->getProvinces($token);
             $currencies = $companyService->getCurrencies($token);
-            $categories = $companyService->getCategories($token, ['limit'=> 500]);
+            $categories = $companyService->getCategories($token, ['limit' => 500]);
             $jobStatuses = $companyService->getJobStatuses($token);
             $jobTypes = $companyService->getJobTypes($token);
             $jobLevels = $companyService->getJobLevels($token);
@@ -221,21 +221,22 @@ class User extends Controller
         $token = session('api_token');
         $requestedPage = filter_var($request->query('page', 1), FILTER_VALIDATE_INT) ?: 1;
 
+        // Siapkan parameter query awal
         $queryParams = [
-            'query' => $request->query('nama', ''),
-            'salary' => str_replace('.', '', $request->query('gaji', '')),
-            'location' => $request->query('lokasi', ''),
+            'query'      => $request->query('nama', ''),
+            'salary'     => str_replace('.', '', $request->query('gaji', '')),
+            'location'   => $request->query('lokasi', ''),
             'categories' => $request->query('kategori', ''),
-            'limit' => 20,
-            'page' =>  $requestedPage,
+            'limit'      => 50,
+            'page'       => $requestedPage,
         ];
 
-
         // Ambil halaman 1 untuk cek totalPages
-        $initialResponse = $this->companyService->getJob($token, $queryParams, 1);
+        $initialResponse = $this->companyService->getJob($token, $queryParams);
         $subcategories = $this->companyService->getSubCategories($token);
         $provinces = $this->companyService->getProvinces($token);
 
+        // Validasi respons API
         if (!$initialResponse['success'] || !$subcategories['success'] || !$provinces['success']) {
             session()->flash('notifAPI', 'Halaman Data Lowongan');
             return view('user.api_error');
@@ -243,19 +244,20 @@ class User extends Controller
 
         $totalPages = $initialResponse['data']['totalPages'] ?? 1;
 
-        // Pilih halaman yang valid
+        // Validasi halaman aktif
         $page = min($requestedPage, $totalPages);
+        $queryParams['page'] = $page; // update page yang valid
 
-        // Ambil data hanya 1 kali, langsung dari halaman valid
+        // Ambil data halaman valid
         $response = ($page == 1)
             ? $initialResponse
-            : $this->companyService->getUsers($token, $queryParams, $page);
+            : $this->companyService->getJob($token, $queryParams);
 
-        $data = $response['data'];
-        $dataJob = $data ?? [];
+        $dataJob = $response['data'] ?? [];
         $currentPage = $page;
         $subcategories = $subcategories['data'];
         $provinces = $provinces['data'];
+        //echo "<pre>"; print_r($dataJob); echo "</pre>";
         return view('user.posting_job', compact('dataJob', 'subcategories', 'provinces', 'currentPage', 'totalPages', 'queryParams'));
     }
 
@@ -265,32 +267,24 @@ class User extends Controller
         try {
             $provinces = $companyService->getProvinces($token);
             $currencies = $companyService->getCurrencies($token);
-            $categories = $companyService->getCategories($token, ['limit'=> 500]);
-            //$subCategories = $companyService->getSubCategories($token);
+            $categories = $companyService->getCategories($token, ['limit' => 500]);
             $jobStatuses = $companyService->getJobStatuses($token);
             $jobTypes = $companyService->getJobTypes($token);
             $jobLevels = $companyService->getJobLevels($token);
             $jobs = $companyService->getJobsById($token, $id);
+            $regencies = $companyService->getRegenciesById($token, $jobs['data']['regency']);
             $categoriesDetail = $companyService->getCategoriesDetail($token, $jobs['data']['subCategory']['category']['_id']);
             $provinceDetail = $companyService->getProvincesDetail($token, $jobs['data']['province']['_id']);
 
-            if (
-                !$provinces['success'] || !$currencies['success'] /*|| !$subCategories['success'] */|| !$jobStatuses['success'] || !$jobTypes['success'] || !$jobLevels['success'] || !$jobs['success'] || !$categoriesDetail['success'] || !$provinceDetail['success']
-            ) {
+            if (!$provinces['success'] || !$currencies['success'] || !$jobStatuses['success'] || !$jobTypes['success'] || !$jobLevels['success'] || !$jobs['success'] || !$regencies['success'] || !$categoriesDetail['success'] || !$provinceDetail['success']) {
                 session()->flash('notifAPI', 'Halaman Form Job');
                 return view('user.api_error');
             }
 
-            $categories = $categories['data'];
-            //$jobSubCategories = collect($subCategories['data'])->firstWhere('_id', $jobs['data']['subCategory']['_id'] ?? null);
-           /* echo '<pre>';
-            print_r($jobs['data']);
-            echo '</pre>';*/
-            return view('user.form_edit_job', compact('categories', 'categoriesDetail', 'provinces', 'provinceDetail', 'currencies',  'jobStatuses', 'jobTypes', 'jobLevels', 'jobs'));
+            //echo '<pre>';print_r($regencies['data']); echo '</pre>';
+            return view('user.form_edit_job', compact('categories', 'categoriesDetail', 'provinces', 'regencies', 'provinceDetail', 'currencies',  'jobStatuses', 'jobTypes', 'jobLevels', 'jobs'));
         } catch (\Exception $e) {
-            /*echo "Terjadi error: " . $e->getMessage() . "<br>";
-            echo "Di file: " . $e->getFile() . " pada baris " . $e->getLine() . "<br>";
-            echo "<pre>" . $e->getTraceAsString() . "</pre>";*/
+            //echo "Terjadi error: " . $e->getMessage() . "<br>"; echo "Di file: " . $e->getFile() . " pada baris " . $e->getLine() . "<br>";echo "<pre>" . $e->getTraceAsString() . "</pre>";
             session()->flash('notifAPI', 'Halaman Form Job');
             return view('user.api_error');
         }
@@ -385,30 +379,14 @@ class User extends Controller
             $jobs = $companyService->getJobsById($token, $id);
             $regencies = $companyService->getRegenciesById($token, $jobs['data']['regency']);
             $applications = $companyService->getApplicationsByJob($token, $id);
-            
 
             if (!$jobs['success'] || !$regencies['success'] || !$applications['success']) {
                 session()->flash('notifAPI', 'Halaman Detail Job');
                 return view('user.api_error');
             }
 
-            // Ambil semua hasil request sekaligus
-           /* $jobs = $responses[0]->json('data');
-            $subCategories = $responses[1]->json('data');
-            $applications = $responses[2]->json('data') ?? [];
-            $experiences = $applications[0]['user']['experiences'] ?? [];
-
-
-            $subCategoriesShow = collect($subCategories)->firstWhere('_id', $jobs['subCategory']);*/
-           /*echo '<pre>';
-            print_r($regencies['data']);
-            echo '</pre>';*/
-
-           return view('user.detail_job', compact('jobs', 'regencies', 'applications'/*, 'experiences', 'subCategoriesShow'*/));
+            return view('user.detail_job', compact('jobs', 'regencies', 'applications'));
         } catch (\Exception $e) {
-            /*echo "Terjadi error: " . $e->getMessage() . "<br>";
-            echo "Di file: " . $e->getFile() . " pada baris " . $e->getLine() . "<br>";
-            echo "<pre>" . $e->getTraceAsString() . "</pre>";*/
             session()->flash('notifAPI', 'Halaman Detail Job');
             return view('user.api_error');
         }
@@ -597,42 +575,50 @@ class User extends Controller
     {
         $token = session('api_token');
         try {
-            // Ambil data pesan dari API
-            $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message', ['limit' => 100,]);
-            if (!$responseMessages->successful()) {
-                Log::channel('company_api_error')->info('Get Message.', ['user_id' => session('user_id'), 'error_api' => $responseMessages->body(),]);
-                session()->flash('notifAPI', 'Halaman Message');
+            $currentUserId = session('user_id');
+
+            // Ambil semua pesan
+            $resMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message', ['limit' => 100]);
+            if (!$resMessages->successful()) {
+                session()->flash('notifAPI', 'Gagal mengambil pesan');
                 return view('user.api_error');
             }
-            $messages = collect($responseMessages->json()['data']['list']); // Ubah menjadi Collection untuk kemudahan manipulasi
+            $messages = collect($resMessages->json()['data']['list']);
 
-            // Ambil data pengguna dari API
-            $responseUsers = Http::withToken($token)->get('https://api.carikerjo.id/users', ['limit' => 100,]);
-            if (!$responseUsers->successful()) {
-                Log::channel('company_api_error')->info('Get Message.', ['user_id' => session('user_id'), 'error_api' => $responseUsers->body(),]);
-                session()->flash('notifAPI', 'Gagal mengambil data pengguna');
+            // Ambil semua user
+            $resUsers = Http::withToken($token)->get('https://api.carikerjo.id/users');
+            if (!$resUsers->successful()) {
+                session()->flash('notifAPI', 'Gagal mengambil user');
                 return view('user.api_error');
             }
-            $users = collect($responseUsers->json()['data']['list']);
+            $users = collect($resUsers->json()['data']['list']);
 
-            // Gabungkan data pesan dengan nama pengirim dan avatar, kemudian kelompokkan berdasarkan 'from'
-            $groupedMessages = $messages->map(function ($message) use ($users) {
-                $sender = $users->firstWhere('_id', $message['from']);
+            // Kumpulkan kontak unik (selain diri sendiri)
+            $contactIds = $messages->flatMap(fn($m) => [$m['from'], $m['user']])
+                ->unique()
+                ->filter(fn($id) => $id !== $currentUserId);
+
+            // Grup pesan berdasarkan ID lawan bicara
+            $grouped = $messages->groupBy(function ($msg) use ($currentUserId) {
+                return $msg['from'] === $currentUserId ? $msg['user'] : $msg['from'];
+            });
+
+            // Ambil data lengkap: nama, isi pesan terakhir, status, timestamp
+            $contacts = $grouped->map(function ($msgs, $contactId) use ($users) {
+                $user = $users->firstWhere('_id', $contactId);
+                $last = $msgs->sortByDesc('createdAt')->first();
                 return [
-                    '_id' => $message['_id'],
-                    'content' => $message['content'],
-                    'status' => $message['status'],
-                    'from' => $message['from'],
-                    'createdAt' => $message['createdAt'],
-                    'sender_name' => $sender['name'] ?? 'Unknown',
-                    'sender_avatar' => $sender['avatar'] ?? '../public/upload/avatar/default.jpg',
+                    'contact_id' => $contactId,
+                    'sender_name'       => $user['name'] ?? 'Unknown',
+                    'from'       => $last['from'],
+                    'sender_avatar'     => $user['avatar'] ?? null,
+                    'content'   => $last['content'],
+                    'status'     => $last['status'],
+                    'createdAt'  => $last['createdAt']
                 ];
-            })
-                ->sortByDesc('createdAt') // Mengurutkan dari yang terbaru ke lama
-                ->groupBy('from');
-
-            // Kirim data terkelompok ke view
-            return view('user.message', compact('groupedMessages'));
+            })->values();
+            //echo "<pre>";print_r($contacts);echo "</pre>";
+            return view('user.message', compact('contacts'));
         } catch (\Exception $e) {
             Log::channel('company_api_error')->info('Get Message', ['user_id' => session('user_id'), 'error_api' =>  $e->getMessage(),]);
             session()->flash('notifAPI', 'Terjadi kesalahan saat memuat data pesan');
@@ -640,51 +626,73 @@ class User extends Controller
         }
     }
 
-    public function detailMessage($id)
+    public function detailMessage(Request $request, $id)
     {
         $token = session('api_token');
+        $page = $request->get('page', 1); // default page 1
+        $limit = 5;
+
         try {
             // Ambil data pesan dari API
             $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message', [
-                'limit' => 100,
+                'limit' => $limit,
+                'page' => $page
             ]);
+
             if (!$responseMessages->successful()) {
-                Log::channel('company_api_error')->info('Detail Message.', ['user_id' => session('user_id'), 'error_api' => $responseMessages->body(),]);
+                Log::channel('company_api_error')->info('Detail Message.', [
+                    'user_id' => session('user_id'),
+                    'error_api' => $responseMessages->body(),
+                ]);
                 session()->flash('notifAPI', 'Halaman Message');
                 return view('user.api_error');
             }
-            $messages = collect($responseMessages->json()['data']['list']); // Ubah menjadi Collection untuk kemudahan manipulasi
 
-            // Ambil data pengguna dari API
+            // Mengambil pesan dan mengurutkan berdasarkan 'createdAt' secara descending (terbaru ke lama)
+            $messages = collect($responseMessages->json()['data']['list'])->sortBy('createdAt');
+
+            $totalPages = $responseMessages->json()['data']['totalPages'];
+
+            // Ambil data pengguna
             $responseUsers = Http::withToken($token)->get('https://api.carikerjo.id/users');
             if (!$responseUsers->successful()) {
-                Log::channel('company_api_error')->info('Detail Message.', ['user_id' => session('user_id'), 'error_api' => $responseUsers->body(),]);
+                Log::channel('company_api_error')->info('Detail Message.', [
+                    'user_id' => session('user_id'),
+                    'error_api' => $responseUsers->body(),
+                ]);
                 session()->flash('notifAPI', 'Gagal mengambil data pengguna');
                 return view('user.api_error');
             }
+
+            // Ambil daftar pengguna dan cari pengguna yang sesuai dengan ID
             $users = collect($responseUsers->json()['data']['list']);
-
-            // Gabungkan data pesan dengan nama pengirim dan avatar, kemudian kelompokkan berdasarkan 'from'
-            $groupedMessages = $messages->map(function ($message) use ($users) {
-                $sender = $users->firstWhere('_id', $message['from']);
-                return [
-                    '_id' => $message['_id'],
-                    'content' => $message['content'],
-                    'status' => $message['status'],
-                    'from' => $message['from'],
-                    'createdAt' => $message['createdAt'],
-                    'sender_name' => $sender['name'] ?? 'Unknown',
-                    'sender_avatar' => $sender['avatar'],
-                ];
-            })
-                ->sortByDesc('createdAt') // Mengurutkan dari yang terbaru ke lama
-                ->groupBy('from');
-
             $rUser = $users->firstWhere('_id', $id);
-            // Kirim data terkelompok ke view
-            return view('user.message_read', compact('groupedMessages', 'rUser'));
+            $currentUserId = session('user_id');
+
+            // Filter pesan sesuai ID pengguna
+            $filteredMessages = $messages->filter(function ($msg) use ($id, $currentUserId) {
+                return (
+                    ($msg['from'] == $currentUserId && $msg['user'] == $id) ||
+                    ($msg['from'] == $id && $msg['user'] == $currentUserId)
+                );
+            });
+
+            // Jika AJAX request (untuk infinite scroll)
+            if ($request->ajax()) {
+                return response()->json([
+                    'messages' => array_values($filteredMessages->all()), // convert ke array biasa
+                    'hasMore' => $page < $totalPages,
+                ]);
+            }
+
+            //echo "<pre>";print_r($users);echo "</pre>";
+            // Untuk view awal
+            return view('user.message_read', compact('filteredMessages', 'rUser', 'totalPages'));
         } catch (\Exception $e) {
-            Log::channel('company_api_error')->info('Get Message', ['user_id' => session('user_id'), 'error_api' =>  $e->getMessage(),]);
+            Log::channel('company_api_error')->info('Get Message', [
+                'user_id' => session('user_id'),
+                'error_api' => $e->getMessage(),
+            ]);
             session()->flash('notifAPI', 'Terjadi kesalahan saat memuat data pesan');
             return view('user.api_error');
         }

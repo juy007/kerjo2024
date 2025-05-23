@@ -34,7 +34,7 @@
                     <div class="row justify-content-center mb-5">
                         <div class="col-lg-8">
                             <div>
-                                <form method="POST" action="{{ route('submit_company_profile_part2') }}" enctype="multipart/form-data">@csrf
+                                <form method="POST" action="{{ route('submit_company_profile_step2') }}" enctype="multipart/form-data">@csrf
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="mb-3">

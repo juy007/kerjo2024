@@ -26,7 +26,7 @@
                     <div class="row justify-content-center mb-5">
                         <div class="col-sm-7">
                             <div class="maintenance-img">
-                                <img src="{{ url('proxy-image/company/src/image_home.png') }}" alt="" class="img-fluid mx-auto d-block">
+                                <img src="{{ url('proxy-image/company/src/image_home.png') }}" class="img-fluid mx-auto d-block">
                             </div><br>
                             <p>Anda belum membuat postingan lowongan kerja sama sekali, yuk<br>
                                 posting lowongan kerja untuk perusahaan anda agar bisa mendapatkan karyawan baru</p>

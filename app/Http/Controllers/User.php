@@ -567,9 +567,6 @@ class User extends Controller
         }
     }
 
-
-
-
     //Message
     function indexMessage()
     {
@@ -611,6 +608,7 @@ class User extends Controller
                     'contact_id' => $contactId,
                     'sender_name'       => $user['name'] ?? 'Unknown',
                     'from'       => $last['from'],
+                    'user'       => $last['user'],
                     'sender_avatar'     => $user['avatar'] ?? null,
                     'content'   => $last['content'],
                     'status'     => $last['status'],
@@ -685,7 +683,7 @@ class User extends Controller
                 ]);
             }
 
-            //echo "<pre>";print_r($users);echo "</pre>";
+            //echo "<pre>";print_r($filteredMessages);echo "</pre>";
             // Untuk view awal
             return view('user.message_read', compact('filteredMessages', 'rUser', 'totalPages'));
         } catch (\Exception $e) {

@@ -37,7 +37,7 @@
                         </div>
                         <ul class="message-list">
                            @forelse($contacts as $contact)
-                            <li  class="{{ $contact['status'] }}">
+                            <li  class="{{ $contact['from'] == session('user_id') ? 'read' : $contact['status'] }}">
                                 <div class="col-mail col-mail-1">
                                     <a href="{{ route('detail_message', $contact['contact_id']) }}" class="title">
                                         <img src="{{ url('proxy-image/avatar/'. str_replace(['../public/upload/avatar/', './public/upload/avatar/'], '', $contact['sender_avatar'] )) }}" class="rounded-circle avatar-sm" alt="{{ $contact['sender_name'] }}">

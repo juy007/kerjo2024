@@ -7,7 +7,7 @@
     <div class="container-fluid">
 
 
- <style>
+        <style>
             .w-md-50 {
                 width: 100%;
                 /* Default untuk mobile (di bawah 768px) */
@@ -24,49 +24,65 @@
             }
 
 
-            .left {
+            /* Bubble chat umum */
+            .left,
+            .right {
                 display: flex;
-                justify-content: flex-start;
                 margin-bottom: 10px;
             }
 
-            .left>div {
-                background-color: #f1f1f1;
-                color: #000;
-                padding: 10px 15px;
-                border-radius: 16px 16px 16px 0;
-                max-width: 75%;
-                word-wrap: break-word;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                font-size: 14px;
-                animation: fadeIn 0.2s ease-in;
+            .left {
+                justify-content: flex-start;
             }
 
             .right {
-                display: flex;
                 justify-content: flex-end;
-                margin-bottom: 10px;
             }
 
+            /* Isi bubble */
+            .left>div,
             .right>div {
-                background-color: #007bff;
-                color: #fff;
                 padding: 10px 15px;
-                border-radius: 16px 16px 0 16px;
                 max-width: 75%;
                 word-wrap: break-word;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                 font-size: 14px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                 animation: fadeIn 0.2s ease-in;
             }
 
-            .time {
-                font-size: 9px;
-                color: #999;
-                margin-bottom: 5px;
+            /* Style bubble kiri (dari lawan bicara) */
+            .left>div {
+                background-color: #f1f1f1;
+                color: #000;
+                border-radius: 16px 16px 16px 0;
             }
 
-            /* Efek transisi */
+            /* Style bubble kanan (dari user) */
+            .right>div {
+                background-color: #007bff;
+                color: #fff;
+                border-radius: 16px 16px 0 16px;
+            }
+
+            /* Tanggal/waktu */
+            .time {
+                font-size: 9px;
+                margin-bottom: 5px;
+                display: block;
+            }
+
+            /* Warna waktu khusus di masing-masing sisi */
+            .left .time {
+                color: hsl(0, 0%, 45%);
+                /* abu gelap */
+            }
+
+            .right .time {
+                color: hsl(209, 44%, 82%);
+                /* biru terang */
+            }
+
+            /* Efek transisi muncul */
             @keyframes fadeIn {
                 from {
                     opacity: 0;
@@ -79,6 +95,7 @@
                 }
             }
         </style>
+
         <div class="mx-auto w-md-50 mt-0 mt-md-4 px-0 px-md-3">
             <div class="card" id="zonaChat">
                 <div class="p-3 px-lg-4 border-bottom">
@@ -148,14 +165,14 @@
                     </div>
                 </div>
 
-                <div id="chat-box" class="p-3" style="height: 350px; overflow-y: auto;">
+                <div id="chat-box" class="p-3" style="height: 320px; overflow-y: auto;">
                     <ul id="messages" class="list-unstyled mb-0">
-                         <li id="loader" class="chat-day-title  text-center">
+                        <li id="loader" class="chat-day-title  text-center">
                             <span class="title">Memuat...</span>
                         </li>
 
                         @foreach($filteredMessages as $msg)
-                        <li class="{{ $msg['from'] == session('user_id') ? 'left' : 'right' }}">
+                        <li class="{{ $msg['from'] == session('user_id') ? 'right' : 'left' }}">
                             <div class="">
                                 <div class="d-flex">
                                     <div class="flex-1">
@@ -173,12 +190,12 @@
                         </li>
 
                         @endforeach
-                       
+
                     </ul>
                 </div>
 
                 <div class="p-3 border-top">
-                    <div class="row" id="messageForm">
+                    <form class="row" id="messageForm">
                         <div class="col-auto">
                             <button
                                 class="btn btn-warning waves-effect waves-light"
@@ -189,61 +206,67 @@
                             <emoji-picker id="picker" class="emoji-msg-read"></emoji-picker>
                         </div>
                         <div class="col">
+                            <input type="hidden" id="userId" name="toId" value="{{ $rUser['_id'] }}">
                             <div class="position-relative" id="emoji-container">
-                                <textarea
-                                    class="form-control border bg-light-subtle"
-                                    id="chatContent"
-                                    placeholder="Enter Message..."></textarea>
+                                <textarea class="form-control border bg-light-subtle" id="chatContent" placeholder="Enter Message..."></textarea>
                             </div>
                         </div>
                         <div class="col-auto">
-                            <button
-                                type="submit"
-                                class="btn btn-primary chat-send w-md waves-effect waves-light">
-                                <span class="d-none d-sm-inline-block me-2">Send</span>
-                                <i class="mdi mdi-send float-end"></i>
+                            <button type="submit" id="sendButton" class="btn btn-primary chat-send w-md waves-effect waves-light">
+                                <span class="d-none d-sm-inline-block me-2">Send</span><i class="mdi mdi-send float-end"></i>
                             </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
 
+        <div class="d-lg-flex ">
+        </div>
+        <!-- End d-lg-flex  -->
 
+    </div> <!-- container-fluid -->
+</div>
+<!-- End Page-content -->
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const currentUserId = "{{ session('user_id') }}";
-                let page = 1;
-                let hasMore = true;
-                const chatBox = document.getElementById('chat-box');
-                const messagesContainer = document.getElementById('messages');
-                const loader = document.getElementById('loader');
+@include('user/footer')
+<script src="{{ asset('assets/js/emojiPicker.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentUserId = "{{ session('user_id') }}";
+        let page = 1;
+        let hasMore = true;
+        const chatBox = document.getElementById('chat-box');
+        const messagesContainer = document.getElementById('messages');
+        const loader = document.getElementById('loader');
+        const messageForm = document.getElementById('messageForm');
+        const chatContent = document.getElementById('chatContent');
+        const toId = document.getElementById('userId').value;
 
-                // Simpan tinggi scroll sebelum menambah pesan baru
-                function loadMoreMessages() {
-                    loader.style.display = 'block';
-                    const previousScrollHeight = chatBox.scrollHeight;
+        // Simpan tinggi scroll sebelum menambah pesan baru
+        function loadMoreMessages() {
+            loader.style.display = 'block';
+            const previousScrollHeight = chatBox.scrollHeight;
 
-                    page++;
+            page++;
 
-                    fetch(`{{ route('detail_message', $rUser['_id']) }}?page=${page}`, {
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                            loader.style.display = 'none';
-                            if (!data.messages || data.messages.length === 0) {
-                                hasMore = false;
-                                return;
-                            }
+            fetch(`{{ route('detail_message', $rUser['_id']) }}?page=${page}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    loader.style.display = 'none';
+                    if (!data.messages || data.messages.length === 0) {
+                        hasMore = false;
+                        return;
+                    }
 
-                            data.messages.reverse().forEach(msg => {
-                                const li = document.createElement('li');
-                                li.className = (msg.from === currentUserId ? 'left' : 'right');
-                                li.innerHTML = `
+                    data.messages.reverse().forEach(msg => {
+                        const li = document.createElement('li');
+                        li.className = (msg.from === currentUserId ? 'right' : 'left');
+                        li.innerHTML = `
                         <div class="">
                             <div class="d-flex">
                                 <div class="flex-1">
@@ -259,39 +282,94 @@
                             </div>
                         </div>
                     `;
-                                messagesContainer.insertBefore(li, messagesContainer.firstChild);
-                            });
+                        messagesContainer.insertBefore(li, messagesContainer.firstChild);
+                    });
 
-                            // Kembalikan posisi scroll seperti semula
-                            chatBox.scrollTop = chatBox.scrollHeight - previousScrollHeight;
-                        })
-                        .catch(err => {
-                            console.error('Gagal memuat pesan:', err);
-                            loader.style.display = 'none';
-                        });
-                }
-
-                // Scroll event listener
-                chatBox.addEventListener('scroll', function() {
-                    if (chatBox.scrollTop <= 50 && hasMore) {
-                        loadMoreMessages();
-                    }
+                    // Kembalikan posisi scroll seperti semula
+                    chatBox.scrollTop = chatBox.scrollHeight - previousScrollHeight;
+                })
+                .catch(err => {
+                    console.error('Gagal memuat pesan:', err);
+                    loader.style.display = 'none';
                 });
+        }
 
-                // Scroll ke bawah saat awal
-                chatBox.scrollTop = chatBox.scrollHeight;
-            });
-        </script>
-        <div class="d-lg-flex ">
-        </div>
-        <!-- End d-lg-flex  -->
+        // Scroll event listener
+        chatBox.addEventListener('scroll', function() {
+            if (chatBox.scrollTop <= 50 && hasMore) {
+                loadMoreMessages();
+            }
+        });
 
-    </div> <!-- container-fluid -->
-</div>
-<!-- End Page-content -->
+        // Scroll ke bawah saat awal
+        chatBox.scrollTop = chatBox.scrollHeight;
 
-@include('user/footer')
-<script src="{{ asset('assets/js/emojiPicker.js') }}"></script>
+        messageForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const toId = document.getElementById('userId').value;
+            const message = chatContent.value.trim();
+            const sendButton = messageForm.querySelector('button[type="submit"]');
+            const sendButtonOriginalHTML = sendButton ? sendButton.innerHTML : '';
+
+            if (message === '') return;
+
+            // Ubah tombol menjadi 'Sending...'
+            sendButton.disabled = true;
+            sendButton.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Sending...`;
+
+            fetch('/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({
+                        toId: toId,
+                        content: message
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const li = document.createElement('li');
+                        li.className = 'right';
+                        li.innerHTML = `
+                <div class="">
+                    <div class="d-flex">
+                        <div class="flex-1">
+                            <div class="ctext-wrap">
+                                <div class="ctext-wrap-content">
+                                    <div class="">
+                                        <span class="time">${new Date().toLocaleDateString('id-ID')}, ${new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span>
+                                    </div>
+                                    <p class="mb-0">${message}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+                        messagesContainer.appendChild(li);
+                        chatContent.value = '';
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    } else {
+                        alert('Gagal mengirim pesan');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error saat mengirim pesan:', err);
+                    alert('Terjadi kesalahan saat mengirim pesan');
+                })
+                .finally(() => {
+                    // Kembalikan tombol ke kondisi awal
+                    sendButton.disabled = false;
+                    sendButton.innerHTML = sendButtonOriginalHTML;
+                });
+        });
+    });
+</script>
 </body>
 
 </html>

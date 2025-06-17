@@ -568,70 +568,67 @@ class User extends Controller
     }
 
     //Message
-    function indexMessage()
+    /*function indexMessage()
     {
         $token = session('api_token');
         try {
             $currentUserId = session('user_id');
 
-            // Ambil semua pesan
+            // Ambil pesan
             $resMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message', ['limit' => 100]);
             if (!$resMessages->successful()) {
                 session()->flash('notifAPI', 'Gagal mengambil pesan');
                 return view('user.api_error');
             }
-            $messages = collect($resMessages->json()['data']['list']);
+            $messages = collect($resMessages->json('data.list'));
 
-            // Ambil semua user
-            $resUsers = Http::withToken($token)->get('https://api.carikerjo.id/users');
+            // Ambil user dan mapping berdasarkan _id untuk akses cepat
+            $resUsers = Http::withToken($token)->get('https://api.carikerjo.id/users', ['limit' => 500]);
             if (!$resUsers->successful()) {
                 session()->flash('notifAPI', 'Gagal mengambil user');
                 return view('user.api_error');
             }
-            $users = collect($resUsers->json()['data']['list']);
+            $users = collect($resUsers->json('data.list'))->keyBy('_id');
 
-            // Kumpulkan kontak unik (selain diri sendiri)
-            $contactIds = $messages->flatMap(fn($m) => [$m['from'], $m['user']])
-                ->unique()
-                ->filter(fn($id) => $id !== $currentUserId);
-
-            // Grup pesan berdasarkan ID lawan bicara
+            // Grup pesan berdasarkan lawan bicara
             $grouped = $messages->groupBy(function ($msg) use ($currentUserId) {
                 return $msg['from'] === $currentUserId ? $msg['user'] : $msg['from'];
             });
 
-            // Ambil data lengkap: nama, isi pesan terakhir, status, timestamp
+            // Susun data kontak
             $contacts = $grouped->map(function ($msgs, $contactId) use ($users) {
-                $user = $users->firstWhere('_id', $contactId);
                 $last = $msgs->sortByDesc('createdAt')->first();
+                $user = $users[$contactId] ?? null;
+
                 return [
-                    'contact_id' => $contactId,
-                    'sender_name'       => $user['name'] ?? 'Unknown',
-                    'from'       => $last['from'],
-                    'user'       => $last['user'],
-                    'sender_avatar'     => $user['avatar'] ?? null,
-                    'content'   => $last['content'],
-                    'status'     => $last['status'],
-                    'createdAt'  => $last['createdAt']
+                    'contact_id'    => $contactId,
+                    'sender_name'   => $user['name'] ?? 'Unknown',
+                    'from'          => $last['from'],
+                    'user'          => $last['user'],
+                    'sender_avatar' => $user['avatar'] ?? null,
+                    'content'       => $last['content'],
+                    'status'        => $last['status'],
+                    'createdAt'     => $last['createdAt'],
                 ];
             })->values();
-            //echo "<pre>";print_r($contacts);echo "</pre>";
+            //echo "<pre>"; print_r($contacts); echo "</pre>";
             return view('user.message', compact('contacts'));
         } catch (\Exception $e) {
             Log::channel('company_api_error')->info('Get Message', ['user_id' => session('user_id'), 'error_api' =>  $e->getMessage(),]);
             session()->flash('notifAPI', 'Terjadi kesalahan saat memuat data pesan');
             return view('user.api_error');
         }
-    }
+    }*/
 
-    public function detailMessage(Request $request, $id)
+    /*public function detailMessage(Request $request, $id)
     {
         $token = session('api_token');
-        $page = $request->get('page', 1); // default page 1
-        $limit = 5;
+        $currentUserId = session('user_id');
+        $page = $request->get('page', 1);
+        $limit = 10;
 
         try {
-            // Ambil data pesan dari API
+            // Ambil semua pesan user
             $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message', [
                 'limit' => $limit,
                 'page' => $page
@@ -639,53 +636,169 @@ class User extends Controller
 
             if (!$responseMessages->successful()) {
                 Log::channel('company_api_error')->info('Detail Message.', [
-                    'user_id' => session('user_id'),
+                    'user_id' => $currentUserId,
                     'error_api' => $responseMessages->body(),
                 ]);
                 session()->flash('notifAPI', 'Halaman Message');
                 return view('user.api_error');
             }
 
-            // Mengambil pesan dan mengurutkan berdasarkan 'createdAt' secara descending (terbaru ke lama)
-            $messages = collect($responseMessages->json()['data']['list'])->sortBy('createdAt');
+            $messageData = $responseMessages->json()['data'];
+            $totalPages = $messageData['totalPages'];
 
-            $totalPages = $responseMessages->json()['data']['totalPages'];
+            $messages = collect($messageData['list'])->sortBy('createdAt')->values();
 
             // Ambil data pengguna
             $responseUsers = Http::withToken($token)->get('https://api.carikerjo.id/users');
+
             if (!$responseUsers->successful()) {
                 Log::channel('company_api_error')->info('Detail Message.', [
-                    'user_id' => session('user_id'),
+                    'user_id' => $currentUserId,
                     'error_api' => $responseUsers->body(),
                 ]);
                 session()->flash('notifAPI', 'Gagal mengambil data pengguna');
                 return view('user.api_error');
             }
 
-            // Ambil daftar pengguna dan cari pengguna yang sesuai dengan ID
             $users = collect($responseUsers->json()['data']['list']);
             $rUser = $users->firstWhere('_id', $id);
-            $currentUserId = session('user_id');
 
-            // Filter pesan sesuai ID pengguna
+            // Filter pesan yang melibatkan kedua user, baik kirim maupun terima,
+            // sehingga chat tetap muncul meski hanya pesan dari satu pihak
             $filteredMessages = $messages->filter(function ($msg) use ($id, $currentUserId) {
-                return (
-                    ($msg['from'] == $currentUserId && $msg['user'] == $id) ||
-                    ($msg['from'] == $id && $msg['user'] == $currentUserId)
-                );
-            });
+                $involved = [$msg['from'], $msg['user']];
+                return in_array($currentUserId, $involved) && in_array($id, $involved);
+            })->values();
 
-            // Jika AJAX request (untuk infinite scroll)
             if ($request->ajax()) {
                 return response()->json([
-                    'messages' => array_values($filteredMessages->all()), // convert ke array biasa
+                    'messages' => $filteredMessages,
                     'hasMore' => $page < $totalPages,
                 ]);
             }
 
             //echo "<pre>";print_r($filteredMessages);echo "</pre>";
-            // Untuk view awal
-            return view('user.message_read', compact('filteredMessages', 'rUser', 'totalPages'));
+            return view('user.message_read', [
+                'filteredMessages' => $filteredMessages,
+                'rUser' => $rUser,
+                'totalPages' => $totalPages
+            ]);
+        } catch (\Exception $e) {
+            Log::channel('company_api_error')->info('Get Message', [
+                'user_id' => session('user_id'),
+                'error_api' => $e->getMessage(),
+            ]);
+            session()->flash('notifAPI', 'Terjadi kesalahan saat memuat data pesan');
+            return view('user.api_error');
+        }
+    }*/
+
+     function indexMessage()
+    {
+        $token = session('api_token');
+        try {
+            $currentUserId = session('user_id');
+
+            // Ambil pesan
+            $resMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message-list', ['limit' => 100]);
+            if (!$resMessages->successful()) {
+                session()->flash('notifAPI', 'Gagal mengambil pesan');
+                return view('user.api_error');
+            }
+            $contacts = collect($resMessages->json('data.list'))
+            ->sortByDesc(function ($item) {
+                return $item['lastMessage']['createdAt'];
+            })
+            ->values();
+
+          
+            //echo "<pre>"; print_r($messages); echo "</pre>";
+            return view('user.message', compact('contacts'));
+        } catch (\Exception $e) {
+            Log::channel('company_api_error')->info('Get Message', ['user_id' => session('user_id'), 'error_api' =>  $e->getMessage(),]);
+            session()->flash('notifAPI', 'Terjadi kesalahan saat memuat data pesan');
+            return view('user.api_error');
+        }
+    }   
+    public function detailMessage(Request $request, $id)
+    {
+        $token = session('api_token');
+        $currentUserId = session('user_id');
+        $page = $request->get('page', 1);
+        $limit = 50;
+
+        try {
+            // Ambil semua pesan user
+            $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message', [
+                'limit' => $limit,
+                'page' => $page
+            ]);
+
+            if (!$responseMessages->successful()) {
+                Log::channel('company_api_error')->info('Detail Message.', [
+                    'user_id' => $currentUserId,
+                    'error_api' => $responseMessages->body(),
+                ]);
+                session()->flash('notifAPI', 'Halaman Message');
+                return view('user.api_error');
+            }
+
+            $messageData = $responseMessages->json()['data'];
+            $totalPages = $messageData['totalPages'];
+
+            $messages = collect($messageData['list'])->sortBy('createdAt')->values();
+
+            // Ambil data pengguna
+            $responseUsers = Http::withToken($token)->get('https://api.carikerjo.id/users', ['limit' => 500]);
+
+            if (!$responseUsers->successful()) {
+                Log::channel('company_api_error')->info('Detail Message.', [
+                    'user_id' => $currentUserId,
+                    'error_api' => $responseUsers->body(),
+                ]);
+                session()->flash('notifAPI', 'Gagal mengambil data pengguna');
+                return view('user.api_error');
+            }
+
+            $users = collect($responseUsers->json()['data']['list']);
+            $rUser = $users->firstWhere('_id', $id);
+
+            // Filter pesan yang melibatkan kedua user
+            $filteredMessages = $messages->filter(function ($msg) use ($id, $currentUserId) {
+                $involved = [$msg['from'], $msg['user']];
+                return in_array($currentUserId, $involved) && in_array($id, $involved);
+            })->values();
+
+            // 1. Ubah status pesan yang belum dibaca jadi read
+            $unreadMessages = $filteredMessages->filter(function ($msg) use ($currentUserId, $id) {
+                return $msg['from'] == $id && $msg['user'] == $currentUserId && $msg['status'] === 'unread';
+            });
+
+            foreach ($unreadMessages as $msg) {
+                $readResponse = Http::withToken($token)
+                    ->get("https://api.carikerjo.id/messages/my-message-read/{$msg['_id']}");
+
+                if (!$readResponse->successful()) {
+                    Log::channel('company_api_error')->warning('Gagal mengubah status pesan menjadi read', [
+                        'message_id' => $msg['_id'],
+                        'response' => $readResponse->body(),
+                    ]);
+                }
+            }
+
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'messages' => $filteredMessages,
+                    'hasMore' => $page < $totalPages,
+                ]);
+            }
+
+            return view('user.message_read', [
+                'filteredMessages' => $filteredMessages,
+                'rUser' => $rUser,
+                'totalPages' => $totalPages
+            ]);
         } catch (\Exception $e) {
             Log::channel('company_api_error')->info('Get Message', [
                 'user_id' => session('user_id'),
@@ -695,6 +808,7 @@ class User extends Controller
             return view('user.api_error');
         }
     }
+
 
     public function detailMessageAjax($id)
     {

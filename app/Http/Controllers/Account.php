@@ -32,7 +32,7 @@ class Account extends Controller
         return view('account.form_login');
     }
 
-    public function loginValidation(Request $request)
+    /*public function loginValidation(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
@@ -49,7 +49,8 @@ class Account extends Controller
                 'email' => $request->email,
                 'password' => $request->password,
             ]);
-
+          
+            
             if ($response->successful()) {
                 $data = $response->json();
 
@@ -59,13 +60,16 @@ class Account extends Controller
                 $profileResponse = Http::withToken($token)->get('https://api.carikerjo.id/auth/my-company-profile');
                 $profileData = $profileResponse->json();
 
-                $statusCode = $profileData['statusCode'] ?? null;
-                if ($statusCode === 403) {
-                    Log::channel('company_login')->warning('Login gagal - role ADMIN tidak diizinkan', [
+                if (!isset($data['statusCode']) || $data['statusCode'] !== 200) {
+                    // Tambahkan log untuk kegagalan API login
+                    Log::channel('company_login')->warning('Login gagal - statusCode tidak 200', [
                         'email' => $request->email,
+                        'statusCode' => $data['statusCode'] ?? null,
+                        'message' => $data['message'] ?? null,
                         'ip' => $request->ip(),
                     ]);
-                    return redirect()->route('login')->with('notifLogin', 'Please check your email and password and try again.');
+
+                    return redirect()->route('login')->with('notifLogin', 'Email atau password salah.');
                 }
 
                 $userId = $profileData['data']['_id'] ?? null;
@@ -110,17 +114,95 @@ class Account extends Controller
             ]);
 
             return redirect()->route('login')->with('notifLogin', 'Please check your email and password and try again.');
-
+            
         } catch (\Exception $e) {
             Log::channel('company_login')->error('Login error - exception terdeteksi', [
                 'email' => $request->email,
                 'ip' => $request->ip(),
                 'error_message' => $e->getMessage(),
             ]);
-
-            return redirect()->route('db_error');
+            return redirect()->route('login')->with('notifLogin', 'Please check your email and password and try again.');
+            //return redirect()->route('db_error');
         }
     }
+    */
+    public function loginValidation(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        try {
+            Log::channel('company_login')->info('Memulai proses login', [
+                'email' => $request->email,
+                'ip' => $request->ip(),
+            ]);
+
+            $response = Http::retry(3, 100)->post('https://api.carikerjo.id/auth/login', [
+                'email' => $request->email,
+                'password' => $request->password,
+            ]);
+
+            $data = $response->json();
+            if (($data['statusCode'] ?? null) !== 201 || empty($data['data'])) {
+                Log::channel('company_login')->warning('Login gagal', [
+                    'email' => $request->email,
+                    'statusCode' => $data['statusCode'] ?? null,
+                    'message' => $data['message'] ?? null,
+                    'ip' => $request->ip(),
+                ]);
+                return redirect()->route('login')->with('notifLogin', 'Email atau password salah.');
+            }
+
+            $token = $data['data'];
+            Session::put('api_token', $token);
+
+            $profileResponse = Http::withToken($token)->get('https://api.carikerjo.id/auth/my-company-profile');
+            if (!$profileResponse->successful()) {
+                return redirect()->route('login')->with('notifLogin', 'Gagal mengambil profil perusahaan.');
+            }
+
+            $profileData = $profileResponse->json();
+            if (($profileData['statusCode'] ?? null) === 403) {
+                return redirect()->route('login')->with('notifLogin', 'Akses ditolak.');
+            }
+
+            $company = $profileData['data']['company'] ?? [];
+            Session::put('user_id', $profileData['data']['_id'] ?? null);
+            Session::put('company_id', $company['_id'] ?? null);
+            Session::put('company_name', $company['name'] ?? null);
+            Session::put('company_brand', $company['brand'] ?? null);
+            Session::put('company_logo', $company['logo'] ?? null);
+            Session::put('company_email', $company['email'] ?? null);
+            Session::put('company_phone', $company['phoneNumber'] ?? null);
+            Session::put('company_overview', $company['overview'] ?? null);
+            Session::put('company_industries', $company['industries'] ?? []);
+            Session::put('company_galleries', $company['galleries'] ?? []);
+            Session::put('company_active', $company['active'] ?? null);
+
+            Log::channel('company_login')->info('Login berhasil', [
+                'email' => $request->email,
+                'company_id' => $company['_id'] ?? null,
+                'ip' => $request->ip(),
+            ]);
+
+            if ($request->remember) {
+                return redirect()->route('dashboard_user')
+                    ->withCookie(cookie('api_token', $token, 60 * 24 * 30));
+            }
+
+            return redirect()->route('dashboard_user');
+        } catch (\Exception $e) {
+            Log::channel('company_login')->error('Login error', [
+                'email' => $request->email,
+                'ip' => $request->ip(),
+                'error' => $e->getMessage(),
+            ]);
+            return redirect()->route('login')->with('notifLogin', 'Terjadi kesalahan saat login. Silakan coba lagi.');
+        }
+    }
+
 
 
     public function logout(Request $request)
@@ -128,7 +210,7 @@ class Account extends Controller
         $userId = Session::get('user_id');
         $companyId = Session::get('company_id');
         $companyName = Session::get('company_name');
-    
+
         // 🔐 Logging proses logout dimulai
         Log::channel('company_login')->info('Memulai proses logout', [
             'user_id' => $userId,
@@ -136,11 +218,11 @@ class Account extends Controller
             'company_name' => $companyName,
             'ip' => $request->ip(),
         ]);
-    
+
         try {
             // Hapus semua session dan cookie
             Session::flush();
-    
+
             // Logging sukses logout
             Log::channel('company_login')->info('Logout berhasil', [
                 'user_id' => $userId,
@@ -148,7 +230,7 @@ class Account extends Controller
                 'company_name' => $companyName,
                 'ip' => $request->ip(),
             ]);
-    
+
             return redirect()->route('login')->with('notifLogout', 'Anda berhasil logout');
         } catch (\Exception $e) {
             // Logging error saat logout
@@ -159,7 +241,7 @@ class Account extends Controller
                 'ip' => $request->ip(),
                 'error_message' => $e->getMessage(),
             ]);
-    
+
             return redirect()->route('dashboard_user')->with('notifLogout', 'Logout gagal, silakan coba lagi');
         }
     }
@@ -172,7 +254,7 @@ class Account extends Controller
 
     public function signup_save(Request $request)
     {
-        $validatedData = $request->validate([            
+        $validatedData = $request->validate([
             'email' => 'required|string',
             'password' => 'required|string|min:8|confirmed',
             'name' => 'required|string|max:255',
@@ -185,14 +267,14 @@ class Account extends Controller
             'name' => $validatedData['name'],
             'phoneNumber' => $validatedData['phone'],
         ];
-            
+
         $response = Http::post('https://api.carikerjo.id/auth/register-company', $dataToSend);
-        
-            
+
+
         if ($response->failed()) {
             return back()->withInput()->with('notifRegister', "The registration has failed, please try again later.");
         }
-        
+
         $responseData = $response->json();
 
         if ($responseData['statusCode'] == '500') {
@@ -218,12 +300,12 @@ class Account extends Controller
         Session::put('company_industries', $profileData['data']['company']['industries']);
         Session::put('company_galleries', $profileData['data']['company']['galleries']);
         Session::put('company_active', $profileData['data']['company']['active']);
-            //Session::put('company_established', $profileData['data']['company']['established']);
-            //Session::put('company_location', $profileData['data']['company']['location']);
+        //Session::put('company_established', $profileData['data']['company']['established']);
+        //Session::put('company_location', $profileData['data']['company']['location']);
 
-            // Generate OTP dan kirim ke API
-        
-            /*$otp = rand(100000, 999999);
+        // Generate OTP dan kirim ke API
+
+        /*$otp = rand(100000, 999999);
             Http::post('https://api.carikerjo.id/auth/verifyOtp', [
                 'userId' => $responseData['data']['_id'],
                 'otp' => $otp,
@@ -231,9 +313,8 @@ class Account extends Controller
             Mail::to($request->email)->send(new OtpMail($otp));
 
             return redirect()->route('otp');*/
-        
-            return redirect()->route('company_profile_step1');
-        
+
+        return redirect()->route('company_profile_step1');
     }
 
     public function otp()
@@ -439,7 +520,7 @@ class Account extends Controller
         }
     }
 
- 
+
 
     //=================================ForgotPassword
     public function showLinkRequestForm()
@@ -457,7 +538,7 @@ class Account extends Controller
 
             if ($response->successful()) {
                 $link = $response->json('data');
-                
+
                 //$parsed = parse_url($link);
                 //parse_str($parsed['query'], $params);
 
@@ -467,7 +548,7 @@ class Account extends Controller
 
                 //$url = config('kerjo.url')."/" . $full;
                 //$url = "http://127.0.0.1:8000/" . $full;
-                
+
                 //echo "<pre>";print_r($linkToken);echo "</pre>";
                 Mail::to($request->email)->send(new ResetPasswordMail($link));
 
@@ -485,21 +566,21 @@ class Account extends Controller
     {
         $token = $request->query('token');
         $id = $request->query('id');
-        return view('account.form_new_password',compact('token','id'));
+        return view('account.form_new_password', compact('token', 'id'));
     }
 
     public function reset(Request $request)
     {
         $request->validate([
-            
+
             'userId' => 'required',
             'token' => 'required',
             'password' => 'required|string|confirmed|min:8',
         ]);
-        
+
         try {
             $response = Http::post('https://api.carikerjo.id/auth/resetPassword', [
-                'userId' => $request->userId,                
+                'userId' => $request->userId,
                 'token' => $request->token,
                 'password' => $request->password,
             ]);
@@ -520,54 +601,53 @@ class Account extends Controller
     }
     public function input()
     {
-        $data = [ 
-            [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kota Lhokseumawe" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kota Langsa" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kota Subulussalam" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Simeulue" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Singkil" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Selatan" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Tenggara" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Timur" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Tengah" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Barat" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Besar" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Pidie" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Bireuen" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Utara" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Barat Daya" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Gayo Lues" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Tamiang" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Nagan Raya" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Jaya" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Bener Meriah" ],
-    [ "province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Pidie Jaya" ],
-    [ "province_id" => "67d4e39db1f9532021a830a4", "name" => "Kota Denpasar" ],
-    [ "province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Jembrana" ],
-    [ "province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Tabanan" ],
-    [ "province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Badung" ],
-    [ "province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Gianyar" ],
-    [ "province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Klungkung" ],
-    [ "province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Bangli" ],
-    [ "province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Karangasem" ],
-    [ "province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Buleleng" ]
+        $data = [
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kota Lhokseumawe"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kota Langsa"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kota Subulussalam"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Simeulue"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Singkil"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Selatan"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Tenggara"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Timur"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Tengah"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Barat"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Besar"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Pidie"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Bireuen"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Utara"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Barat Daya"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Gayo Lues"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Tamiang"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Nagan Raya"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Aceh Jaya"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Bener Meriah"],
+            ["province_id" => "67d4e407b1f9532021a830c2", "name" => "Kabupaten Pidie Jaya"],
+            ["province_id" => "67d4e39db1f9532021a830a4", "name" => "Kota Denpasar"],
+            ["province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Jembrana"],
+            ["province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Tabanan"],
+            ["province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Badung"],
+            ["province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Gianyar"],
+            ["province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Klungkung"],
+            ["province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Bangli"],
+            ["province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Karangasem"],
+            ["province_id" => "67d4e39db1f9532021a830a4", "name" => "Kabupaten Buleleng"]
         ];
-        
+
         // Ambil token dari session (atau langsung isi manual untuk testing)
         $token = session('api_token_admin'); // Contoh: 'Bearer xyz123'
-        
+
         foreach ($data as $item) {
             $response = Http::withToken($token)->retry(3, 100)->post('https://api.carikerjo.id/regencies', [
                 'name' => $item['name'],
                 'provinceId' => $item['province_id'],
             ]);
-        
+
             if (!$response->successful()) {
                 echo "Gagal input: " . $item['name'] . "<br>";
             } else {
                 echo "Berhasil input: " . $item['name'] . "<br>";
             }
         }
-        
     }
 }

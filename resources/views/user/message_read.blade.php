@@ -1,101 +1,11 @@
 @include('user/header_start')
 <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
 <link href="{{ asset('assets/css/emojiPicker.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('assets/css/message2.css') }}" rel="stylesheet" type="text/css" />
 @include('user/header_end')
 
 <div class="page-content" style="background-color:#F4F7FE !important;">
     <div class="container-fluid">
-
-
-        <style>
-            .w-md-50 {
-                width: 100%;
-                /* Default untuk mobile (di bawah 768px) */
-            }
-
-            @media (min-width: 768px) {
-                .w-md-50 {
-                    width: 75%;
-                    margin-top: 1rem;
-                    /* opsional, jika ingin seperti mt-4 */
-                    padding-left: 1rem;
-                    padding-right: 1rem;
-                }
-            }
-
-
-            /* Bubble chat umum */
-            .left,
-            .right {
-                display: flex;
-                margin-bottom: 10px;
-            }
-
-            .left {
-                justify-content: flex-start;
-            }
-
-            .right {
-                justify-content: flex-end;
-            }
-
-            /* Isi bubble */
-            .left>div,
-            .right>div {
-                padding: 10px 15px;
-                max-width: 75%;
-                word-wrap: break-word;
-                font-size: 14px;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                animation: fadeIn 0.2s ease-in;
-            }
-
-            /* Style bubble kiri (dari lawan bicara) */
-            .left>div {
-                background-color: #f1f1f1;
-                color: #000;
-                border-radius: 16px 16px 16px 0;
-            }
-
-            /* Style bubble kanan (dari user) */
-            .right>div {
-                background-color: #007bff;
-                color: #fff;
-                border-radius: 16px 16px 0 16px;
-            }
-
-            /* Tanggal/waktu */
-            .time {
-                font-size: 9px;
-                margin-bottom: 5px;
-                display: block;
-            }
-
-            /* Warna waktu khusus di masing-masing sisi */
-            .left .time {
-                color: hsl(0, 0%, 45%);
-                /* abu gelap */
-            }
-
-            .right .time {
-                color: hsl(209, 44%, 82%);
-                /* biru terang */
-            }
-
-            /* Efek transisi muncul */
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(5px);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-        </style>
-
         <div class="mx-auto w-md-50 mt-0 mt-md-4 px-0 px-md-3">
             <div class="card" id="zonaChat">
                 <div class="p-3 px-lg-4 border-bottom">
@@ -117,6 +27,7 @@
                             </div>
                         </div>
                         <div class="col-xl-8 col-5">
+                            <!--
                             <ul class="list-inline user-chat-nav text-end mb-0">
                                 <li class="list-inline-item">
                                     <div class="dropdown">
@@ -161,13 +72,14 @@
                                     </div>
                                 </li>
                             </ul>
+                            -->
                         </div>
                     </div>
                 </div>
 
                 <div id="chat-box" class="p-3" style="height: 320px; overflow-y: auto;">
                     <ul id="messages" class="list-unstyled mb-0">
-                        <li id="loader" class="chat-day-title  text-center">
+                        <li id="loader" class="chat-day-title text-center" style="display: none;">
                             <span class="title">Memuat...</span>
                         </li>
 
@@ -176,10 +88,19 @@
                             <div class="">
                                 <div class="d-flex">
                                     <div class="flex-1">
-                                        <div class="ctext-wrap">
+                                        <div class="ctext-wrap position-relative">
                                             <div class="ctext-wrap-content">
-                                                <div class="conversation-name">
+                                                <div class="conversation-name d-flex justify-content-between align-items-center">
                                                     <span class="time">{{ \Carbon\Carbon::parse($msg['createdAt'])->format('d M Y, H:i') }}</span>
+                                                    @if ($msg['from'] == session('user_id'))
+                                                    <span class="read-status ms-2">
+                                                        @if (!empty($msg['is_read']))
+                                                        <i class="fas fa-check-double text-primary" title="Dibaca"></i>
+                                                        @else
+                                                        <i class="fas fa-check text-muted" title="Terkirim, belum dibaca"></i>
+                                                        @endif
+                                                    </span>
+                                                    @endif
                                                 </div>
                                                 <p class="mb-0">{{ $msg['content'] }}</p>
                                             </div>
@@ -188,7 +109,6 @@
                                 </div>
                             </div>
                         </li>
-
                         @endforeach
 
                     </ul>
@@ -232,144 +152,16 @@
 @include('user/footer')
 <script src="{{ asset('assets/js/emojiPicker.js') }}"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const currentUserId = "{{ session('user_id') }}";
-        let page = 1;
-        let hasMore = true;
-        const chatBox = document.getElementById('chat-box');
-        const messagesContainer = document.getElementById('messages');
-        const loader = document.getElementById('loader');
-        const messageForm = document.getElementById('messageForm');
-        const chatContent = document.getElementById('chatContent');
-        const toId = document.getElementById('userId').value;
-
-        // Simpan tinggi scroll sebelum menambah pesan baru
-        function loadMoreMessages() {
-            loader.style.display = 'block';
-            const previousScrollHeight = chatBox.scrollHeight;
-
-            page++;
-
-            fetch(`{{ route('detail_message', $rUser['_id']) }}?page=${page}`, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(res => res.json())
-                .then(data => {
-                    loader.style.display = 'none';
-                    if (!data.messages || data.messages.length === 0) {
-                        hasMore = false;
-                        return;
-                    }
-
-                    data.messages.reverse().forEach(msg => {
-                        const li = document.createElement('li');
-                        li.className = (msg.from === currentUserId ? 'right' : 'left');
-                        li.innerHTML = `
-                        <div class="">
-                            <div class="d-flex">
-                                <div class="flex-1">
-                                    <div class="ctext-wrap">
-                                        <div class="ctext-wrap-content">
-                                            <div class="">
-                                                <span class="time">${new Date(msg.createdAt).toLocaleString('id-ID')}</span>
-                                            </div>
-                                            <p class="mb-0">${msg.content}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                        messagesContainer.insertBefore(li, messagesContainer.firstChild);
-                    });
-
-                    // Kembalikan posisi scroll seperti semula
-                    chatBox.scrollTop = chatBox.scrollHeight - previousScrollHeight;
-                })
-                .catch(err => {
-                    console.error('Gagal memuat pesan:', err);
-                    loader.style.display = 'none';
-                });
-        }
-
-        // Scroll event listener
-        chatBox.addEventListener('scroll', function() {
-            if (chatBox.scrollTop <= 50 && hasMore) {
-                loadMoreMessages();
-            }
-        });
-
-        // Scroll ke bawah saat awal
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-        messageForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const toId = document.getElementById('userId').value;
-            const message = chatContent.value.trim();
-            const sendButton = messageForm.querySelector('button[type="submit"]');
-            const sendButtonOriginalHTML = sendButton ? sendButton.innerHTML : '';
-
-            if (message === '') return;
-
-            // Ubah tombol menjadi 'Sending...'
-            sendButton.disabled = true;
-            sendButton.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Sending...`;
-
-            fetch('/send', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'X-Requested-With': 'XMLHttpRequest',
-                    },
-                    body: JSON.stringify({
-                        toId: toId,
-                        content: message
-                    })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        const li = document.createElement('li');
-                        li.className = 'right';
-                        li.innerHTML = `
-                <div class="">
-                    <div class="d-flex">
-                        <div class="flex-1">
-                            <div class="ctext-wrap">
-                                <div class="ctext-wrap-content">
-                                    <div class="">
-                                        <span class="time">${new Date().toLocaleDateString('id-ID')}, ${new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</span>
-                                    </div>
-                                    <p class="mb-0">${message}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-                        messagesContainer.appendChild(li);
-                        chatContent.value = '';
-                        chatBox.scrollTop = chatBox.scrollHeight;
-                    } else {
-                        alert('Gagal mengirim pesan');
-                    }
-                })
-                .catch(err => {
-                    console.error('Error saat mengirim pesan:', err);
-                    alert('Terjadi kesalahan saat mengirim pesan');
-                })
-                .finally(() => {
-                    // Kembalikan tombol ke kondisi awal
-                    sendButton.disabled = false;
-                    sendButton.innerHTML = sendButtonOriginalHTML;
-                });
-        });
-    });
+    window.ChatConfig = {
+        currentUserId: "{{ session('user_id') }}",
+        toId: "{{ $rUser['_id'] }}",
+        detailMessageUrl: "{{ route('detail_message', $rUser['_id']) }}",
+        sendMessageUrl: "{{ url('/send') }}",
+        csrfToken: "{{ csrf_token() }}"
+    };
 </script>
+<script src="{{ asset('assets/js/message2.js') }}"></script>
+
 </body>
 
 </html>

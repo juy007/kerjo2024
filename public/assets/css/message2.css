@@ -1,0 +1,90 @@
+.w-md-50 {
+    width: 100%;
+    /* Default untuk mobile (di bawah 768px) */
+}
+
+@media (min-width: 768px) {
+    .w-md-50 {
+        width: 75%;
+        margin-top: 1rem;
+        /* opsional, jika ingin seperti mt-4 */
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+/* Bubble chat umum */
+.left,
+.right {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.left {
+    justify-content: flex-start;
+}
+
+.right {
+    justify-content: flex-end;
+}
+
+/* Isi bubble */
+.left > div,
+.right > div {
+    padding: 10px 15px;
+    max-width: 75%;
+    word-wrap: break-word;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.2s ease-in;
+}
+
+/* Style bubble kiri (dari lawan bicara) */
+.left > div {
+    background-color: #f1f1f1;
+    color: #000;
+    border-radius: 16px 16px 16px 0;
+}
+
+/* Style bubble kanan (dari user) */
+.right > div {
+    background-color: rgb(19, 130, 248);
+    color: #fff;
+    border-radius: 16px 16px 0 16px;
+}
+
+/* Tanggal/waktu */
+.time {
+    font-size: 9px;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Warna waktu khusus di masing-masing sisi */
+.left .time {
+    color: hsl(0, 0%, 45%);
+    /* abu gelap */
+}
+
+.right .time {
+    color: hsl(209, 44%, 82%);
+    /* biru terang */
+}
+
+/* Efek transisi muncul */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.read-status i {
+    font-size: 0.8rem;
+    margin-left: 5px;
+}

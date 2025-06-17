@@ -20,37 +20,46 @@
             </div>
 
             <div class="col-12 col-lg-8 mx-auto">
-                
+
                 <div class="mb-3">
-                
+
                     <div class="card">
                         <div class="btn-toolbar gap-2 p-3" role="toolbar">
                             <div class="p-3">
                                 <div class="search-box position-relative">{{-- session('user_id') --}}
                                     <input
                                         type="text"
+                                        id="searchInput"
                                         class="form-control rounded border"
                                         placeholder="Search..." />
                                     <i class="bx bx-search search-icon"></i>
                                 </div>
                             </div>
                         </div>
-                        <ul class="message-list">
-                           @forelse($contacts as $contact)
-                            <li  class="{{ $contact['from'] == session('user_id') ? 'read' : $contact['status'] }}">
-                                <div class="col-mail col-mail-1">
-                                    <a href="{{ route('detail_message', $contact['contact_id']) }}" class="title">
-                                        <img src="{{ url('proxy-image/avatar/'. str_replace(['../public/upload/avatar/', './public/upload/avatar/'], '', $contact['sender_avatar'] )) }}" class="rounded-circle avatar-sm" alt="{{ $contact['sender_name'] }}">
-                                        &nbsp;&nbsp;&nbsp;{{ $contact['sender_name'] }}
-                                    </a>
-                                </div>
-                                <div class="col-mail col-mail-2">
-                                    <a href="{{ route('detail_message', $contact['contact_id']) }}" class="subject"><span class="teaser">{{ Str::limit($contact['content'], 30, '...') }}</span>
-                                    </a>
-                                    <div class="date">{{ \Carbon\Carbon::parse($contact['createdAt'])->diffForHumans() }}</div>
-                                </div>
-                            </li>
+                        <ul class="message-list" id="contactList">
+                            <!-- list kontak -->
+                            @foreach($contacts as $contact)
+                                @if($contact['_id'] === session('user_id'))
+                                    @continue
+                                @endif
+                                <li class="{{ $contact['lastMessage']['status'] }}">
+                                    <div class="col-mail col-mail-1">   
+                                        <a href="{{ route('detail_message', $contact['_id']) }}" class="title">
+                                            <img src="{{ url('proxy-image/avatar/' . str_replace(['../public/upload/avatar/', './public/upload/avatar/'], '', $contact['avatar'])) }}" class="rounded-circle avatar-sm" alt="{{ $contact['userName'] }}">
+                                            &nbsp;&nbsp;&nbsp;{{ $contact['userName'] }}
+                                        </a>
+                                    </div>
+                                    <div class="col-mail col-mail-2">
+                                        <a href="{{ route('detail_message', $contact['_id']) }}" class="subject">
+                                            <span class="teaser">{{ Str::limit($contact['lastMessage']['content'], 30, '...') }}</span>
+                                        </a>
+                                        <div class="date">
+                                            <span class="badge bg-secondary">{{ \Carbon\Carbon::parse($contact['lastMessage']['createdAt'])->diffForHumans() }}</span>
+                                        </div>
+                                    </div>
+                                </li>
                             @endforeach
+
                         </ul>
 
                     </div> <!-- card -->
@@ -293,6 +302,24 @@
 <!-- End Page-content -->
 
 @include('user/footer')
+<script>
+    document.getElementById('searchInput').addEventListener('input', function() {
+        const filter = this.value.toLowerCase();
+        const list = document.getElementById('contactList');
+        const items = list.getElementsByTagName('li');
+
+        Array.from(items).forEach(item => {
+            // Ambil nama kontak dari elemen a.title di col-mail-1
+            const senderName = item.querySelector('.col-mail-1 a.title').textContent.toLowerCase();
+
+            if (senderName.includes(filter)) {
+                item.style.display = "";
+            } else {
+                item.style.display = "none";
+            }
+        });
+    });
+</script>
 </body>
 
 </html>

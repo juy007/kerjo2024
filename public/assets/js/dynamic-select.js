@@ -1,7 +1,7 @@
 document.getElementById('kategori').addEventListener('change', function () {
     const kategoriId = this.value;
     const subkategori = document.getElementById('sub_kategori');
-    const categoriesDetailUrl = document.querySelector('meta[name="route-categories-detail-json"]').content;
+    const categoriesDetailUrl = 'https://company.carikerjo.id/detail-categories-json';//document.querySelector('meta[name="route-categories-detail-json"]').content;
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
     subkategori.innerHTML = '<option>Loading...</option>';
@@ -39,7 +39,7 @@ document.getElementById('kategori').addEventListener('change', function () {
 document.getElementById('form_provinsi').addEventListener('change', function () {
     const provinsiId = this.value;
     const kotaSelect = document.getElementById('form_kota');
-    const provincesDetailUrl = document.querySelector('meta[name="route-provinces-detail-json"]').content;
+    const provincesDetailUrl = 'https://company.carikerjo.id/detail-provinces-json';//document.querySelector('meta[name="route-provinces-detail-json"]').content;
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
     kotaSelect.innerHTML = '<option>Loading...</option>';

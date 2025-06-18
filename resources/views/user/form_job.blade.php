@@ -389,7 +389,7 @@
 <script src="{{ asset('assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
 <script src="{{ asset('assets/js/pages/form-editor.init.js') }}"></script>
 <script src="{{ asset('assets/js/previewPhone.js') }}"></script>
-<script src="{{ asset('assets/js/dynamic-select.js') }}"></script>
+<script src="{{ asset('assets/js/dynamic-select2.js') }}"></script>
 </body>
 
 </html>

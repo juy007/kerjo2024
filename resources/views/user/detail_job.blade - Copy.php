@@ -115,7 +115,7 @@
                                     <option value="Submitted">Submitted</option>
                                     <option value="Reviewed">Reviewed</option>
                                     <option value="Interview">Interview</option>
-                                    <option value="Accepted">Accepted</option>
+                                    <option value="Accepted">Accepted</option>                                    
                                 </select>
                             </div>
                             <div id="show_data" class="col-md-6 mb-3">
@@ -129,7 +129,7 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Name</th>
+                                    <th>Pelamar</th>
                                     <th>Handphone</th><!--
                                     <th>Jabatan</th>
                                     <th>Pengalaman Kerja</th>-->
@@ -140,10 +140,7 @@
                             </thead>
 
                             <tbody>
-                                @foreach($applications['data'] as $applications)
-                                @if(is_null($applications['user']))
-                                @continue
-                                @endif
+                                @foreach($applications['data'][0] as $applications)
                                 <tr valign="middle">
                                     <td>{{ $loop->iteration }}</td>
                                     <td>
@@ -156,9 +153,9 @@
                                         </div>
                                     </td>
                                     <td>{{ $applications['user']['phone'] }}</td>
-
+                                    
                                     <td>{{ $applications['status'] }}</td>
-                                    <td><a href="{{ url('proxy-cv/' . str_replace(['../public/upload/cv/','./public/upload/cv/'], '', $applications['cv']['link'])) }}">Download</a></td>
+                                    <td><a href="{{ url('proxy-cv/' . str_replace('../public/upload/cv/', '', $applications['cv']['link'])) }}">Download</a></td>
                                     <td>
                                         <form method="POST" action="{{ route('save_update_status', $applications['_id']) }}" enctype="multipart/form-data">
                                             @csrf
@@ -180,15 +177,15 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         <div class="mb-4">
-                                                            <input type="hidden" name="userId" value="{{ $applications['user']['_id'] }}">
-                                                            <input type="hidden" name="jobId" value="{{ $applications['job'] }}">
+                                                        <input type="hidden" name="userId" value="{{ $applications['user']['_id'] }}">
+                                                        <input type="hidden" name="jobId" value="{{ $applications['job'] }}">
                                                             <select id="statusFilter" class="form-select" name="status" required>
                                                                 <option value="">Pilih Status</option>
                                                                 <option value="Rejected">Rejected</option>
                                                                 <option value="Submitted">Submitted</option>
                                                                 <option value="Reviewed">Reviewed</option>
                                                                 <option value="Interview">Interview</option>
-                                                                <option value="Accepted">Accepted</option>
+                                                                <option value="Accepted">Accepted</option>  
                                                             </select>
                                                         </div>
                                                     </div>

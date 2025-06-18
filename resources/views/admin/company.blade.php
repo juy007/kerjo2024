@@ -81,6 +81,9 @@
                                     </thead>
                                     <tbody>
                                         @foreach($company['list'] as $company)
+                                        @if($company['name'] === 'Firdaus Wibowo')
+                                            @continue
+                                        @endif
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td><img class="rounded-circle header-profile-user" src="{{ url('proxy-image-admin/logo/'. str_replace(['../public/upload/logo/', './public/upload/logo/'], '', $company['logo'])) }}" alt="Header Avatar">&nbsp; {{ $company['name'] }}</td>

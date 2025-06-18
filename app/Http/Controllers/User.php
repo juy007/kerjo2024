@@ -384,8 +384,10 @@ class User extends Controller
                 session()->flash('notifAPI', 'Halaman Detail Job');
                 return view('user.api_error');
             }
-
-            return view('user.detail_job', compact('jobs', 'regencies', 'applications'));
+           // $applications = $applications['data'];
+            //echo $applications."<br><br><br><br>";
+           // echo "<pre>";print_r($applications);echo "</pre>";
+           return view('user.detail_job', compact('jobs', 'regencies', 'applications'));
         } catch (\Exception $e) {
             session()->flash('notifAPI', 'Halaman Detail Job');
             return view('user.api_error');

@@ -37,7 +37,7 @@
                                 <div class="d-flex align-items-end mt-0 mt-sm-0" style="padding-left: 20px;">
                                     <div class="col-lg-2">
                                         <div class="me-3">
-                                            <img src="{{ url('proxy-image/avatar/'. str_replace('../public/upload/avatar/', '', $userData['user']['avatar'] )) }}" alt="" class="img-fluid rounded">
+                                            <img src="{{ url('proxy-image/avatar/'. str_replace(['../public/upload/avatar/', './public/upload/avatar/'], '', $userData['user']['avatar'] )) }}" alt="" class="img-fluid rounded">
                                         </div>
                                     </div>
                                     <div class="col-lg-10">
@@ -61,7 +61,7 @@
                             <h4 class="mb-sm-0 font-size-18 mt-3">Jabatan</h4>
                             <p class="text-muted font-size-16">Data Analyst</p>
                             <h4 class="mb-sm-0 font-size-18 mt-4">CV</h4>
-                            <p class="text-muted font-size-16"><a href="{{ url('proxy-cv/' . str_replace('../public/upload/cv/', '', $userData['cv']['link'])) }}">Download</a></p>
+                            <p class="text-muted font-size-16"><a href="{{ url('proxy-cv/' . str_replace(['../public/upload/cv/','./public/upload/cv/'], '', $userData['cv']['link'])) }}">Download</a></p>
                             
                         </div>
                     </div>

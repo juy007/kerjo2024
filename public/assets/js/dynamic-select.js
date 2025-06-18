@@ -39,7 +39,7 @@ document.getElementById('kategori').addEventListener('change', function () {
 document.getElementById('form_provinsi').addEventListener('change', function () {
     const provinsiId = this.value;
     const kotaSelect = document.getElementById('form_kota');
-    const provincesDetailUrl = 'https://company.carikerjo.id/detail-provinces-json';//document.querySelector('meta[name="route-provinces-detail-json"]').content;
+    const provincesDetailUrl = 'https://company.carikerjo.id/detail-provinces-json'; //document.querySelector('meta[name="route-provinces-detail-json"]').content;
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
     kotaSelect.innerHTML = '<option>Loading...</option>';

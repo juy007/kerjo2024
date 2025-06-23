@@ -42,6 +42,8 @@
     <!-- App Css-->
     <link href="{{ asset('assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
 
+    <link href="{{ asset('assets/css/appfont.css') }}" rel="stylesheet" type="text/css" />
+
     <!-- datepicker css -->
     <link rel="stylesheet" href="{{ asset('assets/libs/flatpickr/flatpickr.min.css') }}">
 
@@ -49,14 +51,3 @@
     <!--<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
     <script src="{{ asset('assets/js/firebase-notifications.js') }}" defer></script>-->
-
-    <style type="text/css">
-        @font-face {
-            font-family: 'Nunito-Regular';
-            src: url('/assets/fonts/Nunito-Regular.ttf') format('truetype');
-        }
-
-        body {
-            font-family: 'Nunito-Regular', sans-serif !important;
-        }
-    </style>

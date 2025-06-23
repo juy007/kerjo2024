@@ -75,15 +75,15 @@
                                                     <option value="{{ $subCategory['_id'] }}">{{ $subCategory['name'] }}</option>
                                                     @endforeach
                                                 </select>
-                                            </div>                                                  
-                                                   
+                                            </div>
+
                                             <div class="mb-3">
                                                 <label for="mata_uang" class="form-label font-size-13">Mata Uang</label>
                                                 <select class="form-control" data-trigger name="mata_uang" id="mata_uang">
-                                                <option selected value="{{ $jobs['data']['currency']['_id'] ?? '' }}">{{ $jobs['data']['currency']['name'] ?? 'Pilih Currency' }}</option>
+                                                    <option selected value="{{ $jobs['data']['currency']['_id'] ?? '' }}">({{ $jobs['data']['currency']['symbol']}}) {{ $jobs['data']['currency']['name'] ?? 'Pilih Currency' }}</option>
 
                                                     @foreach($currencies['data']['list'] as $currencies)
-                                                    <option value="{{ $currencies['_id'] }}">{{ $currencies['name'] }}</option>
+                                                    <option value="{{ $currencies['_id'] }}">({{ $currencies['symbol'] }}) {{ $currencies['name'] }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -95,6 +95,17 @@
                                                 <div class="col-md-6">
                                                     <input type="text" class="form-control" oninput="formatCurrency(this)" id="gaji_max" name="gaji_max" value="{{ number_format($jobs['data']['salaryEnd'], 0, ',', '.') }}" placeholder="Gaji Max">
                                                 </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="form_status" class="form-label font-size-13">Frekuensi Pembayaran</label>
+                                                <select class="form-control" data-trigger name="frekuensi_pembayaran" id="form_frekuensi_pembayaran">
+                                                    <option selected value="{{  $jobs['data']['salaryFrequency'] }}">{{ ucfirst($jobs['data']['salaryFrequency']) }}</option>
+                                                    <option value="jam">Jam</option>
+                                                    <option value="hari">Hari</option>
+                                                    <option value="bulan">Bulan</option>
+                                                    <option value="tahun">Tahun</option>
+                                                    <option value="proyek">Proyek</option>
+                                                </select>
                                             </div>
                                             <div class="mb-3">
                                                 <label for="form_provinsi" class="form-label font-size-13">Provinsi</label>
@@ -195,34 +206,97 @@
                                                     </div>
                                                 </div>
                                                 <div class="job-posted">
-                                                    Posting 2 hari lalu
+                                                    @php
+                                                        use Carbon\Carbon;
+
+                                                        function indonesianDiff($datetime) {
+                                                            $diff = Carbon::parse($datetime)->diffForHumans(null, true); // short unit
+
+                                                            $map = [
+                                                                'second' => 'detik',
+                                                                'minute' => 'menit',
+                                                                'hour'   => 'jam',
+                                                                'day'    => 'hari',
+                                                                'week'   => 'minggu',
+                                                                'month'  => 'bulan',
+                                                                'year'   => 'tahun',
+                                                            ];
+
+                                                            foreach ($map as $en => $id) {
+                                                                if (str_contains($diff, $en)) {
+                                                                    preg_match('/(\d+)/', $diff, $matches);
+                                                                    $num = $matches[1] ?? 0;
+
+                                                                    if ($num == 1) {
+                                                                        if ($en === 'hour') return 'Posting sejam';
+                                                                        if ($en === 'minute') return 'Posting semenit';
+                                                                        if ($en === 'second') return 'Posting sedetik';
+                                                                        return 'Posting 1 ' . $id;
+                                                                    }
+
+                                                                    return 'Posting ' . $num . ' ' . $id;
+                                                                }
+                                                            }
+
+                                                            return 'Posting ' . $diff; // fallback
+                                                        }
+                                                    @endphp
+
+                                                    {{ indonesianDiff($jobs['data']['createdAt']) }}
+
+                                                    <h5><span class="badge bg-primary">{{ $jobs['data']['status'] }}</span></h5>
                                                 </div>
                                             </div>
                                             <div class="job-details">
                                                 <div class="row">
-                                                    <div class="col-7">
+                                                    <div class="col-6">
                                                         <div class="label">Lokasi</div>
                                                         {{ str_replace(['Kota ', 'Kabupaten '], '', $regencies['data']['name'] ?? '-').', '.($jobs['data']['province']['name'] ?? '-') }}
                                                     </div>
-                                                    <div class="col-5">
+                                                    <div class="col-6">
                                                         <div class="label">Tipe Pekerjaan</div>
                                                         {{ $jobs['data']['jobType']['name'] ?? '-' }}
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-7">
+                                                    <div class="col-6">
                                                         <div class="label">Status Karyawan</div>
                                                         {{ $jobs['data']['jobStatus']['name'] ?? '-' }}
                                                     </div>
-                                                    <div class="col-5">
+                                                    <div class="col-6">
                                                         <div class="label">Posisi Level</div>
                                                         {{ $jobs['data']['jobLevel']['name'] ?? '-' }}
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-8">
+                                                    <div class="col-6">
                                                         <div class="label">Kategori Pekerjaan</div>
                                                         {{ ($jobs['data']['subCategory']['category']['name'] ?? '-') . ' - ' . ($jobs['data']['subCategory']['name'] ?? '-') }}
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="label">Gaji</div>
+                                                        @php
+                                                        function shortNum($num) {
+                                                        $num = (int) $num;
+                                                        if ($num >= 1000000000) return round($num / 1000000000, 1) . 'M';
+                                                        if ($num >= 1000000) return round($num / 1000000, 1) . 'Jt';
+                                                        if ($num >= 1000) return round($num / 1000, 1) . 'Rb';
+                                                        return $num;
+                                                        }
+
+                                                        $symbol = $jobs['data']['currency']['symbol'] ?? '';
+                                                        $start = $jobs['data']['salaryStart'] ?? null;
+                                                        $end = $jobs['data']['salaryEnd'] ?? null;
+                                                        $freq = $jobs['data']['salaryFrequency'] ?? '';
+                                                        @endphp
+
+                                                        {{ $symbol }}
+                                                        @if ($start){{ shortNum($start) }}@endif
+                                                        @if ($start && $end) - @endif
+                                                        @if (!$start && $end){{ shortNum($end) }}@elseif($start && $end){{ shortNum($end) }}@endif
+                                                        @if ($start || $end)/{{ $freq }}@endif
+
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -277,18 +351,19 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="job-posted">
-                                                                    Posting Baru
+                                                                    {{ indonesianDiff($jobs['data']['createdAt']) }}
+                                                                    <h5><span id="status_pre" class="badge bg-primary"></span></h5>
                                                                 </div>
                                                             </div>
                                                             <div class="job-details">
                                                                 <div class="row">
-                                                                    <div class="col-7">
+                                                                    <div class="col-6">
                                                                         <div class="label">
                                                                             Lokasi
                                                                         </div>
                                                                         <span id="lokasi_pre">Sudirman, Jakarta Selatan</span>
                                                                     </div>
-                                                                    <div class="col-5">
+                                                                    <div class="col-6">
                                                                         <div class="label">
                                                                             Tipe Pekerjaan
                                                                         </div>
@@ -296,13 +371,13 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
-                                                                    <div class="col-7">
+                                                                    <div class="col-6">
                                                                         <div class="label">
                                                                             Status Karyawan
                                                                         </div>
                                                                         <span id="status_karyawan_pre">Karyawan Tetap</span>
                                                                     </div>
-                                                                    <div class="col-5">
+                                                                    <div class="col-6">
                                                                         <div class="label">
                                                                             Posisi Level
                                                                         </div>
@@ -310,11 +385,17 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
-                                                                    <div class="col-8">
+                                                                    <div class="col-6">
                                                                         <div class="label">
                                                                             Kategori Pekerjaan
                                                                         </div>
                                                                         <span id="kategori_pekerjaan_pre">IT Komputer - Software</span>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <div class="label">
+                                                                            Gaji
+                                                                        </div>
+                                                                        <span id="gaji_pre"></span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -366,7 +447,7 @@
 <!-- choices js -->
 <script src="{{ asset('assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
 <script src="{{ asset('assets/js/pages/form-editor.init.js') }}"></script>
-<script src="{{ asset('assets/js/previewPhone.js') }}"></script>
+<script src="{{ asset('assets/js/prePhone.js') }}"></script>
 <script src="{{ asset('assets/js/formCurrency.js') }}"></script>
 <script src="{{ asset('assets/js/dynamic-select2.js') }}"></script>
 

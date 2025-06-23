@@ -1,8 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const currentUserId = window.ChatConfig.currentUserId;
-    const detailMessageUrl = window.ChatConfig.detailMessageUrl;
-    const sendMessageUrl = window.ChatConfig.sendMessageUrl;
-    const csrfToken = window.ChatConfig.csrfToken;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
     const chatBox = document.getElementById("chat-box");
     const messagesContainer = document.getElementById("messages");
@@ -11,48 +9,42 @@ document.addEventListener("DOMContentLoaded", () => {
     const chatContent = document.getElementById("chatContent");
     const toId = document.getElementById('userId').value;
 
-     let page = 1;
+    let page = 1;
     let hasMore = true;
 
     function renderMessageHTML(msg, currentUserId) {
         const d = new Date(msg.createdAt);
         const dateStr = d.toLocaleDateString('id-ID', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric'
+            day: '2-digit', month: 'short', year: 'numeric'
         });
-
         const timeStr = d.toLocaleTimeString('id-ID', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
+            hour: '2-digit', minute: '2-digit', hour12: false
         });
 
         const formattedDateTime = `${dateStr}, ${timeStr}`;
-        const isCurrentUser = msg.from === currentUserId;
-        const isRead = msg.is_read;
+        const isCurrentUser = msg.user === currentUserId;
 
-        const readStatus = isCurrentUser
-            ? `<span class="read-status ms-2">
-                    ${isRead
-                        ? '<i class="fas fa-check-double text-primary" title="Dibaca"></i>'
+        let readStatus = '';
+        if (!isCurrentUser) {
+            readStatus = `
+                <span class="read-status ms-2">
+                    ${msg.status === 'read'
+                        ? '<i class="fas fa-check-double" title="Dibaca"></i>'
                         : '<i class="fas fa-check text-muted" title="Terkirim, belum dibaca"></i>'}
-               </span>`
-            : '';
+                </span>`;
+        }
 
         return `
-<li class="${isCurrentUser ? 'right' : 'left'}">
-    <div class="">
-        <div class="d-flex">
-            <div class="flex-1">
-                <div class="ctext-wrap position-relative">
-                    <div class="ctext-wrap-content">
-                        <div class="conversation-name d-flex justify-content-between align-items-center">
-                            <span class="time">${formattedDateTime}</span>
-                            ${readStatus}
-                        </div>
-                        <p class="mb-0">${msg.content}</p>
+<li class="${isCurrentUser ? 'left' : 'right'}">
+    <div class="d-flex">
+        <div class="flex-1">
+            <div class="ctext-wrap position-relative">
+                <div class="ctext-wrap-content">
+                    <div class="conversation-name d-flex justify-content-between align-items-center">
+                        <span class="time">${formattedDateTime}</span>
+                        ${readStatus}
                     </div>
+                    <p class="mb-0">${msg.content}</p>
                 </div>
             </div>
         </div>
@@ -61,11 +53,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function loadMoreMessages() {
+        if (!hasMore) return;
         loader.style.display = 'block';
         const prevScrollHeight = chatBox.scrollHeight;
+        const prevScrollTop = chatBox.scrollTop;
         page++;
 
-        fetch(`${detailMessageUrl}?page=${page}`, {
+        fetch(`https://company.carikerjo.id/read/${toId}?page=${page}`, {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
             }
@@ -73,6 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(res => res.json())
         .then(data => {
             loader.style.display = 'none';
+
             if (!data.messages || data.messages.length === 0) {
                 hasMore = false;
                 return;
@@ -83,7 +78,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 messagesContainer.insertAdjacentHTML('afterbegin', liHTML);
             });
 
-            chatBox.scrollTop = chatBox.scrollHeight - prevScrollHeight;
+            const newScrollHeight = chatBox.scrollHeight;
+            chatBox.scrollTop = newScrollHeight - prevScrollHeight + prevScrollTop;
         })
         .catch(err => {
             console.error('Gagal memuat pesan:', err);
@@ -101,9 +97,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!message) return;
 
         sendButton.disabled = true;
-        sendButton.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Sending...`;
+        sendButton.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Mengirim...`;
 
-        fetch(sendMessageUrl, {
+        fetch('https://company.carikerjo.id/send', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -121,9 +117,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 const newMsg = {
                     content: message,
                     createdAt: new Date().toISOString(),
-                    from: currentUserId,
-                    is_read: false
+                    user: toId,
+                    status: 'unread'
                 };
+
                 const liHTML = renderMessageHTML(newMsg, currentUserId);
                 messagesContainer.insertAdjacentHTML('beforeend', liHTML);
                 chatContent.value = '';
@@ -133,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         })
         .catch(err => {
-            console.error('Error saat mengirim pesan:', err);
+            console.error('Terjadi kesalahan saat mengirim pesan:', err);
             alert('Terjadi kesalahan saat mengirim pesan');
         })
         .finally(() => {

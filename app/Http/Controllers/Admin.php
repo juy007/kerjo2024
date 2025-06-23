@@ -967,45 +967,42 @@ class Admin extends Controller
         $token = session('api_token_admin');
 
         $vals = [
-          // Provinsi Sumatera Utara
-            [ "name" => "Kota Medan", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kota Binjai", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kota Pematangsiantar", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kota Sibolga", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kota Tanjungbalai", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kota Tebing Tinggi", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kota Gunungsitoli", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Asahan", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Batu Bara", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Dairi", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Deli Serdang", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Humbang Hasundutan", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Karo", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Labuhanbatu", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Labuhanbatu Selatan", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Labuhanbatu Utara", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Langkat", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Mandailing Natal", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Nias", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Nias Barat", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Nias Selatan", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Nias Utara", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Padang Lawas", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Padang Lawas Utara", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Pakpak Bharat", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Samosir", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Serdang Bedagai", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Simalungun", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Tapanuli Selatan", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Tapanuli Tengah", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Tapanuli Utara", "provinceId" => "67d4e243b1f9532021a83095" ],
-            [ "name" => "Kabupaten Toba", "provinceId" => "67d4e243b1f9532021a83095" ],
+               // 🐟 Buruh Perikanan
+    ['id' => '6853ce111403c008ef74230d', 'name' => 'Anak buah kapal (ABK)'],
+    ['id' => '6853ce111403c008ef74230d', 'name' => 'Pekerja tambak (udang, bandeng, dll.)'],
+    ['id' => '6853ce111403c008ef74230d', 'name' => 'Buruh sortir ikan'],
+    ['id' => '6853ce111403c008ef74230d', 'name' => 'Pengolah hasil tangkap'],
+    ['id' => '6853ce111403c008ef74230d', 'name' => 'Pengemas produk perikanan'],
+
+    // 🚛 Buruh Angkut & Logistik
+    ['id' => '6853ce121403c008ef742310', 'name' => 'Kuli angkut (helper)'],
+    ['id' => '6853ce121403c008ef742310', 'name' => 'Buruh pelabuhan'],
+    ['id' => '6853ce121403c008ef742310', 'name' => 'Buruh gudang'],
+    ['id' => '6853ce121403c008ef742310', 'name' => 'Driver angkut ringan'],
+    ['id' => '6853ce121403c008ef742310', 'name' => 'Loader / unloader ekspedisi'],
+
+    // 👷 Buruh Harian Lepas
+    ['id' => '6853ce131403c008ef742313', 'name' => 'Buruh proyek'],
+    ['id' => '6853ce131403c008ef742313', 'name' => 'Buruh borongan'],
+    ['id' => '6853ce131403c008ef742313', 'name' => 'Buruh lepas kebun/pabrik'],
+    ['id' => '6853ce131403c008ef742313', 'name' => 'Buruh harian pasar'],
+
+    // 🧹 Buruh Kebersihan
+    ['id' => '6853ce141403c008ef742316', 'name' => 'Cleaning service'],
+    ['id' => '6853ce141403c008ef742316', 'name' => 'Penyapu jalan'],
+    ['id' => '6853ce141403c008ef742316', 'name' => 'Pembersih gedung/pabrik'],
+    ['id' => '6853ce141403c008ef742316', 'name' => 'Petugas kebersihan umum'],
+
+    // 🧺 Buruh Rumah Tangga
+    ['id' => '6853ce161403c008ef742319', 'name' => 'Asisten rumah tangga'],
+    ['id' => '6853ce161403c008ef742319', 'name' => 'Tukang cuci & setrika'],
+    ['id' => '6853ce161403c008ef742319', 'name' => 'Tukang kebun'],
         ];
 
         foreach ($vals as $val) {
-            $response = Http::withToken($token)->retry(3, 100)->post('https://api.carikerjo.id/regencies', [
+             $response = Http::withToken($token)->retry(3, 100)->post('https://api.carikerjo.id/sub-categories', [
                 'name' => $val['name'],
-                'provinceId' => $val['provinceId']
+                'categoryId' => $val['id'],
             ]);
 
             // Cek jika request gagal

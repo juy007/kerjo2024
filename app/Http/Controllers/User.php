@@ -46,20 +46,20 @@ class User extends Controller
         try {
             $provinces = $companyService->getProvinces($token);
             $currencies = $companyService->getCurrencies($token);
-            $categories = $companyService->getCategories($token, ['limit' => 500]);
+            $categories = $companyService->getCategories($token, ['query' => 'buruh', 'limit' => 500]);
             $jobStatuses = $companyService->getJobStatuses($token);
             $jobTypes = $companyService->getJobTypes($token);
             $jobLevels = $companyService->getJobLevels($token);
 
             // Cek apakah semua request sukses
-            if (
+            /*if (
                 !$provinces['success'] || !$currencies['success'] || !$categories['success'] ||
                 !$jobStatuses['success'] || !$jobTypes['success'] || !$jobLevels['success']
             ) {
                 session()->flash('notifAPI', 'Halaman Form Job');
                 return view('user.api_error');
             }
-
+            */
             return view('user.form_job', [
                 'provinces'     => $provinces['data'],
                 'currencies'    => $currencies['data'],
@@ -72,6 +72,7 @@ class User extends Controller
             Log::channel('company_api_error')->info('Form Job.', ['error_api' =>  $e->getMessage(),]);
             session()->flash('notifAPI', 'Halaman Form Job');
             return view('user.api_error');
+            //echo "Terjadi error: " . $e->getMessage() . "<br>"; echo "Di file: " . $e->getFile() . " pada baris " . $e->getLine() . "<br>";echo "<pre>" . $e->getTraceAsString() . "</pre>";
         }
     }
 
@@ -166,6 +167,7 @@ class User extends Controller
             'mata_uang' => 'required|string|max:255',
             'gaji_min' => 'required|numeric',
             'gaji_max' => 'required|numeric',
+            'frekuensi_pembayaran' => 'required|string|max:255',
             'provinsi' => 'required|string|max:255',
             'kota' => 'required|string|max:255',
             'tipe_pekerjaan' => 'required|string|max:255',
@@ -197,7 +199,7 @@ class User extends Controller
                 'endDate' => $validated['date_end'],
                 'salaryStart' => $validated['gaji_min'],
                 'salaryEnd' => $validated['gaji_max'],
-                'salaryFrequency' => "1",
+                'salaryFrequency' => $validated['frekuensi_pembayaran'],
                 'jobLevelId' => $validated['posisi_level'],
                 'description' => $validated['deskripsi'],
                 'detail' => $validated['detail'],
@@ -267,7 +269,7 @@ class User extends Controller
         try {
             $provinces = $companyService->getProvinces($token);
             $currencies = $companyService->getCurrencies($token);
-            $categories = $companyService->getCategories($token, ['limit' => 500]);
+            $categories = $companyService->getCategories($token, ['query' => 'buruh', 'limit' => 500]);
             $jobStatuses = $companyService->getJobStatuses($token);
             $jobTypes = $companyService->getJobTypes($token);
             $jobLevels = $companyService->getJobLevels($token);
@@ -306,6 +308,7 @@ class User extends Controller
             'mata_uang' => 'required|string|max:255',
             'gaji_min' => 'required|numeric',
             'gaji_max' => 'required|numeric',
+            'frekuensi_pembayaran' => 'required|string|max:255',
             'provinsi' => 'required|string|max:255',
             'kota' => 'required|string|max:255',
             'tipe_pekerjaan' => 'required|string|max:255',
@@ -339,6 +342,7 @@ class User extends Controller
                 'endDate' => $validated['date_end'],
                 'salaryStart' => $validated['gaji_min'],
                 'salaryEnd' => $validated['gaji_max'],
+                'salaryFrequency' => $validated['frekuensi_pembayaran'],
                 'jobLevelId' => $validated['posisi_level'],
                 'description' => $validated['deskripsi'],
                 'detail' => $validated['detail'],
@@ -384,10 +388,10 @@ class User extends Controller
                 session()->flash('notifAPI', 'Halaman Detail Job');
                 return view('user.api_error');
             }
-           // $applications = $applications['data'];
+            // $applications = $applications['data'];
             //echo $applications."<br><br><br><br>";
-           // echo "<pre>";print_r($applications);echo "</pre>";
-           return view('user.detail_job', compact('jobs', 'regencies', 'applications'));
+            // echo "<pre>";print_r($applications);echo "</pre>";
+            return view('user.detail_job', compact('jobs', 'regencies', 'applications'));
         } catch (\Exception $e) {
             session()->flash('notifAPI', 'Halaman Detail Job');
             return view('user.api_error');
@@ -695,46 +699,59 @@ class User extends Controller
         }
     }*/
 
-     function indexMessage()
+    function indexMessage(Request $request)
     {
         $token = session('api_token');
         try {
             $currentUserId = session('user_id');
+            $page = $request->get('page', 1); // Ambil page dari query string
 
             // Ambil pesan
-            $resMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message-list', ['limit' => 100]);
+            $resMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message-list', [
+                'limit' => 10,
+                'page' => $page,
+            ]);
+
             if (!$resMessages->successful()) {
                 session()->flash('notifAPI', 'Gagal mengambil pesan');
                 return view('user.api_error');
             }
-            $contacts = collect($resMessages->json('data.list'))
-            ->sortByDesc(function ($item) {
-                return $item['lastMessage']['createdAt'];
-            })
-            ->values();
 
-          
-            //echo "<pre>"; print_r($messages); echo "</pre>";
-            return view('user.message', compact('contacts'));
+            $json = $resMessages->json();
+            $contacts = collect($json['data']['list'])
+                ->sortByDesc(fn($item) => $item['lastMessage']['createdAt'])
+                ->values();
+
+            $pagination = [
+                'current_page' => $json['data']['current_page'] ?? 1,
+                'last_page' => $json['data']['last_page'] ?? 1,
+                'total' => $json['data']['total'] ?? 0,
+            ];
+
+            return view('user.message', compact('contacts', 'pagination'));
         } catch (\Exception $e) {
-            Log::channel('company_api_error')->info('Get Message', ['user_id' => session('user_id'), 'error_api' =>  $e->getMessage(),]);
+            Log::channel('company_api_error')->info('Get Message', ['user_id' => session('user_id'), 'error_api' =>  $e->getMessage()]);
             session()->flash('notifAPI', 'Terjadi kesalahan saat memuat data pesan');
             return view('user.api_error');
         }
-    }   
+    }
+
+
     public function detailMessage(Request $request, $id)
     {
         $token = session('api_token');
         $currentUserId = session('user_id');
         $page = $request->get('page', 1);
-        $limit = 50;
+        $limit = 5;
 
         try {
-            // Ambil semua pesan user
-            $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message', [
+            $responseMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message-by-user', [
+                'page' => $page,
+                'other' => $id,
                 'limit' => $limit,
-                'page' => $page
             ]);
+
+            //$responseMessages = Http::withToken($token)->get("https://api.carikerjo.id/messages/my-message-by-user?page=1&other={$id}");
 
             if (!$responseMessages->successful()) {
                 Log::channel('company_api_error')->info('Detail Message.', [
@@ -750,8 +767,22 @@ class User extends Controller
 
             $messages = collect($messageData['list'])->sortBy('createdAt')->values();
 
+            foreach ($messages as $msg) {
+                // ✅ Cek: hanya lanjutkan jika user dan status sesuai
+                if ($msg['user'] === $currentUserId && $msg['status'] === 'unread') {
+                    $readResponse = Http::withToken($token)->get("https://api.carikerjo.id/messages/my-message-read/{$msg['_id']}");
+
+                    if (!$readResponse->successful()) {
+                        Log::channel('company_api_error')->warning('Gagal mengubah status pesan menjadi read', [
+                            'message_id' => $msg['_id'],
+                            'response' => $readResponse->body(),
+                        ]);
+                    }
+                }
+            }
+
             // Ambil data pengguna
-            $responseUsers = Http::withToken($token)->get('https://api.carikerjo.id/users', ['limit' => 500]);
+            $responseUsers = Http::withToken($token)->retry(3, 100)->get("https://api.carikerjo.id/users/{$id}");
 
             if (!$responseUsers->successful()) {
                 Log::channel('company_api_error')->info('Detail Message.', [
@@ -762,45 +793,21 @@ class User extends Controller
                 return view('user.api_error');
             }
 
-            $users = collect($responseUsers->json()['data']['list']);
-            $rUser = $users->firstWhere('_id', $id);
-
-            // Filter pesan yang melibatkan kedua user
-            $filteredMessages = $messages->filter(function ($msg) use ($id, $currentUserId) {
-                $involved = [$msg['from'], $msg['user']];
-                return in_array($currentUserId, $involved) && in_array($id, $involved);
-            })->values();
-
-            // 1. Ubah status pesan yang belum dibaca jadi read
-            $unreadMessages = $filteredMessages->filter(function ($msg) use ($currentUserId, $id) {
-                return $msg['from'] == $id && $msg['user'] == $currentUserId && $msg['status'] === 'unread';
-            });
-
-            foreach ($unreadMessages as $msg) {
-                $readResponse = Http::withToken($token)
-                    ->get("https://api.carikerjo.id/messages/my-message-read/{$msg['_id']}");
-
-                if (!$readResponse->successful()) {
-                    Log::channel('company_api_error')->warning('Gagal mengubah status pesan menjadi read', [
-                        'message_id' => $msg['_id'],
-                        'response' => $readResponse->body(),
-                    ]);
-                }
-            }
-
+            $userData = collect($responseUsers['data']);
 
             if ($request->ajax()) {
                 return response()->json([
-                    'messages' => $filteredMessages,
+                    'messages' => $messages,
                     'hasMore' => $page < $totalPages,
                 ]);
             }
 
             return view('user.message_read', [
-                'filteredMessages' => $filteredMessages,
-                'rUser' => $rUser,
+                'filteredMessages' => $messages,
+                'userData' => $userData,
                 'totalPages' => $totalPages
             ]);
+            //echo "<pre>"; print_r($messages); echo "</pre>";
         } catch (\Exception $e) {
             Log::channel('company_api_error')->info('Get Message', [
                 'user_id' => session('user_id'),

@@ -66,7 +66,7 @@
 
                     <div class="row">
                         <div class="col-7">
-                            Showing 1 - 20 of 1,524
+                            Showing 1 - 1 of 1
                         </div>
                         <div class="col-5">
                             <div class="btn-group float-end">

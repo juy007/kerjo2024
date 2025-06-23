@@ -77,19 +77,32 @@
                                                 <select class="form-control" data-trigger name="mata_uang" id="mata-uang">
                                                     <option value="">Pilih Mata Uang</option>
                                                     @foreach($currencies['list'] as $currencies)
-                                                    <option value="{{ $currencies['_id'] }}">{{ $currencies['name'] }}</option>
+                                                    <option value="{{ $currencies['_id'] }}">({{ $currencies['symbol'] }}){{ $currencies['name'] }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                             <div class="row mb-3">
                                                 <label class="form-label" for="gaji-min">Gaji</label>
                                                 <div class="col-md-6">
-                                                    <input type="text" class="form-control" oninput="formatCurrency(this)" id="gaji-min" name="gaji_min" placeholder="Gaji Min">
+                                                    <input type="text" class="form-control" oninput="formatCurrency(this)" id="gaji_min" name="gaji_min" placeholder="Gaji Min">
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <input type="text" class="form-control" oninput="formatCurrency(this)" id="gaji-max" name="gaji_max" placeholder="Gaji Max">
+                                                    <input type="text" class="form-control" oninput="formatCurrency(this)" id="gaji_max" name="gaji_max" placeholder="Gaji Max">
                                                 </div>
                                             </div>
+
+                                            <div class="mb-3">
+                                                <label for="form_status" class="form-label font-size-13">Frekuensi Pembayaran</label>
+                                                <select class="form-control" data-trigger name="frekuensi_pembayaran" id="form_frekuensi_pembayaran">
+                                                    <option selected value="">Pilih Frekuensi Pembayaran</option>
+                                                    <option value="jam">Jam</option>
+                                                    <option value="hari">Hari</option>
+                                                    <option value="bulan">Bulan</option>
+                                                    <option value="tahun">Tahun</option>
+                                                    <option value="proyek">Proyek</option>
+                                                </select>
+                                            </div>
+
                                             <div class="mb-3">
                                                 <label for="form_provinsi" class="form-label font-size-13">Provinsi</label>
                                                 <select class="form-control" data-trigger name="provinsi" id="form_provinsi">
@@ -186,18 +199,19 @@
                                                     </div>
                                                 </div>
                                                 <div class="job-posted">
-                                                    Posting 2 hari lalu
+                                                    Posting 2 hari
+                                                    <h5><span class="badge bg-primary">publish</span></h5>
                                                 </div>
                                             </div>
                                             <div class="job-details">
                                                 <div class="row">
-                                                    <div class="col-7">
+                                                    <div class="col-6">
                                                         <div class="label">
                                                             Lokasi
                                                         </div>
                                                         Sudirman, Jakarta Selatan
                                                     </div>
-                                                    <div class="col-5">
+                                                    <div class="col-6">
                                                         <div class="label">
                                                             Tipe Pekerjaan
                                                         </div>
@@ -205,13 +219,13 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-7">
+                                                    <div class="col-6">
                                                         <div class="label">
                                                             Status Karyawan
                                                         </div>
                                                         Karyawan Tetap
                                                     </div>
-                                                    <div class="col-5">
+                                                    <div class="col-6">
                                                         <div class="label">
                                                             Posisi Level
                                                         </div>
@@ -219,11 +233,17 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-8">
+                                                    <div class="col-6">
                                                         <div class="label">
                                                             Kategori Pekerjaan
                                                         </div>
                                                         IT Komputer - Software
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="label">
+                                                            Gaji
+                                                        </div>
+                                                        Rp 5 Jt - 12 Jt/Bulan
                                                     </div>
                                                 </div>
                                             </div>
@@ -295,17 +315,18 @@
                                                                 </div>
                                                                 <div class="job-posted">
                                                                     Posting Baru
+                                                                    <h5><span id="status_pre" class="badge bg-primary"></span></h5>
                                                                 </div>
                                                             </div>
                                                             <div class="job-details">
                                                                 <div class="row">
-                                                                    <div class="col-7">
+                                                                    <div class="col-6">
                                                                         <div class="label">
                                                                             Lokasi
                                                                         </div>
                                                                         <span id="lokasi_pre">Sudirman, Jakarta Selatan</span>
                                                                     </div>
-                                                                    <div class="col-5">
+                                                                    <div class="col-6">
                                                                         <div class="label">
                                                                             Tipe Pekerjaan
                                                                         </div>
@@ -313,13 +334,13 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
-                                                                    <div class="col-7">
+                                                                    <div class="col-6">
                                                                         <div class="label">
                                                                             Status Karyawan
                                                                         </div>
                                                                         <span id="status_karyawan_pre">Karyawan Tetap</span>
                                                                     </div>
-                                                                    <div class="col-5">
+                                                                    <div class="col-6">
                                                                         <div class="label">
                                                                             Posisi Level
                                                                         </div>
@@ -327,11 +348,17 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
-                                                                    <div class="col-8">
+                                                                    <div class="col-6">
                                                                         <div class="label">
                                                                             Kategori Pekerjaan
                                                                         </div>
                                                                         <span id="kategori_pekerjaan_pre">IT Komputer - Software</span>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <div class="label">
+                                                                            Gaji
+                                                                        </div>
+                                                                       <span id="gaji_pre"></span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -388,7 +415,7 @@
 <!-- choices js -->
 <script src="{{ asset('assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
 <script src="{{ asset('assets/js/pages/form-editor.init.js') }}"></script>
-<script src="{{ asset('assets/js/previewPhone.js') }}"></script>
+<script src="{{ asset('assets/js/prePhone.js') }}"></script>
 <script src="{{ asset('assets/js/dynamic-select2.js') }}"></script>
 </body>
 

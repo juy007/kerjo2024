@@ -14,13 +14,13 @@
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0 avatar-sm me-3 d-sm-block d-none">
                                     <img
-                                        src="{{ url('proxy-image/avatar/' . str_replace(['../public/upload/avatar/', './public/upload/avatar/'], '', $rUser['avatar'])) }}"
+                                        src="{{ url('proxy-image/avatar/' . str_replace(['../public/upload/avatar/', './public/upload/avatar/'], '', $userData['avatar'])) }}"
                                         alt=""
                                         class="img-fluid d-block rounded-circle" />
                                 </div>
                                 <div class="flex-grow-1">
                                     <h5 class="font-size-14 mb-1 text-truncate">
-                                        <a href="#" class="text-dark">{{ $rUser['name'] ?? 'Unknown User' }}</a>
+                                        <a href="#" class="text-dark">{{ $userData['name'] ?? 'Unknown User' }}</a>
                                     </h5>
                                     <p class="text-muted text-truncate mb-0"></p>
                                 </div>
@@ -84,7 +84,7 @@
                         </li>
 
                         @foreach($filteredMessages as $msg)
-                        <li class="{{ $msg['from'] == session('user_id') ? 'right' : 'left' }}">
+                        <li class="{{ $msg['user'] == session('user_id') ? 'left' : 'right' }}">
                             <div class="">
                                 <div class="d-flex">
                                     <div class="flex-1">
@@ -92,13 +92,16 @@
                                             <div class="ctext-wrap-content">
                                                 <div class="conversation-name d-flex justify-content-between align-items-center">
                                                     <span class="time">{{ \Carbon\Carbon::parse($msg['createdAt'])->format('d M Y, H:i') }}</span>
-                                                    @if ($msg['from'] == session('user_id'))
+                                                 
+                                                    @if ($msg['user'] != session('user_id'))
                                                     <span class="read-status ms-2">
-                                                        @if (!empty($msg['is_read']))
-                                                        <i class="fas fa-check-double text-primary" title="Dibaca"></i>
+                                                        @if ($msg['status'] === 'read')
+                                                            <i class='fas fa-check-double' title="Dibaca"></i>
                                                         @else
-                                                        <i class="fas fa-check text-muted" title="Terkirim, belum dibaca"></i>
+                                                       
+                                                            <i class="fas fa-check text-muted" title="Terkirim, belum dibaca"></i>
                                                         @endif
+
                                                     </span>
                                                     @endif
                                                 </div>
@@ -108,7 +111,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </li>
                         @endforeach
 
                     </ul>
@@ -126,7 +128,7 @@
                             <emoji-picker id="picker" class="emoji-msg-read"></emoji-picker>
                         </div>
                         <div class="col">
-                            <input type="hidden" id="userId" name="toId" value="{{ $rUser['_id'] }}">
+                            <input type="hidden" id="userId" name="toId" value="{{ $userData['_id'] }}">
                             <div class="position-relative" id="emoji-container">
                                 <textarea class="form-control border bg-light-subtle" id="chatContent" placeholder="Enter Message..."></textarea>
                             </div>
@@ -154,13 +156,11 @@
 <script>
     window.ChatConfig = {
         currentUserId: "{{ session('user_id') }}",
-        toId: "{{ $rUser['_id'] }}",
-        detailMessageUrl: "{{ route('detail_message', $rUser['_id']) }}",
-        sendMessageUrl: "{{ url('/send') }}",
-        csrfToken: "{{ csrf_token() }}"
+        toId: "{{ $userData['_id'] }}",
+        detailMessageUrl: "{{ route('detail_message', $userData['_id']) }}",
     };
 </script>
-<script src="{{ asset('assets/js/message2.js') }}"></script>
+<script src="{{ asset('assets/js/msg.js') }}"></script>
 
 </body>
 

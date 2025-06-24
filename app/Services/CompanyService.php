@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 
 class CompanyService
 {
-   
+
     protected $apiUser = 'https://api.carikerjo.id/users';
     protected $apiUserById = 'https://api.carikerjo.id/users/';
 
@@ -248,26 +249,32 @@ class CompanyService
     public function getProvincesDetail($token, $id_provinces)
     {
         $userId = session('user_id') ?? 'guest';
-        try {
-            $response = Http::retry(3, 100)->withToken($token)->get($this->apiProvinceById . $id_provinces);
+        $cacheKey = 'province_detail_' . $id_provinces;
 
-            if (!$response->successful()) {
-                Log::channel('company_api_error')->warning('Get Provinces Detail', [
+        return Cache::remember($cacheKey, now()->addMinutes(30), function () use ($token, $id_provinces, $userId) {
+            try {
+                $response = Http::retry(3, 100)
+                    ->withToken($token)
+                    ->get($this->apiProvinceById . $id_provinces);
+
+                if (!$response->successful()) {
+                    Log::channel('company_api_error')->warning('Get Provinces Detail', [
+                        'user_id' => $userId,
+                        'status_code' => $response->status(),
+                        'response_body' => $response->body(),
+                    ]);
+                    return ['success' => false, 'message' => 'Gagal mengambil data detail provinsi dari API'];
+                }
+
+                return ['success' => true, 'data' => $response->json('data')];
+            } catch (\Exception $e) {
+                Log::channel('company_api_error')->error('Get Provinces Detail', [
                     'user_id' => $userId,
-                    'status_code' => $response->status(),
-                    'response_body' => $response->body(),
+                    'error' => $e->getMessage(),
                 ]);
-                return ['success' => false, 'message' => 'Gagal mengambil data detail provinsi dari API'];
+                return ['success' => false, 'message' => 'Terjadi kesalahan saat mengambil detail provinsi'];
             }
-
-            return ['success' => true, 'data' => $response->json()['data']];
-        } catch (\Exception $e) {
-            Log::channel('company_api_error')->error('Get Provinces Detail', [
-                'user_id' => $userId,
-                'error' => $e->getMessage(),
-            ]);
-            return ['success' => false, 'message' => 'Terjadi kesalahan saat mengambil detail provinsi'];
-        }
+        });
     }
 
     public function getJob($token, $queryParams = [])

@@ -424,25 +424,30 @@ class User extends Controller
         }
     }
 
-    public function detail_pelamar($id, $jobId)
+    public function detail_pelamar(CompanyService $companyService, $id, $jobId)
     {
 
         $token = session('api_token');
         try {
-            $responses = Http::pool(fn($pool) => [
-                $pool->withToken($token)->get("https://api.carikerjo.id/applications/job/{$jobId}"),
-            ]);
+            $response = Http::withToken($token)->retry(3, 100)->get("https://api.carikerjo.id/applications/job/{$jobId}");
 
-            // Jika salah satu request gagal, handle di sini
-            $failedResponse = array_filter($responses, fn($response) => !$response->successful());
-            if (count($failedResponse) > 0) {
+            if (!$response->successful()) {
                 session()->flash('notifAPI', 'Halaman Detail Pelamar');
                 return view('user.api_error');
             }
 
-            $applications = $responses[0]->json('data');
+            $applications = $response->json('data');
             $userData = collect($applications)->firstWhere('_id', $id);
-            return view('user.detail_pelamar', compact('userData'));
+
+            // Ambil data provinsi
+            $provinces = '-';
+            if (!empty($userData['user']['provinces'][0])) {
+                $provinceId = $userData['user']['provinces'][0];
+                $provinceResponse = app(CompanyService::class)->getProvincesDetail($token, $provinceId);
+                $provinces = $provinceResponse['data']['name'] ?? '-';
+            }
+
+            return view('user.detail_pelamar', compact('userData', 'provinces'));
         } catch (\Exception $e) {
             session()->flash('notifAPI', 'Halaman Detail Pelamar');
             return view('user.api_error');
@@ -547,7 +552,7 @@ class User extends Controller
     }
 
 
-    public function user_show($id)
+    public function user_show(CompanyService $companyService, $id)
     {
         $token = session('api_token');
 
@@ -559,14 +564,23 @@ class User extends Controller
                 return view('user.api_error');
             }
 
-            $userData = $response->json('data');
+            $userData = $response->json()['data'];
 
             // Jika tidak ada data user
             if (empty($userData)) {
-                return redirect()->back()->with('error', 'Data user tidak ditemukan.');
+                session()->flash('notifAPI', 'Data user tidak ditemukan');
+                return view('user.api_error');
             }
 
-            return view('user.user_show', compact('userData'));
+            // Ambil provinsi jika tersedia
+            if (!empty($userData['provinces']) && isset($userData['provinces'][0])) {
+                $provinceResponse = $companyService->getProvincesDetail($token, $userData['provinces'][0]);
+                $provinces = $provinceResponse['data']['name'] ?? '-';
+            } else {
+                $provinces = '-';
+            }
+
+            return view('user.user_show', compact('userData', 'provinces'));
         } catch (\Exception $e) {
             session()->flash('notifAPI', 'Halaman Detail User');
             return view('user.api_error');

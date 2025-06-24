@@ -157,7 +157,7 @@
                                                 <img src="{{ url('proxy-image/avatar/'. str_replace(['../public/upload/avatar/', './public/upload/avatar/'], '', $dataUser['avatar'] )) }}" class="avatar-md rounded-circle" alt="img" />
                                                 <div class="flex-1 ms-4">
                                                     <h5 class="mb-2 font-size-15 text-dark">{{ $dataUser['name'] }}</h5>
-                                                    <p class="text-muted">{{ $dataUser['email'] }} | {{ $dataUser['phone'] ?? 'N/A' }}</p>
+                                                    <p class="text-muted">{{ $dataUser['email'] }} | {{ $dataUser['phone'] ?? '-' }}</p>
                                                 </div>
                                             </div>
                                         </td>

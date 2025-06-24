@@ -41,8 +41,8 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-10">
-                                        <h5 class="font-size-16 mb-1">{{ $userData['user']['name'] }}</h5>
-                                        <span class="text-muted font-size-13 mb-2 pb-2 pe-3"><i class="mdi mdi-email-outline"></i> {{ $userData['user']['email'] }}</span><span class="text-muted font-size-13 mb-2 pb-2"><i class="mdi mdi-phone"></i> {{ $userData['user']['phone'] }}</span>
+                                        <h5 class="font-size-16 mb-1">{{ $userData['user']['name'] ?? '-' }}</h5>
+                                        <span class="text-muted font-size-13 mb-2 pb-2 pe-3"><i class="mdi mdi-email-outline"></i> {{ $userData['user']['email'] ?? '-' }}</span><span class="text-muted font-size-13 mb-2 pb-2"><i class="mdi mdi-phone"></i> {{ $userData['user']['phone'] ?? '-' }}</span>
 
                                     </div>
                                 </div>
@@ -59,7 +59,7 @@
                         <div>
                             <h4 class="mb-sm-0 font-size-18 mt-3">Informasi Detail :</h4>
                             <h4 class="mb-sm-0 font-size-18 mt-3">Jabatan</h4>
-                            <p class="text-muted font-size-16">Data Analyst</p>
+                            <p class="text-muted font-size-16">{{ $userData['user']['title'] }}</p>
                             <h4 class="mb-sm-0 font-size-18 mt-4">CV</h4>
                             <p class="text-muted font-size-16"><a href="{{ url('proxy-cv/' . str_replace(['../public/upload/cv/','./public/upload/cv/'], '', $userData['cv']['link'])) }}">Download</a></p>
                             
@@ -72,9 +72,9 @@
                             <h4 class="mb-sm-0 font-size-18 mt-4">Bahasa Inggris</h4>
                             <p class="text-muted font-size-16">Fasih</p>-->
                             <h4 class="mb-sm-0 font-size-18 mt-4">Status</h4>
-                            <p class="text-muted font-size-16">{{ $userData['status'] }}</p>
+                            <p class="text-muted font-size-16">{{ $userData['status'] ?? '-' }}</p>
                             <h4 class="mb-sm-0 font-size-18 mt-4">Lokasi</h4>
-                            <p class="text-muted font-size-16">Jakarta</p>
+                            <p class="text-muted font-size-16">{{ $provinces }}</p>
                         </div>
                     </div>
                     <style>

@@ -59,7 +59,7 @@
                         <div>
                             <h4 class="mb-sm-0 font-size-18 mt-3">Informasi Detail :</h4>
                             <h4 class="mb-sm-0 font-size-18 mt-3">Jabatan</h4>
-                            <p class="text-muted font-size-16">Data Analyst</p>
+                            <p class="text-muted font-size-16">{{ $userData['title'] }}</p>
                             <h4 class="mb-sm-0 font-size-18 mt-4">CV</h4>
                             <p class="text-muted font-size-16">
                                 @if (!empty($userData['cvs']) && isset($userData['cvs'][0]['link']))
@@ -80,10 +80,9 @@
                             <p class="text-muted font-size-16">4 Tahun</p>
                             <h4 class="mb-sm-0 font-size-18 mt-4">Bahasa Inggris</h4>
                             <p class="text-muted font-size-16">Fasih</p>-->
-                            <h4 class="mb-sm-0 font-size-18 mt-4">Status</h4>
-                            <p class="text-muted font-size-16"></p>
+                            
                             <h4 class="mb-sm-0 font-size-18 mt-4">Lokasi</h4>
-                            <p class="text-muted font-size-16">Jakarta</p>
+                            <p class="text-muted font-size-16">{{ $provinces }}</p>
                         </div>
                     </div>
                     <style>

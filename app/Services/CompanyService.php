@@ -223,7 +223,6 @@ class CompanyService
         $userId = session('user_id') ?? 'guest';
         try {
             $response = Http::retry(3, 100)->withToken($token)->get($this->apiProvince, [
-                'query' => 'jawa',
                 'limit' => 100,
             ]);
 

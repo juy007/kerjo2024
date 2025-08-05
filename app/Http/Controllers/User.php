@@ -46,7 +46,7 @@ class User extends Controller
         try {
             $provinces = $companyService->getProvinces($token);
             $currencies = $companyService->getCurrencies($token);
-            $categories = $companyService->getCategories($token, ['query' => 'buruh', 'limit' => 500]);
+            $categories = $companyService->getCategories($token, ['limit' => 500]);
             $jobStatuses = $companyService->getJobStatuses($token);
             $jobTypes = $companyService->getJobTypes($token);
             $jobLevels = $companyService->getJobLevels($token);
@@ -269,7 +269,7 @@ class User extends Controller
         try {
             $provinces = $companyService->getProvinces($token);
             $currencies = $companyService->getCurrencies($token);
-            $categories = $companyService->getCategories($token, ['query' => 'buruh', 'limit' => 500]);
+            $categories = $companyService->getCategories($token, ['limit' => 500]);
             $jobStatuses = $companyService->getJobStatuses($token);
             $jobTypes = $companyService->getJobTypes($token);
             $jobLevels = $companyService->getJobLevels($token);
@@ -718,11 +718,11 @@ class User extends Controller
         $token = session('api_token');
         try {
             $currentUserId = session('user_id');
-            $page = $request->get('page', 1); // Ambil page dari query string
+            $page = (int) $request->get('page', 1);
 
-            // Ambil pesan
+            // Ambil data pesan
             $resMessages = Http::withToken($token)->get('https://api.carikerjo.id/messages/my-message-list', [
-                'limit' => 10,
+                'limit' => 100, // disarankan lebih dari 1
                 'page' => $page,
             ]);
 
@@ -736,20 +736,31 @@ class User extends Controller
                 ->sortByDesc(fn($item) => $item['lastMessage']['createdAt'])
                 ->values();
 
+            $currentPage = $json['data']['currentPage'] ?? 1;
+            $totalPages = $json['data']['totalPages'] ?? 1;
+            $totalItem = $json['data']['totalItem'] ?? 0;
+
+            // Redirect jika page > totalPages
+            if ($page > $totalPages && $totalPages > 0) {
+                return redirect()->route('index_message', ['page' => $totalPages]);
+            }
+
             $pagination = [
-                'current_page' => $json['data']['current_page'] ?? 1,
-                'last_page' => $json['data']['last_page'] ?? 1,
-                'total' => $json['data']['total'] ?? 0,
+                'currentPage' => $currentPage,
+                'totalPages' => $totalPages,
+                'totalItem' => $totalItem,
             ];
 
             return view('user.message', compact('contacts', 'pagination'));
         } catch (\Exception $e) {
-            Log::channel('company_api_error')->info('Get Message', ['user_id' => session('user_id'), 'error_api' =>  $e->getMessage()]);
+            Log::channel('company_api_error')->info('Get Message', [
+                'user_id' => session('user_id'),
+                'error_api' => $e->getMessage(),
+            ]);
             session()->flash('notifAPI', 'Terjadi kesalahan saat memuat data pesan');
             return view('user.api_error');
         }
     }
-
 
     public function detailMessage(Request $request, $id)
     {

@@ -1,4 +1,5 @@
 @include('user/header_start')
+@include('pwa/pwa')
 @include('user/header_end')
 <div class="page-content" style="background-color:#F4F7FE !important;">
     <div class="container-fluid">

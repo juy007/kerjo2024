@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const prevScrollTop = chatBox.scrollTop;
         page++;
 
-        fetch(`https://company.carikerjo.id/read/${toId}?page=${page}`, {
+        fetch(`http://127.0.0.1:8000/read/${toId}?page=${page}`, {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
             }
@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
         sendButton.disabled = true;
         sendButton.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Mengirim...`;
 
-        fetch('https://company.carikerjo.id/send', {
+        fetch('http://127.0.0.1:8000/send', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

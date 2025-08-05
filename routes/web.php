@@ -23,11 +23,23 @@ use App\Http\Controllers\NotificationController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-/*
-Route::get('/', function () {
+
+/*Route::get('/juy', function () {
     return view('welcome');
+});*/
+
+Route::view('/offline', 'pwa.offline')->name('offline');
+Route::get('/proxy-image/offline/src/{path}', function ($path) {
+    $filePath = public_path("assets/images/logo/" . $path);
+
+   
+
+    $mimeType = mime_content_type($filePath);
+
+    return response()->file($filePath, [
+        'Content-Type' => $mimeType,
+    ]);
 });
-*/
 
 Route::get('/adminkerjo', [Admin::class, 'index'])->name('admin_login');
 Route::post('/login-validation', [Admin::class, 'login_validation'])->name('login_validation');
@@ -188,7 +200,7 @@ Route::middleware('auth.token')->group(function () {
     Route::middleware(['admin.token', 'auth.token'])->group(function () {});
 
     Route::get('/proxy-image/logo/{path}', function ($path) {
-        $url = "https://api.carikerjo.id/upload/logo/" . $path;
+        $url = "https://api.carikerjo.id/public/upload/logo/" . $path;
         $client = new Client();
 
         try {
@@ -204,13 +216,13 @@ Route::middleware('auth.token')->group(function () {
 
     Route::get('/proxy-image/company/src/{path}', function ($path) {
         $filePath = public_path("assets/images/logo/" . $path);
-    
+
         if (!file_exists($filePath)) {
             return redirect('/kerjo-img');
         }
-    
+
         $mimeType = mime_content_type($filePath);
-    
+
         return response()->file($filePath, [
             'Content-Type' => $mimeType,
         ]);
@@ -249,7 +261,7 @@ Route::middleware('auth.token')->group(function () {
     });
 
     Route::get('/proxy-image/avatar/{path}', function ($path) {
-        $url = "https://api.carikerjo.id/upload/avatar/" . $path;
+        $url = "https://api.carikerjo.id/public/upload/avatar/" . $path;
         $client = new Client();
 
         try {
@@ -296,6 +308,7 @@ Route::get('/proxy-image/src/{path}', function ($path) {
         'Content-Type' => $mimeType,
     ]);
 });
+
 
 Route::get('/kerjo-img', function () {
     $defaultImagePath = public_path('assets/images/logo/noimg.png');

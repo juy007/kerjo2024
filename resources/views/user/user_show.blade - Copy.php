@@ -1,5 +1,4 @@
 @include('user/header_start')
-<link href="{{ asset('assets/css/customUser.css') }}" rel="stylesheet" type="text/css" />
 @include('user/header_end')
 <style>
     .profile-user {
@@ -15,8 +14,8 @@
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                     <div class="page-title-left">
                         <ol class="breadcrumb font-size-18">
-                            <li class="breadcrumb-item active">Detail</li>
-                            <li class="breadcrumb-item">Detail Pelamar</li>
+                            <li class="breadcrumb-item active">User</li>
+                            <li class="breadcrumb-item">Detail User</li>
                         </ol>
                     </div>
                     <h4 class="mb-sm-0 font-size-18"></h4>
@@ -28,43 +27,32 @@
 
         <div class="row">
             <div class="card">
-
                 <div class="col-12">
                     <div class="col-xl-12">
                         <div class="profile-user" style="height: 20px;"></div>
                     </div>
-
                     <div class="profile-content">
                         <div class="row align-items-end">
                             <div class="col-sm">
-                                <div class="d-flex flex-column flex-sm-row align-items-center align-items-sm-end mt-0 mt-sm-0 px-3 px-sm-4">
-
-                                    <!-- Avatar wrapper -->
-                                    <div class="mb-3 mb-sm-0 me-sm-4">
-                                        <div class="avatar-wrapper mx-auto mx-sm-0">
-                                            <img src="{{ url('proxy-image/avatar/' . str_replace(['../public/upload/avatar/','./public/upload/avatar/'], '', $userData['user']['avatar'])) }}"
-                                                alt="avatar"
-                                                class="img-fluid profile-avatar">
+                                <div class="d-flex align-items-end mt-0 mt-sm-0" style="padding-left: 20px;">
+                                    <div class="col-lg-2">
+                                        <div class="me-3">
+                                            <img src="{{ url('proxy-image/avatar/'. str_replace(['../public/upload/avatar/','./public/upload/avatar/'], '', $userData['avatar'] )) }}" alt="" class="img-fluid rounded">
                                         </div>
                                     </div>
+                                    <div class="col-lg-10">
+                                        <h5 class="font-size-16 mb-1">{{ $userData['name'] }}</h5>
+                                        <span class="text-muted font-size-13 mb-2 pb-2 pe-3"><i class="mdi mdi-email-outline"></i> {{ $userData['email'] }}</span>
 
-                                    <!-- Info -->
-                                    <div class="profile-info text-center text-sm-start">
-                                        <h5 class="font-size-16 mb-1">{{ $userData['user']['name'] }}</h5>
-                                        <div class="text-muted font-size-13">
-                                            <div><i class="mdi mdi-email-outline"></i> {{ $userData['user']['email'] }}</div>
-                                            <div><i class="mdi mdi-phone-outline"></i> {{ $userData['user']['phone'] ?? '-' }}</div>
-                                        </div>
                                     </div>
-
                                 </div>
                             </div>
-
                             <div class="col-sm-auto">
-                                <!-- Optional button -->
+
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 <div class="row me-2 ms-2 mb-4 mt-3">
@@ -72,10 +60,19 @@
                         <div>
                             <h4 class="mb-sm-0 font-size-18 mt-3">Informasi Detail :</h4>
                             <h4 class="mb-sm-0 font-size-18 mt-3">Jabatan</h4>
-                            <p class="text-muted font-size-16">{{ $userData['user']['title'] }}</p>
+                            <p class="text-muted font-size-16">{{ $userData['title'] }}</p>
                             <h4 class="mb-sm-0 font-size-18 mt-4">CV</h4>
-                            <p class="text-muted font-size-16"><a href="{{ url('proxy-cv/' . str_replace(['../public/upload/cv/','./public/upload/cv/'], '', $userData['cv']['link'])) }}">Download</a></p>
-                            
+                            <p class="text-muted font-size-16">
+                                @if (!empty($userData['cvs']) && isset($userData['cvs'][0]['link']))
+                                <a href="{{ url('proxy-cv/' . str_replace('../public/upload/cv/', '', $userData['cvs'][0]['link'])) }}" class="" target="_blank">
+                                    Download
+                                </a>
+                                @else
+                                <button class="btn btn-sm btn-secondary" disabled>CV Tidak Tersedia</button>
+                                @endif
+
+                            </p>
+
                         </div>
                     </div>
                     <div class="col-xl-2 col-md-2 pt-lg-5">
@@ -84,16 +81,45 @@
                             <p class="text-muted font-size-16">4 Tahun</p>
                             <h4 class="mb-sm-0 font-size-18 mt-4">Bahasa Inggris</h4>
                             <p class="text-muted font-size-16">Fasih</p>-->
-                            <h4 class="mb-sm-0 font-size-18 mt-4">Status</h4>
-                            <p class="text-muted font-size-16">{{ $userData['status'] ?? '-' }}</p>
+
                             <h4 class="mb-sm-0 font-size-18 mt-4">Lokasi</h4>
                             <p class="text-muted font-size-16">{{ $provinces }}</p>
                         </div>
                     </div>
+                    <style>
+                        .timeline-A {
+                            padding-left: 15px;
+                            height: 100%;
+                        }
+
+                        .timeline-B {
+                            border-left: 3px solid #1B8CDD;
+                            height: 100%;
+                        }
+
+                        /*.timeline-C {}*/
+
+                        .timelineRounded {
+                            background-color: #1B8CDD;
+                            border-radius: 100%;
+                            margin-top: -10px;
+                            margin-left: -49px;
+                            height: 47px;
+                            width: 47px;
+                        }
+
+                        .timeline-D {
+                            margin-top: -35px;
+                        }
+
+                        .timeline-text-justify {
+                            text-align: justify;
+                        }
+                    </style>
                     <div class="col-xl-8 col-md-8 pt-3">
                         <div class="col-md-12 timeline-A">
                             <div class="timeline-B">
-                                @foreach($userData['user']['experiences'] AS $exp)
+                                @foreach($userData['experiences'] AS $exp)
                                 <div class="col-md-12 timeline-C ps-4 pb-4">
                                     <div class="timelineRounded"></div>
                                     <div class="timeline-D">

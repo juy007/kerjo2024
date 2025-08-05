@@ -10,7 +10,7 @@
                         <div class="navbar-brand-box">
                             <a href="{{ route('dashboard_user') }}" class="logo logo-dark">
                                 <span class="logo-sm">
-                                    <img src="{{ url('proxy-image/company/src/Kerjo sm.png') }}" alt="" height="27"><span class="logo-txt">ok</span>
+                                    <img src="{{ url('proxy-image/company/src/Kerjo sm.png') }}" alt="" height="27"><span class="logo-txt"></span>
                                 </span>
                                 <span class="logo-lg">
                                     <img src="{{ url('proxy-image/company/src/Kerjo B2 1.png') }}" alt="" height="27"> <span class="logo-txt"></span>
@@ -18,15 +18,15 @@
                             </a>
                             <a href="{{ route('dashboard_user') }}" class="logo logo-light">
                                 <span class="logo-sm">
-                                    <img src="{{ url('proxy-image/company/src/Kerjo sm.png') }}" alt="" height="27"><span class="logo-txt">ok</span>
+                                    <img src="{{ url('proxy-image/company/src/Kerjo B2 1.png') }}" alt="" height="27"><span class="logo-txt"></span>
                                 </span>
                                 <span class="logo-lg">
                                     <img src="{{ url('proxy-image/company/src/Kerjo B2 1.png') }}" alt="" height="27"> <span class="logo-txt"></span>
                                 </span>
                             </a>
                         </div>
+                    
                     </div>
-
                     <div class="d-flex">
                         <div class="dropdown d-inline-block">
                             <span><a class="text-dark" href="{{ route('index_job') }}">Lowongan</a></span>
@@ -40,7 +40,7 @@
                                 <div class="p-3">
                                     <div class="row align-items-center">
                                         <div class="col">
-                                            <h6 class="m-0"> Notifications </h6>
+                                            <h6 class="m-0"> Notifikasi </h6>
                                         </div>
                                         <div class="col-auto">
                                             <!--<a href="#!" class="small text-reset text-decoration-underline"> Unread (3)</a>-->
@@ -57,52 +57,6 @@
                                                 <div class="font-size-13 text-muted">
                                                     <p class="mb-1">It will seem like simplified English.</p>
                                                    <!-- <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span>1 hours ago</span></p>-->
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#!" class="text-reset notification-item">
-                                        <div class="d-flex">
-                                            <div class="avatar-sm me-3">
-                                                <span class="avatar-title bg-primary rounded-circle font-size-16">
-                                                    <i class="bx bx-cart"></i>
-                                                </span>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <h6 class="mb-1">Your order is placed</h6>
-                                                <div class="font-size-13 text-muted">
-                                                    <p class="mb-1">If several languages coalesce the grammar</p>
-                                                    <!-- <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span>1 hours ago</span></p>-->
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <a href="#!" class="text-reset notification-item">
-                                        <div class="d-flex">
-                                            <div class="avatar-sm me-3">
-                                                <span class="avatar-title bg-success rounded-circle font-size-16">
-                                                    <i class="bx bx-badge-check"></i>
-                                                </span>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <h6 class="mb-1">Your item is shipped</h6>
-                                                <div class="font-size-13 text-muted">
-                                                    <p class="mb-1">If several languages coalesce the grammar</p>
-                                                    <!-- <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span>1 hours ago</span></p>-->
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-
-                                    <a href="#!" class="text-reset notification-item">
-                                        <div class="d-flex">
-                                            <img src="{{ asset('assets/images/users/avatar-6.jpg') }}"
-                                                class="me-3 rounded-circle avatar-sm" alt="user-pic">
-                                            <div class="flex-grow-1">
-                                                <h6 class="mb-1">Salena Layfield</h6>
-                                                <div class="font-size-13 text-muted">
-                                                    <p class="mb-1">As a skeptical Cambridge friend of mine occidental.</p>
-                                                    <!-- <p class="mb-0"><i class="mdi mdi-clock-outline"></i> <span>1 hours ago</span></p>-->
                                                 </div>
                                             </div>
                                         </div>

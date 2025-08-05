@@ -26,55 +26,74 @@
                     <div class="card">
                         <div class="btn-toolbar gap-2 p-3" role="toolbar">
                             <div class="p-3">
-                                <div class="search-box position-relative">{{-- session('user_id') --}}
-                                    <input
-                                        type="text"
-                                        id="searchInput"
-                                        class="form-control rounded border"
-                                        placeholder="Search..." />
+                                <div class="search-box position-relative">
+                                    <input type="text" id="searchInput" class="form-control rounded border" placeholder="Search..." />
                                     <i class="bx bx-search search-icon"></i>
                                 </div>
                             </div>
                         </div>
+
                         <ul class="message-list" id="contactList">
-                            <!-- list kontak -->
-                            @foreach($contacts as $contact)
-                                @if($contact['_id'] === session('user_id'))
-                                    @continue
-                                @endif
-                                <li class="{{ $contact['lastMessage']['status'] }}">
-                                    <div class="col-mail col-mail-1">   
-                                        <a href="{{ route('detail_message', $contact['_id']) }}" class="title">
-                                            <img src="{{ url('proxy-image/avatar/' . str_replace(['../public/upload/avatar/', './public/upload/avatar/'], '', $contact['avatar'])) }}" class="rounded-circle avatar-sm" alt="{{ $contact['userName'] }}">
-                                            &nbsp;&nbsp;&nbsp;{{ $contact['userName'] }}
-                                        </a>
+                            @forelse($contacts as $contact)
+                            @if($contact['_id'] === session('user_id'))
+                            @continue
+                            @endif
+                            <li class="{{ $contact['lastMessage']['isSender'] ? $contact['lastMessage']['status'] : 'read' }}">
+                                <div class="col-mail col-mail-1">
+                                    <a href="{{ route('detail_message', $contact['_id']) }}" class="title"  style="margin-left:-50px;">
+                                        <img src="{{ url('proxy-image/avatar/' . str_replace(['../public/upload/avatar/', './public/upload/avatar/'], '', $contact['avatar'])) }}"
+                                            class="rounded-circle avatar-sm" alt="{{ $contact['userName'] }}">
+                                        &nbsp;&nbsp;&nbsp;{{ $contact['userName'] }}
+                                    </a>
+                                </div>
+                                <div class="col-mail col-mail-2">
+                                    <a href="{{ route('detail_message', $contact['_id']) }}" class="subject">
+                                        <span class="teaser">{{ Str::limit($contact['lastMessage']['content'], 30, '...') }}</span>
+                                    </a>
+                                    <div class="date">
+                                        <span class="badge bg-secondary">
+                                            {{ \Carbon\Carbon::parse($contact['lastMessage']['createdAt'])->diffForHumans() }}
+                                        </span>
                                     </div>
-                                    <div class="col-mail col-mail-2">
-                                        <a href="{{ route('detail_message', $contact['_id']) }}" class="subject">
-                                            <span class="teaser">{{ Str::limit($contact['lastMessage']['content'], 30, '...') }}</span>
-                                        </a>
-                                        <div class="date">
-                                            <span class="badge bg-secondary">{{ \Carbon\Carbon::parse($contact['lastMessage']['createdAt'])->diffForHumans() }}</span>
-                                        </div>
-                                    </div>
-                                </li>
-                            @endforeach
-
+                                </div>
+                            </li>
+                            @empty
+                            <li class="text-muted text-center p-3">Tidak ada pesan ditemukan</li>
+                            @endforelse
                         </ul>
+                    </div>
 
-                    </div> <!-- card -->
-
-                    <div class="row">
-                        <div class="col-7">
-                            Showing 1 - 1 of 1
+                    {{-- Pagination --}}
+                    <div class="row mt-3 align-items-center">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-0">
+                                <!--Menampilkan {{-- $contacts->count() --}} dari {{-- $pagination['totalItem'] ?? 0 --}} pesan -->
+                            </p>
                         </div>
-                        <div class="col-5">
+                        <div class="col-md-6">
+                            @php
+                            $currentPage = $pagination['currentPage'] ?? 1;
+                            $totalPages = $pagination['totalPages'] ?? 1;
+                            @endphp
+
                             <div class="btn-group float-end">
-                                <button type="button" class="btn btn-sm btn-success waves-effect"><i class="fa fa-chevron-left"></i></button>
-                                <button type="button" class="btn btn-sm btn-success waves-effect"><i class="fa fa-chevron-right"></i></button>
+                                <a href="{{ $currentPage > 1 ? route('index_message', ['page' => $currentPage - 1]) : '#' }}"
+                                    class="btn btn-sm btn-primary waves-effect {{ $currentPage == 1 ? 'disabled' : '' }}">
+                                    <i class="fa fa-chevron-left"></i>
+                                </a>
+
+                                <span class="btn btn-sm btn-light disabled">
+                                    Halaman {{ $currentPage }} dari {{ $totalPages }}
+                                </span>
+
+                                <a href="{{ $currentPage < $totalPages ? route('index_message', ['page' => $currentPage + 1]) : '#' }}"
+                                    class="btn btn-sm btn-primary waves-effect {{ $currentPage == $totalPages ? 'disabled' : '' }}">
+                                    <i class="fa fa-chevron-right"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
+
                 </div> <!-- end Col-9 -->
             </div>
         </div>

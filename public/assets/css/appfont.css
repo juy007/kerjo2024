@@ -6,3 +6,8 @@
 body {
     font-family: "Nunito-Regular", sans-serif !important;
 }
+
+.avatar-wrapper {
+    width: 100%;
+    aspect-ratio: 1 / 1; /* membuat kotak persegi otomatis */
+}

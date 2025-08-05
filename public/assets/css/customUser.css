@@ -1,0 +1,59 @@
+.profile-avatar {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    /* rounded */
+}
+
+/* Wrapper untuk center-align avatar di mobile */
+.avatar-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Perbaiki posisi gambar mobile & desktop */
+@media (max-width: 576px) {
+    .profile-info {
+        text-align: center;
+    }
+
+    .avatar-wrapper {
+        justify-content: center !important;
+    }
+
+    .profile-avatar {
+        width: 160px;
+        height: 160px;
+    }
+}
+
+.timeline-A {
+    padding-left: 15px;
+    height: 100%;
+}
+
+.timeline-B {
+    border-left: 3px solid #1b8cdd;
+    height: 100%;
+}
+
+/*.timeline-C {}*/
+
+.timelineRounded {
+    background-color: #1b8cdd;
+    border-radius: 100%;
+    margin-top: -10px;
+    margin-left: -49px;
+    height: 47px;
+    width: 47px;
+}
+
+.timeline-D {
+    margin-top: -35px;
+}
+
+.timeline-text-justify {
+    text-align: justify;
+}

@@ -42,7 +42,7 @@
                                     <!-- Avatar wrapper -->
                                     <div class="mb-3 mb-sm-0 me-sm-4">
                                         <div class="avatar-wrapper mx-auto mx-sm-0">
-                                            <img src="{{ url('proxy-image/avatar/' . str_replace(['../public/upload/avatar/','./public/upload/avatar/'], '', $userData['user']['avatar'])) }}"
+                                            <img src="{{ url('proxy-image/avatar/' . str_replace(['../public/upload/avatar/','./public/upload/avatar/', 'public/upload/avatar/'], '', $userData['user']['avatar'])) }}"
                                                 alt="avatar"
                                                 class="img-fluid profile-avatar">
                                         </div>

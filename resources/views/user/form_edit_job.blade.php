@@ -196,7 +196,7 @@
                                             <div class="divider"></div><br>
                                             <div class="job-header">
 
-                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/logo/'. str_replace(['../public/upload/logo/', './public/upload/logo/'], '', $jobs['data']['company']['logo'] )) }}" width="50" />
+                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/logo/'. str_replace(['../public/upload/logo/', './public/upload/logo/', 'public/upload/logo/'], '', $jobs['data']['company']['logo'] )) }}" width="50" />
                                                 <div>
                                                     <div class="job-title">
                                                         {{ $jobs['data']['title'] }}
@@ -341,7 +341,7 @@
                                                             <div class="divider"></div><br>
                                                             <div class="job-header">
 
-                                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/logo/'. str_replace(['../public/upload/logo/', './public/upload/logo/'], '', $jobs['data']['company']['logo'] )) }}" width="50" />
+                                                                <img alt="Company Logo" height="30" src="{{ url('proxy-image/logo/'. str_replace(['../public/upload/logo/', './public/upload/logo/', 'public/upload/logo/'], '', $jobs['data']['company']['logo'] )) }}" width="50" />
                                                                 <div>
                                                                     <div id="job_title_pre" class="job-title">
                                                                         Data Analyst

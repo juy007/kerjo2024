@@ -14,7 +14,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0 avatar-sm me-3 d-sm-block d-none">
                                     <img
-                                        src="{{ url('proxy-image/avatar/' . str_replace(['../public/upload/avatar/', './public/upload/avatar/'], '', $userData['avatar'])) }}"
+                                        src="{{ url('proxy-image/avatar/' . str_replace(['../public/upload/avatar/', './public/upload/avatar/', 'public/upload/avatar/'], '', $userData['avatar'])) }}"
                                         alt=""
                                         class="img-fluid d-block rounded-circle" />
                                 </div>

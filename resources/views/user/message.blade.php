@@ -41,7 +41,7 @@
                             <li class="{{ $contact['lastMessage']['isSender'] ? $contact['lastMessage']['status'] : 'read' }}">
                                 <div class="col-mail col-mail-1">
                                     <a href="{{ route('detail_message', $contact['_id']) }}" class="title"  style="margin-left:-50px;">
-                                        <img src="{{ url('proxy-image/avatar/' . str_replace(['../public/upload/avatar/', './public/upload/avatar/'], '', $contact['avatar'])) }}"
+                                        <img src="{{ url('proxy-image/avatar/' . str_replace(['../public/upload/avatar/', './public/upload/avatar/', 'public/upload/avatar/'], '', $contact['avatar'])) }}"
                                             class="rounded-circle avatar-sm" alt="{{ $contact['userName'] }}">
                                         &nbsp;&nbsp;&nbsp;{{ $contact['userName'] }}
                                     </a>

@@ -41,7 +41,7 @@
                                     <!-- Avatar wrapper -->
                                     <div class="mb-3 mb-sm-0 me-sm-4">
                                         <div class="avatar-wrapper mx-auto mx-sm-0">
-                                            <img src="{{ url('proxy-image/avatar/' . str_replace(['../public/upload/avatar/','./public/upload/avatar/'], '', $userData['avatar'])) }}"
+                                            <img src="{{ url('proxy-image/avatar/' . str_replace(['../public/upload/avatar/','./public/upload/avatar/','public/upload/avatar/'], '', $userData['avatar'])) }}"
                                                 alt="avatar"
                                                 class="img-fluid profile-avatar">
                                         </div>
@@ -74,7 +74,7 @@
                             <h4 class="mb-sm-0 font-size-18 mt-4">CV</h4>
                             <p class="text-muted font-size-16">
                                 @if (!empty($userData['cvs']) && isset($userData['cvs'][0]['link']))
-                                <a href="{{ url('proxy-cv/' . str_replace('../public/upload/cv/', '', $userData['cvs'][0]['link'])) }}" class="" target="_blank">
+                                <a href="{{ url('proxy-cv/' . str_replace(['../public/upload/cv/', './public/upload/cv/', 'public/upload/cv/'], '', $userData['cvs'][0]['link'])) }}" class="" target="_blank">
                                     Download
                                 </a>
                                 @else

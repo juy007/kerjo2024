@@ -1,4 +1,5 @@
 @include('account/header_start')
+    <link href="{{ asset('assets/css/cusFormCompany.css') }}" rel="stylesheet" type="text/css" />
 @include('account/header_end')
 
 <div class="progress progress-sm progress-t">
@@ -45,80 +46,6 @@
                                 <div id="message" class="message hidden"></div>
                                 <button class="btn btn-primary w-25 waves-effect waves-light" type="submit">Lanjut</button>
                             </form>
-                            <script>
-                                // Validasi form checkbox industries
-                                document.addEventListener('DOMContentLoaded', () => {
-                                    const form = document.getElementById('industryForm');
-                                    const message = document.getElementById('message');
-
-                                    form.addEventListener('submit', (event) => {
-                                        const checkboxes = document.querySelectorAll('input[name="industries[]"]');
-                                        let isChecked = false;
-
-                                        // Loop untuk mengecek apakah ada checkbox yang dipilih
-                                        checkboxes.forEach(checkbox => {
-                                            if (checkbox.checked) {
-                                                isChecked = true;
-                                            }
-                                        });
-
-                                        // Jika tidak ada checkbox yang dipilih
-                                        if (!isChecked) {
-                                            message.textContent = 'Please select at least one industry.';
-                                            message.className = 'message error';
-                                            message.classList.remove('hidden');
-                                            event.preventDefault(); // Prevent form submission
-                                            return; // Stop further execution
-                                        } else {
-                                            message.textContent = 'Validation successful, continue!';
-                                            message.className = 'message success';
-                                            message.classList.remove('hidden');
-                                            // Tidak perlu memanggil event.preventDefault() karena validasi berhasil
-                                        }
-                                    });
-                                });
-                            </script>
-
-                            <style>
-                                /*notif repassword*/
-                                .hidden {
-                                    display: none;
-                                }
-
-                                .message {
-                                    padding: 10px;
-                                    margin-top: 10px;
-                                    border-radius: 5px;
-                                    font-weight: bold;
-                                    animation: fadeIn 0.5s ease-in-out;
-                                    width: 50%;
-                                    margin-left: auto;
-                                    margin-right: auto;
-                                    margin-bottom: 10px;
-                                }
-
-                                .message.success {
-                                    background-color: #d4edda;
-                                    color: #155724;
-                                    border: 1px solid #c3e6cb;
-                                }
-
-                                .message.error {
-                                    background-color: #f8d7da;
-                                    color: #721c24;
-                                    border: 1px solid #f5c6cb;
-                                }
-
-                                @keyframes fadeIn {
-                                    from {
-                                        opacity: 0;
-                                    }
-
-                                    to {
-                                        opacity: 1;
-                                    }
-                                }
-                            </style>
                         </div>
                     </div>
                 </div>
@@ -130,4 +57,5 @@
 </div>
 <!-- End Page-content -->
 @include('account/footer_start')
+<script src="{{ asset('assets/js/cusFormCompany.js') }}"></script>
 @include('account/footer_end')

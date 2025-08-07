@@ -86,7 +86,7 @@
                                         @endif
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td><img class="rounded-circle header-profile-user" src="{{ url('proxy-image-admin/logo/'. str_replace(['../public/upload/logo/', './public/upload/logo/'], '', $company['logo'])) }}" alt="Header Avatar">&nbsp; {{ $company['name'] }}</td>
+                                            <td><img class="rounded-circle header-profile-user" src="{{ url('proxy-image-admin/logo/'. str_replace(['../public/upload/logo/', './public/upload/logo/', 'public/upload/logo/'], '', $company['logo'])) }}" alt="Header Avatar">&nbsp; {{ $company['name'] }}</td>
                                             <td>
                                                 <a href="#{{-- route('admin.companies.show', $company['_id']) --}}" class="btn btn-soft-success btn-sm waves-effect waves-light"><i data-feather="eye"></i> View</a>
                                                 <!--

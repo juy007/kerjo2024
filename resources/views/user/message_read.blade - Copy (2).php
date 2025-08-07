@@ -154,19 +154,10 @@
 @include('user/footer')
 <script src="{{ asset('assets/js/emojiPicker.js') }}"></script>
 <script>
-      window.ChatConfig = {
+    window.ChatConfig = {
         currentUserId: "{{ session('user_id') }}",
-        toId: "{{ htmlspecialchars($userData['_id']) }}",
+        toId: "{{ $userData['_id'] }}",
         detailMessageUrl: "{{ route('detail_message', $userData['_id']) }}",
-        apiEndpoints: {
-            send: "{{ route('message_send') }}",
-            read: "{{ route('detail_message', $userData['_id']) }}"
-        },
-        settings: {
-            maxMessageLength: 1000,
-            minSendInterval: 1000,
-            debounceDelay: 300
-        }
     };
 </script>
 <script src="{{ asset('assets/js/msg.js') }}"></script>

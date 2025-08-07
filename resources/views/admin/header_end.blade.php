@@ -10,35 +10,28 @@
             
             <header id="page-topbar">
                 <div class="navbar-header">
-                    <div class="d-flex">
+                     <div class="d-flex">
                         <!-- LOGO -->
                         <div class="navbar-brand-box">
-                            <a href="index.html" class="logo logo-dark">
+                            <a href="{{ route('dashboard_user') }}" class="logo logo-dark">
                                 <span class="logo-sm">
-                                    <img src="{{ url('proxy-image/admin/Kerjo B2 1.png') }}" alt="" height="30">
+                                    <img src="{{ url('proxy-image/admin/Kerjo sm.png') }}" alt="" height="27"><span class="logo-txt"></span>
                                 </span>
                                 <span class="logo-lg">
-                                    <img src="{{ url('proxy-image/admin/Kerjo B2 1.png') }}" alt="" height="24"> <span class="logo-txt"></span>
+                                    <img src="{{ url('proxy-image/admin/Kerjo B2 1.png') }}" alt="" height="27"> <span class="logo-txt"></span>
                                 </span>
                             </a>
-
-                            <a href="index.html" class="logo logo-light">
+                            <a href="{{ route('dashboard_user') }}" class="logo logo-light">
                                 <span class="logo-sm">
-                                    <img src="{{ url('proxy-image/admin/Kerjo B2 1.png') }}" alt="" height="30">
+                                    <img src="{{ url('proxy-image/admin/Kerjo B2 1.png') }}" alt="" height="27"><span class="logo-txt"></span>
                                 </span>
                                 <span class="logo-lg">
-                                    <img src="{{ url('proxy-image/admin/Kerjo B2 1.png') }}" alt="" height="24"> <span class="logo-txt"></span>
+                                    <img src="{{ url('proxy-image/admin/Kerjo B2 1.png') }}" alt="" height="27"> <span class="logo-txt"></span>
                                 </span>
                             </a>
                         </div>
-
-                        <button type="button" class="btn btn-sm px-3 font-size-16 header-item" id="vertical-menu-btn">
-                            <i class="fa fa-fw fa-bars"></i>
-                        </button>
-
-                        <!-- App Search-->
+                    
                     </div>
-
                     <div class="d-flex">
 
                         <div class="dropdown d-inline-block">

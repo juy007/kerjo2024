@@ -11,19 +11,34 @@ File: Icons Css File
 @font-face {
   font-family: "Material Design Icons";
   src: url("../fonts/materialdesignicons-webfont.eot?v=5.9.55");
-  src: url("../fonts/materialdesignicons-webfont.eot?#iefix&v=5.9.55") format("embedded-opentype"), url("../fonts/materialdesignicons-webfont.woff2?v=5.9.55") format("woff2"), url("../fonts/materialdesignicons-webfont.woff?v=5.9.55") format("woff"), url("../fonts/materialdesignicons-webfont.ttf?v=5.9.55") format("truetype");
-  font-weight: normal;
+  src: url("../fonts/materialdesignicons-webfont.eot?#iefix&v=5.9.55") format("embedded-opentype"),
+       url("../fonts/materialdesignicons-webfont.woff2?v=5.9.55") format("woff2"),
+       url("../fonts/materialdesignicons-webfont.woff?v=5.9.55") format("woff"),
+       url("../fonts/materialdesignicons-webfont.ttf?v=5.9.55") format("truetype");
+  font-weight: 400;
   font-style: normal;
+  font-display: swap; /* Tambahkan ini untuk performa lebih baik */
 }
-.mdi:before,
-.mdi-set {
+
+/* Fallback untuk icon yang belum dimuat */
+.mdi-set, .mdi:before {
   display: inline-block;
   font: normal normal normal 24px/1 "Material Design Icons";
+  font-display: swap;
   font-size: inherit;
   text-rendering: auto;
-  line-height: inherit;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Preload font untuk performa lebih baik */
+@font-face {
+  font-family: "Material Design Icons";
+  src: url("../fonts/materialdesignicons-webfont.woff2?v=5.9.55") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+F0000-FFFFD; /* Range untuk Material Design Icons */
 }
 
 .mdi-ab-testing::before {

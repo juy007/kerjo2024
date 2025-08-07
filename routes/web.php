@@ -132,7 +132,7 @@ Route::middleware('admin.token')->group(function () {
         return response()->file($filePath);
     });
     Route::get('/proxy-image-admin/logo/{path}', function ($path) {
-        $url = "https://api.carikerjo.id/upload/logo/" . $path;
+        $url = "https://api.carikerjo.id/public/upload/logo/" . $path;
         $client = new Client();
 
         try {

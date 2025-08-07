@@ -192,21 +192,7 @@
                 <script src="{{ asset('assets/libs/feather-icons/feather.min.js') }}"></script>
                 <!-- pace js -->
                 <script src="{{ asset('assets/libs/pace-js/pace.min.js') }}"></script>
-
-                <!-- apexcharts -->
-                <!--<script src="{{ asset('assets/libs/apexcharts/apexcharts.min.js') }}"></script>
-
-                <script src="{{ asset('assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js') }}"></script>
-                <script src="{{ asset('assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-world-mill-en.js') }}"></script>
                 
-                <script src="{{ asset('assets/js/pages/allchart.js') }}"></script>-->
-
                 <script src="{{ asset('assets/js/app.js') }}"></script>
-
-                <!-- datepicker js -->
-                <script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
-
-                <!-- init js -->                 
-                <script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
-
+    
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

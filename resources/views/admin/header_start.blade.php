@@ -35,6 +35,17 @@
 
     <!-- Bootstrap Css -->
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet" type="text/css" />
+    
+     <!-- Preload critical fonts untuk performa lebih baik -->
+     <link rel="preload" href="{{ asset('assets/fonts/materialdesignicons-webfont.woff2?v=5.9.55') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('assets/fonts/Nunito-Regular.ttf') }}" as="font" type="font/ttf" crossorigin>
+    
+    <!-- Preconnect untuk CDN jika menggunakan -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="{{ asset('assets/css/appfont.css') }}" rel="stylesheet" type="text/css" />
+    
     <!-- Icons Css -->
     <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- App Css-->
